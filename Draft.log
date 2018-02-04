@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  4 FEB 2018 18:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  4 FEB 2018 20:00
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -264,22 +264,22 @@ e 31.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <10.95> on input line 35.
  [1 <./StripSampling.jpg>]
-<DistanceHist.png, id=21, 451.6875pt x 542.025pt>
+<DistanceHist.png, id=20, 451.6875pt x 542.025pt>
 File: DistanceHist.png Graphic file (type png)
 <use DistanceHist.png>
-Package pdftex.def Info: DistanceHist.png  used on input line 40. on input line
- 40.
+Package pdftex.def Info: DistanceHist.png  used on input line 48. on input line
+ 48.
 Package pdftex.def Info: Requested size: 225.84319pt x 271.01183pt on input lin
-e 40.
-<DistHistDetec.png, id=22, 377.91188pt x 542.025pt>
+e 48.
+<DistHistDetec.png, id=21, 377.91188pt x 542.025pt>
 File: DistHistDetec.png Graphic file (type png)
 <use DistHistDetec.png>
-Package pdftex.def Info: DistHistDetec.png  used on input line 46. on input lin
-e 46.
-Package pdftex.def Info: Requested size: 188.95547pt x 271.01183pt on input lin
-e 46.
+Package pdftex.def Info: DistHistDetec.png  used on input line 56. on input lin
+e 56.
+Package pdftex.def Info: Requested size: 181.52872pt x 260.35927pt on input lin
+e 56.
  [2 <./DistanceHist.png> <./DistHistDetec.png>]
-[3] [4] (Draft.aux) ) 
+[3] [4] [5] (Draft.aux) ) 
 Here is how much of TeX's memory you used:
  2116 strings out of 493312
  30484 string characters out of 3138905
@@ -287,19 +287,18 @@ Here is how much of TeX's memory you used:
  5649 multiletter control sequences out of 15000+200000
  8811 words of font info for 31 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,6n,32p,1379b,306s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12
-.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:
-/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program 
-Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/f
-onts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
-1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmr8.pfb>
-Output written on Draft.pdf (5 pages, 199113 bytes).
+ 41i,6n,32p,1674b,307s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+bx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Prog
+ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files
+/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2
+.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/
+type1/public/amsfonts/cm/cmr8.pfb>
+Output written on Draft.pdf (6 pages, 195623 bytes).
 PDF statistics:
- 62 PDF objects out of 1000 (max. 8388607)
+ 61 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  21 words of extra memory for PDF output out of 10000 (max. 10000000)
 
