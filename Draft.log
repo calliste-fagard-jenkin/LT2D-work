@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  4 FEB 2018 20:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  4 FEB 2018 21:09
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -283,7 +283,7 @@ e 56.
 Here is how much of TeX's memory you used:
  2116 strings out of 493312
  30484 string characters out of 3138905
- 106244 words of memory out of 3000000
+ 111244 words of memory out of 3000000
  5649 multiletter control sequences out of 15000+200000
  8811 words of font info for 31 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -296,7 +296,7 @@ ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files
 /MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2
 .9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/
 type1/public/amsfonts/cm/cmr8.pfb>
-Output written on Draft.pdf (6 pages, 195623 bytes).
+Output written on Draft.pdf (6 pages, 200381 bytes).
 PDF statistics:
  61 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

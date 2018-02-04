@@ -66,6 +66,8 @@ where $\hat{p}$ is the estimate of average detection probability we obtain by in
 \subsubsection{The significance of 2D detection functions}
 
 One of the assumptions of distance sampling is that the distribution of animals about the transect line is known. In the previous case of line-transects, it was uniform (however in point transect distance sampling it is typically triangular). Unfortunately, there are many situations in which this assumption is strongly violated, leading to significant bias in estimates of animal abundance and density. One reason for this could be poor survey design, whereby insufficient randomisation of transect line locations leads to trends in the distribution of animals between them. There is no effective analytical solution for poor survey design, and so this case is not considered here. A more interesting cause for this phenomenon is responsive movement of animals in the population of interest. Animals can be scared by observers and hence move away, causing a dip in observed detection frequencies on and close to the transect line, as well a spike in observed detection frequency some relatively small distance away from the transect line. This behaviour is typically referred to as avoidance, and is extremely common in primates, with gibbons being so notoriously prone to the behaviour that they are the subject of regular conventions between ecologists and statisticians, and thus they will be used as one of the illustrative case studies within this project. Conversely, animals may also display attraction, whereby an attraction to the transect line cause a spike in detections on the transect line and a dip further out, dolphins typically display this behaviour when data is collected via shipboard surveys, where the wake of the vessel draws them in.
+By considering time-to-detection models, and observing that when an observer is moving along the transect at a constant speed, the forward distance of a detected animal is directly proportional to the time to detection (assuming the animal is stationary), Borchers and Cox (2017) formulate a method by which the relationship between distance and detection probability can be estimated in two-dimensions. This extra information provided in the forward distances of detections also allows the estimation of the perpendicular distributions about the transect line of the detected animals. Once this distribution is known, the issues of responsive movement are largely remedied. It should be noted that the vast majority of studies which collect data which are suitable for the fitting of 2D detection functions often do so by measuring the radial distance to the animal, as well as the angle of incidence of the animal to the observer. Thus the values of perpendicular and forward difference are easily calculated using basic trigonometry. Many of the implementations and intricacies involved with handling edge cases arise directly from this convention and the ways it affects the data and their collection.
+
 \subsection{Previous contributions}
 
 From June - August 2017 I undertook work on the code-base as a summer student. The notable changes I made to this code-base over this period will be clearly outlined in this section to distinguish them from the work which was undertaken from September 2017 onward as part of this project, however these will be not be described in depth, in order to avoid removing any focus from the improvements made as a part of this project. If more detail on the work conducted in this summer studentship is of interest, it can be found in the slides of a presentation conducted at the 2017 St Andrews Mathematics Undergraduate Research Conference, which have been included in the appendix. 
@@ -80,9 +82,9 @@ Previous versions of the code-base only produced estimates for average detection
 When measurements of small detection angles are rounded down to $0$ in the field, the magnitude of the bias of estimated average detection probability, $\hat{p}$, can drastically increase. An appropriate modification to the method's likelihood function was theorised by prof. Borchers and then I implemented the new functionality into the source code. I conducted multiple simulations to confirm that bias was significantly reduced, all of which clearly demonstrated the new estimator performed far better.
 
 \subsubsection{New Perpendicular Density}
-A reparameterization of an existing perpendicular density was required to allow for a  half-normal perpendicular density function with a non-zero expected quantity of animals on the transect line. Prof. Borchers and I decided on a suitable formulation and I implemented it within the LT2D package. 
+A reparameterization of an existing perpendicular density was required to allow for a  half-normal perpendicular density function with a non-zero expected frequency of animals on the transect line. Prof. Borchers and I decided on a suitable formulation and I implemented it within the LT2D package. 
 
-\subsubsection{Concatenation of GoF functions}
+\subsubsection{Concatenation of GoF Functions}
 Goodness of fit tests (Cramer Von Mises and Kolmogorov-Smirnov) are conducted separately in the x and y (perpendicular and forward) directions, respectively, by the LT2D. These were split into distinct functions, making their use tedious to the end user. I rectified this issue by creating a wrapper function which was easier for the user to interact with and acted as an interface with the pre-existing code.
 
 \subsubsection{Model Collecting and Summarising}
@@ -100,8 +102,17 @@ The project aims to include the ability for users to specify covariate inclusion
 
 All code calculating estimates of abundance ($\hat{N}$), average detection probability ($\hat{p}$) and AIC should be modified to work with all reasonable choices of covariates and related linear predictors. S3 methods should be written for the plot function to allow it to handle fitted models which contain cases of both discrete and continuous covariate inclusion. The goodness of fit function should also be generalised to use the Kolmogorov-Smirnov and Cramer Von Mises tests when the fitted model has included covariates. The inclusion of code which produces (non-parametric) bootstrap confidence intervals of estimated abundance would also be desirable, for both covariate-including and non-covariate-including analyses.
 
-Time permitting, a further objective of the project is to allow the software to cope with a mixture model detection function. This would allow the methodology to cope with  populations which are heterogeneous with respect to detection probability. When the survey population consists of distinct sub-populations each with different behaviours which affect detection probability (i.e. males' mating calls make them far easier to detect)
+\section{Algorithms and Implementation}
+\subsection{Covariate Inclusion into the Likelihood}
+\subsection{Covariate Inclusion into Abundance Estimation}
+\subsection{Modification of Goodness of Fit Functions}
+\subsection{Modification of Plot Functions}
 
+\section{Case Studies}
+\subsection{Batang Toru}
+\subsection{Jantho}
+
+\section{Statistical Consultancy and Software Feedback}
 
 \end{multicols}	
 \end{document}
