@@ -99,7 +99,7 @@ B2 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart,
              pi.x = 'pi.norm', logphi = logphi, w=w, formulas = list(fi), 
              ipars = i.parameters)
 
-invp1_replacement(LT2D.df = DF, LT2D.fit = B2)
+B3 = invp1_replacement(LT2D.df = DF, LT2D.fit = B2)
 
 C = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
              pi.x = 'pi.norm', logphi = logphi, w=w)

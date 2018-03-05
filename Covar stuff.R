@@ -358,6 +358,7 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
   
   # Extremely stupid because it calls the same function twice for no reason,
   # needed a very quick fix - will make this better if there's time:
+  
   # Gets the betas for the fitted parameter values, for each row of the data
   B.per.line <-  negloglik.yx(fit$par,
                               y=new.y, x=new.x, hr=hrname, ystart=ystart,
@@ -541,7 +542,7 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
   
   # Basic type-checking of inputs: 
   if (class(DataFrameInput)!='data.frame'){
-    stop('First arg must be data.frame')
+    stop('DataFrameInput must be a data.frame')
   }
   
   OnlyCallFityx = TRUE # Set flag saying we can't work out N or D 
@@ -583,11 +584,14 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
                        corrFlag=corrFlag)       
   
   if (OnlyCallFityx==TRUE){return(fitted.model)}
-  return(fitted.model)
+
   # Now we pass the data frame and fitted model objects to the abundance
   # estimation function and return the output
+  
+  fitted.model$covariates = !is.null(covarPars)
+  fitted.model$formulas = formulas
+  return(fitted.model)
   output = NDest(DataFrameInput, fitted.model)
-  print(output)
   output$fit = fitted.model # We attach the fityx model to the output
   class(output) = 'LT2D.fit.function.object'
   return(output)
@@ -690,16 +694,19 @@ Sy=function(x,y,ymax,b,hr) {
   if(hr=="h1") { # Hayes & Buckland hazard rate model, so can do analytically
     hmax=h1(y,x,b) 
     for(i in 1:n){
-      if(y[i]==0 | hmax[i]>1e10){ # computer will think integral divergent for large hmax
+      if(y[i]==0 | hmax[i]>1e10){ # computer will think the integral is 
+                                  # divergent for large hmax
         pS[i]=1-HBhr(x[i],h1.to.HB(b)) 
       } else {
-        pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,subdivisions = 1000L)$value)
+        pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,
+                             subdivisions = 1000L)$value)
         pS<<-pS[i]
       }
     }
   } else { # Not Hayes & Buckland hazard rate model, so can't do analytically
     for(i in 1:n){
-      pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,subdivisions = 1000L)$value)
+      pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,
+                           subdivisions = 1000L)$value)
       pS2<<-pS[i]
     }
   }
@@ -717,12 +724,13 @@ NDest <- function(dat, hmltm.fit){
   
   # Add 1/p column
   dat$invp <- rep(NA,dim(dat)[1])
-  invp <- invp1_replacement(dat, hmltm.fit) 
+  invp <- invp1_replacement(dat, hmltm.fit)
   
   for(i in 1:length(invp$object)) {
-    row <- which(dat$stratum==invp$stratum[i]
-                 & dat$transect==invp$transect[i]
-                 & dat$object==invp$object[i])
+    
+    row <- which(dat$stratum==invp$stratum[i]     # ensures data is consistent
+                 & dat$transect==invp$transect[i] # with invp version, and that
+                 & dat$object==invp$object[i])    # only detection rows count
     
     if(length(row)>1) {
       cat("Target stratum:",invp$stratum[i],"\n")
@@ -794,47 +802,104 @@ NDest <- function(dat, hmltm.fit){
   )
 }
 
-invp1_replacement = function(LT2D.df, LT2D.fit){
-  # From the fitted model we extract the invp value:
-  # p = phat(LT2D.fit)
-  # inversep = 1/p
-  # invp.vector = rep(inversep, length(LT2D.df$x))
-  # # And we add it to the data.frame:
-  # LT2D.df.new = LT2D.df              # copy the input fitted data frame
-  # LT2D.df.new$invp = invp.vector     # add the invp column
-  w = LT2D.fit$w
-  ystart = LT2D.fit$ystart
-  hr = LT2D.fit$hr
-  pi.x = LT2D.fit$pi.x
-  logphi = LT2D.fit$logphi
+invp1_replacement = function(LT2D.df, LT2D.fit.obj){
+
+  w = LT2D.fit.obj$w            # we extract all the values needed
+  ystart = LT2D.fit.obj$ystart  # to calculate inverse p from 
+  hr = LT2D.fit.obj$hr          # the fit object
+  pi.x = LT2D.fit.obj$pi.x
+  logphi = LT2D.fit.obj$logphi
   
-  unrounded.points.with.betas = LT2D.fit$unrounded.points.with.betas
-  
+  unrounded.points.with.betas <- LT2D.fit.obj$unrounded.points.with.betas
+  converted.betas <- data.with.b.conversion(fityx.output.object = LT2D.fit.obj)
+  betas <- converted.betas$beta
+  x <- converted.betas$x
+  y <- converted.betas$y
   LT2D.df$invp <- rep(NA, dim(LT2D.df)[1])
   
   # For each row of the data.frame:
   
   # check if covariates were used here, return invp everywhere if there were not
   # and proceed to the for loop if they were...
+  if (LT2D.fit.obj$covariates != TRUE){
+    p = phat(LT2D.fit)
+    inversep = 1/p
+    invp.vector = rep(inversep, length(LT2D.df$x))
+    LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = NULL, ystart = ystart, 
+                              pi.x = pi.x, logphi = logphi))
+    stop('undealt case 1')
+    return(LT2D.df)
+  }
   
   for (i in (1:dim(LT2D.df)[1])){
     data.row <- LT2D.df[i,]
-    x = data.row$x
-    y = data.row$y
     
-    if (is.na(data.row$object)){
+    if (!is.na(data.row$object)){
       # if a transect has no detections, it will not be used to calculate the 
       # Horvitz-Thompson estimate, and so we may just set the invp value to 
-      # zero:
+      # NA (so that it raises an error if a calculation is attempted):
       
-      LT2D.df$invp[i] <- 0
+      LT2D.df$invp[i] <- NA
     }
-    
-    else{ # if the data point is a detection
-      
-      # if we had covariates included:
-      if(!is.null(LT2D.fit$COVARIATESINCLUDED)){}
-    }
-  }
+  
   return(LT2D.df)
+}
+
+# remove fit option from the docs
+phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL, 
+          pi.x = NULL, logphi = NULL) 
+{
+  if (!is.null(hr)) {
+    if (class(hr) != "character") {
+      stop("phat: hr must be a character")
+    }
+    hrname = hr
+  }
+  if (!is.null(pi.x)) {
+    if (class(pi.x) != "character") {
+      stop("phat: pi.x must be a character")
+    }
+    piname = pi.x
+  }
+  int = integrate(f = p.pi.x, lower = 0, upper = w, b = b, 
+                  hr = hrname, ystart = ystart, pi.x = piname, logphi = logphi, 
+                  w = w)$value
+  return(int)
+}
+
+data.with.b.conversion <- function(fityx.output.object){
+  # purpose : Converts the list of lists in the $unrounded.points.with.betas
+  #           attribute of the output of the fityx function into a different
+  #           list of lists with a structure which provides ease of calculation
+  #           later down the line
+  # inputs  : fityx.output.object - The output of a call to fityx which contains
+  #           unrounded.points.with.betas object of interest
+  # output  : a list of lists with entries equal to the number of rows of data
+  #           provided in the call to fityx. Each entry of this list is a list
+  #           with 3 elements, x, y and beta. Where beta is the list containing
+  #           the parameters of the detection function fitted to the point x,y
+  #           in the appropriate form to be passed as the b argument of the
+  #           function which evaluates this detection function. x and y are
+  #           both numeric
+  
+  if (class(fityx.output.object)!='LT2D.fit.object') stop('invalid argument')
+  
+  hrname <- fityx.output.object$hr
+  expected.n <- HazardNumberLookup(hrname)
+  urpwb <- fityx.output.object$unrounded.points.with.betas
+  XY <- urpwb[[1]]
+  betas <- urpwb[[2]]
+  dim.data.rows <- length(XY$x)
+  
+  output <- list(x=XY$x,y=XY$y)
+  
+  output.betas <- as.list(rep(NA, dim.data.rows))
+  
+  
+  for (i in 1:dim.data.rows){
+    for (j in 1:length(betas)) output.betas[[i]][[j]] = betas[[j]][i]
+  }
+  
+  output$beta <- output.betas
+  return(output)
 }
