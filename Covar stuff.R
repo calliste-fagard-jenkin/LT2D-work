@@ -590,7 +590,6 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
   
   fitted.model$covariates = !is.null(covarPars)
   fitted.model$formulas = formulas
-  return(fitted.model)
   output = NDest(DataFrameInput, fitted.model)
   output$fit = fitted.model # We attach the fityx model to the output
   class(output) = 'LT2D.fit.function.object'
@@ -803,7 +802,15 @@ NDest <- function(dat, hmltm.fit){
 }
 
 invp1_replacement = function(LT2D.df, LT2D.fit.obj){
-
+  # purpose : Adds a column of inverse detection probability to a data frame 
+  #           used as the data.frame argument to a call of LT2D.fit
+  # inputs  : LT2D.df      - The data.frame containing all the transect
+  #                          detections (and non-detections), as it was passed
+  #                          to LT2D.fit
+  #           LT2D.fit.obj - The fitted model object produced by fityx
+  # output  : A data.drame, LT2D.df, with an extra column, invp, for the inverse
+  #           of estimated detection probability 
+  
   w = LT2D.fit.obj$w            # we extract all the values needed
   ystart = LT2D.fit.obj$ystart  # to calculate inverse p from 
   hr = LT2D.fit.obj$hr          # the fit object
@@ -812,16 +819,16 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   
   unrounded.points.with.betas <- LT2D.fit.obj$unrounded.points.with.betas
   converted.betas <- data.with.b.conversion(fityx.output.object = LT2D.fit.obj)
-  betas <- converted.betas$beta
-  x <- converted.betas$x
-  y <- converted.betas$y
+  betas <- converted.betas[[3]]
+  x <- converted.betas[[1]]
+  y <- converted.betas[[2]]
   LT2D.df$invp <- rep(NA, dim(LT2D.df)[1])
   
-  # For each row of the data.frame:
-  
-  # check if covariates were used here, return invp everywhere if there were not
+  # check if covariates were used, return invp everywhere if there were not
   # and proceed to the for loop if they were...
-  if (LT2D.fit.obj$covariates != TRUE){
+  if (LT2D.fit.obj$covariates!= TRUE){
+    
+    ## TEST THIS CASE 999
     p = phat(LT2D.fit)
     inversep = 1/p
     invp.vector = rep(inversep, length(LT2D.df$x))
@@ -831,16 +838,34 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
     return(LT2D.df)
   }
   
+  # We want to ensure that the data for which we have detection function values
+  # is of the same dimension as the number of rows of data which represent a 
+  # detection:
+  if (dim(subset(LT2D.df, !is.na(LT2D.df$object)))[1] != length(x)){
+    stop('Input data frame and fitted data dimensions do not match')
+  }
+  
+  NAcounter <- 0  # Keep track of how many non-detection rows we have considered
   for (i in (1:dim(LT2D.df)[1])){
     data.row <- LT2D.df[i,]
     
     if (!is.na(data.row$object)){
-      # if a transect has no detections, it will not be used to calculate the 
-      # Horvitz-Thompson estimate, and so we may just set the invp value to 
-      # NA (so that it raises an error if a calculation is attempted):
+      # if a transect has a detection, we must calculate its value of invp
+      # and add it to the appropriate row of the invp column. 
+      j <- i - NAcounter
       
-      LT2D.df$invp[i] <- NA
+      # Check that the x and y values in the data.frame match up the ones which
+      # give us the detection function values
+      if(data.row$x != x[j] | data.row$y!= y[j]) stop('mismatched data entry')
+      
+      B <- as.list(betas[[j]])
+      
+      LT2D.df$invp[i] <- 1/phat(w = w, hr = hr, b = B, ystart = ystart, 
+                                pi.x = pi.x, logphi = logphi)
     }
+    
+    else{NAcounter <- NAcounter + 1}
+  }
   
   return(LT2D.df)
 }
