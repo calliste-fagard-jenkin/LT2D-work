@@ -920,7 +920,6 @@ data.with.b.conversion <- function(fityx.output.object){
   
   output.betas <- as.list(rep(NA, dim.data.rows))
   
-  
   for (i in 1:dim.data.rows){
     for (j in 1:length(betas)) output.betas[[i]][[j]] = betas[[j]][i]
   }
