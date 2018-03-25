@@ -131,8 +131,8 @@ FormulaChecking = function(HazardName, Formulas){
       i.formula = formula
       formulas.to.output[[1]]=i.formula # No checks needed, we can add it in now
       } 
-    else if (formula[[2]]=='x'){x.formula = formula} # We need to check x and y 
-    else if (formula[[2]]=='y'){y.formula = formula} # for consistency first
+    if (formula[[2]]=='x'){x.formula = formula} # We need to check x and y 
+    if (formula[[2]]=='y'){y.formula = formula} # for consistency first
   } 
   
   if ('xy' %in% AllowedCovars){   # if x and y have to be the same:
@@ -531,8 +531,7 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
   
   else{negllik.rounded=0} # No addition to normal likelihood needed
   
-  
-  return(llik + negllik.rounded) #round.lik returns a neg.log.lik, so we add. 
+  return(llik + negllik.rounded) # round.lik returns a neg.log.lik, so we add. 
 }
 
 LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
@@ -828,13 +827,11 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   # and proceed to the for loop if they were...
   if (LT2D.fit.obj$covariates!= TRUE){
     
-    ## TEST THIS CASE 999
-    p = phat(LT2D.fit)
-    inversep = 1/p
-    invp.vector = rep(inversep, length(LT2D.df$x))
-    LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = NULL, ystart = ystart, 
+    # since no covariates were included, the value of the betas should be the
+    # the same everywhere:
+    B.no.covar = as.list(betas[[1]])
+    LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = B.no.covar, ystart = ystart, 
                               pi.x = pi.x, logphi = logphi))
-    stop('undealt case 1')
     return(LT2D.df)
   }
   
@@ -926,4 +923,23 @@ data.with.b.conversion <- function(fityx.output.object){
   
   output$beta <- output.betas
   return(output)
+}
+
+h1=function(y,x,b){
+  # print(length(x))
+  # print(length(y))
+  # print(lapply(b,length))
+  # print('__________________')
+  HazardBCheck(y,x,b,'h1')     # Check inputs are of correct dimension.
+  theta1 = exp(b[[1]])         # Log link functions for parameters.
+  theta2 = exp(b[[2]])
+  return(theta1*(y^2+x^2)^(-theta2/2)) # return evaluated hazard
+}
+
+ep1=function(y,x,b){
+  HazardBCheck(y,x,b,'ep1')
+  g0 = plogis(b[[1]])
+  theta = exp(c(b[[2]],b[[3]]))
+  dF=function(y,x,theta) exp(-(x^theta[2]+y^theta[2])/(theta[1]^theta[2]))
+  return(dF(y,x,theta)*g0)
 }

@@ -22,17 +22,6 @@ vectorp = unlist(pars)
 negloglik.yx(vectorp,y,x,'h1',0.05,'pi.norm',0.03, rounded.points=0,
              DesignMatrices = list(DM),skeleton=pars)
 
-h1=function(y,x,b){
-  # print(length(x))
-  # print(length(y))
-  # print(lapply(b,length))
-  # print('__________________')
-  HazardBCheck(y,x,b,'h1')     # Check inputs are of correct dimension.
-  theta1 = exp(b[[1]])         # Log link functions for parameters.
-  theta2 = exp(b[[2]])
-  return(theta1*(y^2+x^2)^(-theta2/2)) # return evaluated hazard
-}
-
 
 A = optim(vectorp, fn=negloglik.yx, hessian=F, y=y,x=x,hr='h1',ystart=0.05,
       pi.x='pi.norm',w=0.03,rounded.points=0,
@@ -95,11 +84,35 @@ DF <- addObjectNumbers(DF)
 
 
 
+# Testing covariate inclusion on h1
 B2 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
              pi.x = 'pi.norm', logphi = logphi, w=w, formulas = list(fi), 
              ipars = i.parameters)
 
-B3 = invp1_replacement(LT2D.df = DF, LT2D.fit = B2)
+# Making sure the model still works without the covariates included
+B3 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
+              pi.x = 'pi.norm', logphi = logphi, w=w)
 
-C = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
-             pi.x = 'pi.norm', logphi = logphi, w=w)
+# and with a different detection function:
+B4 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
+              b=c(10.23357070,2.38792702,-20.23029177),
+              ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w)
+
+# the same with attempt at covariates:
+B5 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
+              b=c(10.23357070,2.38792702,-20.23029177),
+              ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
+              formulas = list(fi), ipars = i.parameters)
+
+# with the covariates in the x dimension instead:
+B6 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
+              b=c(10.23357070,2.38792702,-20.23029177),
+              ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
+              formulas = list(formula(x~species)), xpars = i.parameters)
+
+# covariates in x and i dimension at the same time:
+B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
+              b=c(10.23357070,2.38792702,-20.23029177),
+              ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
+              formulas = list(formula(x~species),formula(i~species)),
+              xpars = i.parameters) ### Hasn't attempted to do the i formula??
