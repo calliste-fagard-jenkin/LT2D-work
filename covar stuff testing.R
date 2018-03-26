@@ -15,19 +15,19 @@ DM = DesignMatrix(DF, fi)
 
 x = DF$x ; y = DF$y
 
-b = list(c(-10.2,-2.7,-9.0,0.0), -0.14) ; logphi = c(0,-4)
-pars = list(beta=b,logphi=logphi)
-vectorp = unlist(pars)
-
-negloglik.yx(vectorp,y,x,'h1',0.05,'pi.norm',0.03, rounded.points=0,
-             DesignMatrices = list(DM),skeleton=pars)
-
-
-A = optim(vectorp, fn=negloglik.yx, hessian=F, y=y,x=x,hr='h1',ystart=0.05,
-      pi.x='pi.norm',w=0.03,rounded.points=0,
-      DesignMatrices=list(DM),skeleton=pars)
-
-A$par
+# b = list(c(-10.2,-2.7,-9.0,0.0), -0.14) ; logphi = c(0,-4)
+# pars = list(beta=b,logphi=logphi)
+# vectorp = unlist(pars)
+# 
+# negloglik.yx(vectorp,y,x,'h1',0.05,'pi.norm',0.03, rounded.points=0,
+#              DesignMatrices = list(DM),skeleton=pars)
+# 
+# 
+# A = optim(vectorp, fn=negloglik.yx, hessian=F, y=y,x=x,hr='h1',ystart=0.05,
+#       pi.x='pi.norm',w=0.03,rounded.points=0,
+#       DesignMatrices=list(DM),skeleton=pars)
+# 
+# A$par
 
 b = c(1.0122061, -0.6613409)
 i.parameters = c(-11.14648, -13.34820, -14.56664)
@@ -42,11 +42,11 @@ A$value
 A$convergence
 A$AIC
 
-# b = c(A$par[1],A$par[5]) ; names(b) = NULL
-# i.parameters = A$par[2:4] ; names(i.parameters) = NULL
-# logphi = A$par[6:7]; names(logphi) = NULL
+b = c(A$par[1],A$par[5]) ; names(b) = NULL
+i.parameters = A$par[2:4] ; names(i.parameters) = NULL
+logphi = A$par[6:7]; names(logphi) = NULL
 
-# print(b) 
+# print(b)
 # print(i.parameters)
 # print(logphi)
 
