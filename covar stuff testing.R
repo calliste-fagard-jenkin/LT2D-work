@@ -1,6 +1,6 @@
 library('LT2D')
 
-setwd("C:/Users/Cal/OneDrive/covariate functions")
+# SET WORKING DIRECTORY TO SOURCE FILE LOCATION
 
 Data = read.csv('JanthoData.csv',header=T)
 Data = subset(Data, !is.na(Data$PP.Distance))   # Remove NAs for testing
@@ -89,6 +89,11 @@ B2 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart,
              pi.x = 'pi.norm', logphi = logphi, w=w, formulas = list(fi), 
              ipars = i.parameters)
 
+# Testing covariate inclusion on h1, with wrong start parameters
+B2.1 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
+              pi.x = 'pi.norm', logphi = logphi, w=w, formulas = list(fi), 
+              ipars = x.parameters)
+
 # Making sure the model still works without the covariates included
 B3 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
               pi.x = 'pi.norm', logphi = logphi, w=w)
@@ -108,11 +113,13 @@ B5 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
 B6 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
               b=c(10.23357070,2.38792702,-20.23029177),
               ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
-              formulas = list(formula(x~species)), xpars = i.parameters)
+              formulas = list(formula(x~species)), xpars = i.parameters,
+              ypars=i.parameters)
 
 # covariates in x and i dimension at the same time:
 B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
               b=c(10.23357070,2.38792702,-20.23029177),
               ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
-              formulas = list(formula(x~species),formula(i~species)),
-              xpars = i.parameters) ### Hasn't attempted to do the i formula??
+              formulas = list(formula(x~species), formula(i~species)),
+              xpars = i.parameters, ipars=i.parameters)
+### Should be complaining that there isn't a ypars since ep1 has xy??

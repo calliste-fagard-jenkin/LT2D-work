@@ -308,7 +308,7 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     y.formula = checkedFormulas[[3]]
     # Knowing if x and y formulas are the same tells us if the y formula 
     # LP goes in slot 2 or 4
-    xy = FALSE ; if ('xy' %in% checkedFormulas[[4]]){xy=TRUE}
+    ifelse('xy' %in% checkedFormulas[[4]], xy = TRUE, xy = FALSE)
 
     DesignMatrices = list() # Make a list of all design matrices to pass to the 
     # negative log likelihood through optim. We insert the DM at the same index
@@ -317,23 +317,31 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     b.for.optim = as.list(b) # To preserve the intercepts when no DM for entry
     # covar pars must be a list with names i, x and/or y, where appropriate
     if(!is.null(i.formula)){ # we have an i formula - always slot 1
+      if (is.null(covarPars$i)) stop('missing start parameters')
       DesignMatrices[[1]] = DesignMatrix(unrounded.points.data.frame, i.formula)
       b.for.optim[[1]] = c(b[1],covarPars$i)
     }
     
-    if (xy & (!is.null(x.formula))){ # if x and y are the same, one formula
+    if (xy & (!is.null(x.formula) | (!is.null(y.formula)))){
+      # If there's an xy in the formula options then x.formula
       # describes both of them, and it goes in slot 2:
+      
+      if (is.null(covarPars$x | is.null(covarPars$y))) stop('missing start parameters')
+      if(any(covarPars$x != covarPars$y)) stop('x and y initial parameter mismatch')
+      
       DesignMatrices[[2]] = DesignMatrix(unrounded.points.data.frame, x.formula)
       b.for.optim[[2]] = c(b[2], covarPars$x)
     }
    
     else if (!xy){ # x and y formulas can be different
-      if (!is.null(x.formula)){ 
+      if (!is.null(x.formula)){
+        if (is.null(covarPars$x)) stop('missing start parameters')
         DesignMatrices[[2]]=DesignMatrix(unrounded.points.data.frame, x.formula)
         b.for.optim[[2]]=c(b[2], covarPars$x)# if x is there, it goes in slot 2
       }
       
-      if (!is.null(y.formula)){ 
+      if (!is.null(y.formula)){
+        if (is.null(covarPars$y)) stop('missing start parameters')
         DesignMatrices[[4]]=DesignMatrix(unrounded.points.data.frame, x.formula)
         b.for.optim[[4]]=c(b[4], covarPars$y)# if y is there, it goes in slot 4
       }
@@ -377,13 +385,11 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     error = TRUE
   }
 
-  # ***
   par.as.list = relist(fit$par, skeleton = pars)
   b = par.as.list[[1]]
   b.as.vector = unlist(b)
   logphi = try(par.as.list[[2]])
   if (class(logphi)=='try-error'){logphi = NA}
-  # ***
 
   if (hessian){
     
@@ -564,7 +570,7 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
   # calling the abundance function. 
   NoNAs = subset(DataFrameInput, !is.na(DataFrameInput$object))
   
-  covarPars = NULL      # if any formulas were specified by the user, 
+  covarPars = list()    # if any formulas were specified by the user, 
   covarPars$x = xpars   # we add them to the covar pars object in the
   covarPars$y = ypars   # correct slot. Otherwise, if none were specified, 
   covarPars$i = ipars   # we set covarPars to NULL before the call to fityx
