@@ -123,3 +123,7 @@ B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
               formulas = list(formula(x~species), formula(i~species)),
               xpars = i.parameters, ipars=i.parameters)
 ### Should be complaining that there isn't a ypars since ep1 has xy??
+
+B8 = LT2D.fit(DataFrameInput = DF, hr = 'ep1', b=b, ystart=ystart, pi.x='pi.norm',
+         logphi=logphi, w=w)
+

@@ -1544,7 +1544,7 @@ fityx = function(y,x,b,hr,ystart,pi.x,logphi,w,rmin=0,control = list(),hessian =
   length.b = length(b)
 
   #change when name of package changes...
-  if (!(piname %in% ls("package:DEVDEV5"))&(hrname %in% ls("package:DEVDEV5"))){
+  if (!(piname %in% ls("package:LT2D"))&(hrname %in% ls("package:LT2D"))){
     stop('Invalid choice for hr or pi.x')
   }
 
