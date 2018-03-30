@@ -1503,7 +1503,8 @@ fityx = function(y,x,b,hr,ystart,pi.x,logphi,w,rmin=0,control = list(),hessian =
   # (character) name into the fit function.  I have also removed the fNameFinder
   # function, since it was the eval / parse culprit, and is no longer needed
   # with these changes. - Cal
-
+  
+  print ('in use 101')
   HazardWarning = 'Incorrect option supplied for Hazard Rate. Please supply
   the name of desired function as a character. Use SeeHazardOptions()
   to see a list of available choices'
@@ -1609,15 +1610,41 @@ fityx = function(y,x,b,hr,ystart,pi.x,logphi,w,rmin=0,control = list(),hessian =
   dat = data.frame(x = x,y = y)
 
   p0 = 1 - Sy(0,0,ystart,b,hrname)
-
-  finalfit = LT2D.FitObjectMaker(par = fit$par, value = fit$value,
-                      counts = fit$counts, convergence = fit$convergence,
-                      message = fit$message, hessian = fit$hessian,
-                      error = error, hr = hrname, pi.x = piname, w = w,
-                      b = b, logphi = logphi, AICval = AICval, dat = dat,
-                      MLEvcov = vcov, CVpar = CVpar, corr = corr,
-                      ystart = ystart, p0=p0, rmin=rmin)
-
+  
+  # REMOVE AFTER DEBUG:
+  
+  # finalfit = LT2D.FitObjectMaker(par = fit$par, value = fit$value,
+  #                     counts = fit$counts, convergence = fit$convergence,
+  #                     message = fit$message, hessian = fit$hessian,
+  #                     error = error, hr = hrname, pi.x = piname, w = w,
+  #                     b = b, logphi = logphi, AICval = AICval, dat = dat,
+  #                     MLEvcov = vcov, CVpar = CVpar, corr = corr,
+  #                     ystart = ystart, p0=p0, rmin=rmin)
+  
+  finalfit = list()
+  finalfit$counts = fit$counts
+  finalfit$convergence = fit$convergence
+  finalfit$message = fit$message
+  finalfit$hessian = fit$hessian
+  finalfit$hr = hrname
+  finalfit$pi.x = piname
+  finalfit$w = w
+  finalfit$b = b
+  finalfit$logphi = logphi
+  finalfit$AICval = AICval
+  finalfit$dat = dat
+  finalfit$ystart = ystart
+  finalfit$p0 = p0
+  finalfit$rmin = rmin
+  
+  if (hessian==TRUE){
+    finalfit$error = error
+    finalfit$MLEvcov = vcov
+    finalfit$CVpar = CVpar
+    finalfit$corr = corr
+  }
+  
+  class(finalfit) = 'LT2D.fit.object'
   return(finalfit)
 }
 
@@ -1764,7 +1791,8 @@ invp1_replacement = function(LT2D.df,LT2D.fit){
 LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,rmin=0,
                 control = list(),hessian=TRUE,corrFlag = 0.7,
                 debug = FALSE,DENOM=FALSE){
-
+  
+  print ('in use 102')
   # Basic type-checking of inputs:
   if (class(DataFrameInput)!='data.frame'){
     stop('First arg must be data.frame')
@@ -2364,8 +2392,8 @@ plot.LT2D.fit.function.object = function(fit, ...){
 
 #'@title Calculate coverage probabilities of \eqn{\hat p} for simulated data
 #'
-#'@description Calculate coverage probabilities of \eqn{\hat p} using the delta method and assuming a
-#'log-normal error distribution.
+#'@description Calculate coverage probabilities of \eqn{\hat p} using the delta
+#'method and assuming a log-normal error distribution.
 #'
 #'@param fit object resulting from a call of \code{\link{fityx}} (see details)
 #'@param interval the interval used to determine coverage probability

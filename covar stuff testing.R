@@ -124,6 +124,13 @@ B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
               xpars = i.parameters, ipars=i.parameters)
 ### Should be complaining that there isn't a ypars since ep1 has xy??
 
-B8 = LT2D.fit(DataFrameInput = DF, hr = 'ep1', b=b, ystart=ystart, pi.x='pi.norm',
-         logphi=logphi, w=w)
+simDat = simXY(500, 'pi.const', NULL, 'h1', b, w, ystart)$locs
 
+Lsim = 10 ; Asim = Lsim*w*2
+
+sim.df = data.frame(x = simDat$x, y = simDat$y, stratum=rep(1,length(simDat$x)),
+                   transect = rep(1,length(simDat$x)), L = Lsim, area = Asim,
+                   object = 1:length(simDat$x), size = rep(1, length(simDat$x)))
+
+B8 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
+              pi.x='pi.norm', logphi=logphi, w=w)
