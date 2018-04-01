@@ -308,12 +308,11 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     y.formula = checkedFormulas[[3]]
     # Knowing if x and y formulas are the same tells us if the y formula 
     # LP goes in slot 2 or 4
-    ifelse('xy' %in% checkedFormulas[[4]], xy = TRUE, xy = FALSE)
+    ifelse('xy' %in% checkedFormulas[[4]], xy <-  TRUE, xy <-  FALSE)
 
     DesignMatrices = list() # Make a list of all design matrices to pass to the 
     # negative log likelihood through optim. We insert the DM at the same index
     # as the parameters for the theta whose formula it describes, for simplicity
-    
     b.for.optim = as.list(b) # To preserve the intercepts when no DM for entry
     # covar pars must be a list with names i, x and/or y, where appropriate
     if(!is.null(i.formula)){ # we have an i formula - always slot 1
@@ -322,11 +321,11 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
       b.for.optim[[1]] = c(b[1],covarPars$i)
     }
     
-    if (xy & (!is.null(x.formula) | (!is.null(y.formula)))){
+    if (xy & (!is.null(x.formula) | (!is.null(y.formula))) ){
       # If there's an xy in the formula options then x.formula
       # describes both of them, and it goes in slot 2:
       
-      if (is.null(covarPars$x | is.null(covarPars$y))) stop('missing start parameters')
+      if (is.null(covarPars$x) | is.null(covarPars$y)) stop('missing start parameters')
       if(any(covarPars$x != covarPars$y)) stop('x and y initial parameter mismatch')
       
       DesignMatrices[[2]] = DesignMatrix(unrounded.points.data.frame, x.formula)
@@ -388,7 +387,7 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
   par.as.list = relist(fit$par, skeleton = pars)
   b = par.as.list[[1]]
   b.as.vector = unlist(b)
-  logphi = try(par.as.list[[2]])
+  logphi = try(par.as.list[[2]], silent=T)
   if (class(logphi)=='try-error'){logphi = NA}
 
   if (hessian){
@@ -815,7 +814,6 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   #           LT2D.fit.obj - The fitted model object produced by fityx
   # output  : A data.drame, LT2D.df, with an extra column, invp, for the inverse
   #           of estimated detection probability 
-  print('in use 103')
   w = LT2D.fit.obj$w            # we extract all the values needed
   ystart = LT2D.fit.obj$ystart  # to calculate inverse p from 
   hr = LT2D.fit.obj$hr          # the fit object
@@ -839,7 +837,6 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
     B.no.covar = as.list(betas[[1]])
     LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = B.no.covar, ystart = ystart, 
                               pi.x = pi.x, logphi = logphi))
-    print(LT2D.df$invp)
     return(LT2D.df)
   }
   
@@ -864,16 +861,12 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
       if(data.row$x != x[j] | data.row$y!= y[j]) stop('mismatched data entry')
       
       B <- as.list(betas[[j]])
-      print(B)
-      
       LT2D.df$invp[i] <- 1/phat(w = w, hr = hr, b = B, ystart = ystart, 
                                 pi.x = pi.x, logphi = logphi)
     }
     
     else{NAcounter <- NAcounter + 1}
   }
-  
-  print(LT2D.df$invp)
   return(LT2D.df)
 }
 
@@ -936,6 +929,7 @@ data.with.b.conversion <- function(fityx.output.object){
 }
 
 h1=function(y,x,b){
+  # print(b)
   # print(length(x))
   # print(length(y))
   # print(lapply(b,length))
