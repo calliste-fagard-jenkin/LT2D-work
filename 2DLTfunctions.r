@@ -495,6 +495,36 @@ pi.chnorm=function(x,logphi,w){
   return(chnF(x,logphi)/integrate(chnF,0,w,logphi)$value)
 }
 
+#'@title Helper function for pi.chnorm.i
+#'@description function which evaluates part of the 
+#'expression of its namesake function. Useful for 
+#'allowing numeric integration of this expression
+#'@param x numeric ; perpendicular distance x
+#'@param logphi ; numeric vector of length two of parameters  
+pi.chnorm.i.exp.term = function(x,logphi){
+  return(exp(-((x**2)/(2*logphi[1]**2))))
+}
+
+#'@title Half normal density allowing for non-zero intercept
+#'
+#'@description Half normal perpendicular density function with
+#' the ability to accomodate for positive density at x=0. 
+#'
+#'@param x prependicular trackline distance
+#'@param logphi ; numeric vector of length two
+#'@param w perpendicular truncation distance
+#'@return numeric scalar or vector
+#'@export
+pi.chnorm.i = function(x,logphi,w){
+  if (length(logphi)!=2){stop('incorrect number of supplied parameters')}
+  logphi[2] = plogis(logphi[2])
+  logphi[1] = exp(logphi[1])
+  numerator = 1 - logphi[2]*pi.chnorm.i.exp.term(x,logphi) 
+  int=integrate(pi.chnorm.i.exp.term, lower=0,upper = w, logphi=logphi)
+  denom = w - logphi[2]*int$value
+  return(numerator/denom)
+}
+
 
 #'@title Truncated normal form for perpendicular animal density function
 #'
@@ -1504,7 +1534,6 @@ fityx = function(y,x,b,hr,ystart,pi.x,logphi,w,rmin=0,control = list(),hessian =
   # function, since it was the eval / parse culprit, and is no longer needed
   # with these changes. - Cal
   
-  print ('in use 101')
   HazardWarning = 'Incorrect option supplied for Hazard Rate. Please supply
   the name of desired function as a character. Use SeeHazardOptions()
   to see a list of available choices'
@@ -1760,12 +1789,6 @@ invp1_replacement = function(LT2D.df,LT2D.fit){
   inversep = 1/p
   invp.vector = rep(inversep, length(LT2D.df$x))
   
-  print(LT2D.fit$w)
-  print(LT2D.fit$hr)
-  print(LT2D.fit$b)
-  print(LT2D.fit$ystart)
-  print(LT2D.fit$pi.x)
-  print(LT2D.fit$logphi)
   # And we add it to data frame:
   LT2D.df.new = LT2D.df              # copy the input fitted data frame
   LT2D.df.new$invp = invp.vector     # add the invp column
@@ -1803,7 +1826,6 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,rmin=0,
                 control = list(),hessian=TRUE,corrFlag = 0.7,
                 debug = FALSE,DENOM=FALSE){
   
-  print ('in use 102')
   # Basic type-checking of inputs:
   if (class(DataFrameInput)!='data.frame'){
     stop('First arg must be data.frame')
@@ -3028,3 +3050,84 @@ plotFit=function(fit,...){
           ylab="forward distance (y)",image=TRUE,...)
 }
 
+# Some functions I wrote for the user to easily summarise models:
+
+#' @title Finds all LT2D fits produced by user
+#' 
+#' @description Creates a list where the entry at each index is 
+#' an LT2D.fit.function.object as produced by the \link{LT2D.fit}
+#' function. 
+#' 
+#' @export
+collect.LT2D.fits = function(){
+  # Go through all the names in the namespace and 
+  # make a collection of all the ones with the 
+  # correct class (resulting from an LT2D fit):
+  models = list() ; counter = 1 # Some vars we need
+  
+  for (object in ls(.GlobalEnv)){
+    classval = class(eval(parse(text = object), envir = .GlobalEnv))
+    objectName = object
+    object = eval(parse(text = object))
+    if ((classval)=='LT2D.fit.function.object'){
+      object$collectionName = objectName # Keep track of its name as a variable
+      models[[counter]] = object         # add it to the vector           
+      counter = counter + 1              # and update counter
+    }
+  }
+  
+  class(models)='collected.LT2D.models'
+  return(models)
+}
+
+#' @title Creates a summary for a collected.LT2D.models object
+#' 
+#' @description Creates a data.frame with useful summary statistics 
+#' for all user fitted models as columns
+#'
+#' @return data.frame containing: 
+#'Name ; names of the fitted model 
+#'AIC ; AIC of the fitted model 
+#'N ; Estimated Abundance from fitted model
+#'D ; Estimated Density from fitted model 
+#'GoF ; A count, detailing how many of the four GoF tests
+#' had a p value smaller than 0.05   
+#' @export
+summary.collected.LT2D.models = function(objects){
+  if (class(objects)!='collected.LT2D.models'){
+    stop('Wrong method chosen to summarise object')}
+  
+  modelnumber = length(objects)
+  Len = length(objects)
+  
+  AICs = Ds = Ns = Names = GOF = rep(NA, Len) # create placeholders
+  for (i in (1:Len)){
+    object = objects[[i]]                     # Now, using a for loop,
+    Names[i] = object$collectionName          # fill in the placeholder
+    AICs[i] = object$fit$AIC                  # vectors with relevant 
+    Ds[i] = object$ests$D[1]                  # summary information pertaining
+    Ns[i] = object$ests$N[1]                  # to the model
+    
+    GOFresults = unlist(gof.LT2D(object))
+    gofCount = length(GOFresults[GOFresults<0.05])
+    GOF[i] = gofCount
+  }
+  
+  output = data.frame(Name = Names, AIC = AICs, N = Ns, D = Ds, 
+                      GoF = GOF)
+  output = output[with(output, order(AIC)), ]
+  return(output)
+}
+
+#' @title Summarises all LT2D fits 
+#' 
+#' @description Creates a data.frame with useful summary statistics 
+#' for all user fitted models produced by calling \link{LT2D.fit}
+#' by using \link{collect.LT2D.fits} and then
+#' \link{summary.collected.LT2D.models}.
+#' 
+#' @export
+summarise.LT2D.models = function(){
+  AllFits = collect.LT2D.fits()
+  return(summary(AllFits))
+}
