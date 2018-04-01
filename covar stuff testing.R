@@ -134,3 +134,9 @@ sim.df = data.frame(x = simDat$x, y = simDat$y, stratum=rep(1,length(simDat$x)),
 
 B8 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
+B8$fit$par
+
+# remove(Sy, px, phat, ParamNumRequired, p.pi.x, negloglik.yx, NDest, LT2D.fit,
+#        LinPredictor, invp1_replacement, HazardBCheck, HazardCovarsAllowed,
+#        HazardCovarSlots, HazardNumberLookup, h1, fyx, FormulaChecking, fityx,
+#        ep1, DesignMatrix, DensityNumberLookup,data.with.b.conversion)

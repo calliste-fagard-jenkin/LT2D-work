@@ -815,7 +815,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   #           LT2D.fit.obj - The fitted model object produced by fityx
   # output  : A data.drame, LT2D.df, with an extra column, invp, for the inverse
   #           of estimated detection probability 
-  
+  print('in use 103')
   w = LT2D.fit.obj$w            # we extract all the values needed
   ystart = LT2D.fit.obj$ystart  # to calculate inverse p from 
   hr = LT2D.fit.obj$hr          # the fit object
@@ -827,6 +827,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   betas <- converted.betas[[3]]
   x <- converted.betas[[1]]
   y <- converted.betas[[2]]
+  
   LT2D.df$invp <- rep(NA, dim(LT2D.df)[1])
   
   # check if covariates were used, return invp everywhere if there were not
@@ -838,6 +839,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
     B.no.covar = as.list(betas[[1]])
     LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = B.no.covar, ystart = ystart, 
                               pi.x = pi.x, logphi = logphi))
+    print(LT2D.df$invp)
     return(LT2D.df)
   }
   
@@ -862,6 +864,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
       if(data.row$x != x[j] | data.row$y!= y[j]) stop('mismatched data entry')
       
       B <- as.list(betas[[j]])
+      print(B)
       
       LT2D.df$invp[i] <- 1/phat(w = w, hr = hr, b = B, ystart = ystart, 
                                 pi.x = pi.x, logphi = logphi)
@@ -870,6 +873,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
     else{NAcounter <- NAcounter + 1}
   }
   
+  print(LT2D.df$invp)
   return(LT2D.df)
 }
 

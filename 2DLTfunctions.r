@@ -1734,8 +1734,10 @@ NDest <- function(dat,hmltm.fit){
   k <- c(tfreq,sum(tfreq))
 
   return(list(invp=invp,
-              ests=data.frame(stratum=stratname,n=n,k=k,L=L,covered.area=a,stratum.Area=A,
-                              Dgroups=signif(Dg,3),Ngroups=signif(Ng,3),mean.size=round(sbar,1),
+              ests=data.frame(stratum=stratname,n=n,k=k,L=L,
+                              covered.area=a,stratum.Area=A,
+                              Dgroups=signif(Dg,3),
+                              Ngroups=signif(Ng,3),mean.size=round(sbar,1),
                               D=signif(D,5),N=round(N,1))
   )
   )
@@ -1752,9 +1754,18 @@ NDest <- function(dat,hmltm.fit){
 #' @export
 invp1_replacement = function(LT2D.df,LT2D.fit){
   # From the fitted model we extract the invp value:
-  p = phat(LT2D.fit)
+  # p = phat(LT2D.fit)
+  p = phat(w=LT2D.fit$w, hr=LT2D.fit$hr, b=LT2D.fit$b, ystart=LT2D.fit$ystart,
+       pi.x = LT2D.fit$pi.x, logphi = LT2D.fit$logphi)
   inversep = 1/p
   invp.vector = rep(inversep, length(LT2D.df$x))
+  
+  print(LT2D.fit$w)
+  print(LT2D.fit$hr)
+  print(LT2D.fit$b)
+  print(LT2D.fit$ystart)
+  print(LT2D.fit$pi.x)
+  print(LT2D.fit$logphi)
   # And we add it to data frame:
   LT2D.df.new = LT2D.df              # copy the input fitted data frame
   LT2D.df.new$invp = invp.vector     # add the invp column
