@@ -121,9 +121,10 @@ B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
               b=c(10.23357070,2.38792702,-20.23029177),
               ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
               formulas = list(formula(x~species), formula(i~species)),
-              xpars = i.parameters, ipars=i.parameters)
-### Should be complaining that there isn't a ypars since ep1 has xy??
+              xpars = i.parameters, ipars=i.parameters,
+              ypars = i.parameters)
 
+set.seed(0)
 simDat = simXY(500, 'pi.const', NULL, 'h1', b, w, ystart)$locs
 
 Lsim = 10 ; Asim = Lsim*w*2
@@ -132,9 +133,21 @@ sim.df = data.frame(x = simDat$x, y = simDat$y, stratum=rep(1,length(simDat$x)),
                    transect = rep(1,length(simDat$x)), L = Lsim, area = Asim,
                    object = 1:length(simDat$x), size = rep(1, length(simDat$x)))
 
+sim.df$species = factor(sample(1:4, length(simDat$x), replace=T))
+
 B8 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
 B8$fit$par
+
+
+# Try using a different perp density:
+B9 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
+              pi.x='pi.const', logphi=NULL, w=w)
+
+# And with covariates:
+B10 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
+              pi.x='pi.const', logphi=NULL, w=w, formulas = list(fi), 
+              ipars = i.parameters)
 
 # remove(Sy, px, phat, ParamNumRequired, p.pi.x, negloglik.yx, NDest, LT2D.fit,
 #        LinPredictor, invp1_replacement, HazardBCheck, HazardCovarsAllowed,
