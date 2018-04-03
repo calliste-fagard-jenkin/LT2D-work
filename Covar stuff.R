@@ -996,8 +996,9 @@ gof.LT2D = function(fit, plot=FALSE){
     Fy = rep(NA, n)
     F0 = rep(NA, n)
     for (i in 1:n){
-      Fy=(1-Sy(x=x[i],y=y[i],ymax=ystart,b=as.list(B[[i]]),hr=hrname))
-      F0=(1-Sy(x=x[i],0,ymax=ystart,b=as.list(B[[i]]),hr=hrname))
+      Fy[i]=(1-Sy(x=x[i],y=y[i],ymax=ystart,b=as.list(B[[i]]),hr=hrname))
+      F0[i]=(1-Sy(x=x[i],y=0,ymax=ystart,b=as.list(B[[i]]),hr=hrname))
+      print(Sy(x=x[i],y=0,ymax=ystart,b=as.list(B[[i]]),hr=hrname))
     }
   }
   
@@ -1005,15 +1006,12 @@ gof.LT2D = function(fit, plot=FALSE){
     # If there are no covariates (and hence the beta values are the same for
     # each coordinate), we can save a little computation time by doing things
     # this way instead:
-    print('we in')
     Fy=(1-Sy(x=x,y=y,ymax=ystart,b=as.list(B[[1]]),hr=hrname))
     F0=(1-Sy(x=x,y=rep(0,n),ymax=ystart,b=as.list(B[[1]]),hr=hrname))
-    print(Sy(x=x,y=rep(0,n),ymax=ystart,b=as.list(B[[1]]),hr=hrname))
   }
   
-  Fy0=Fy/F0 
+  Fy0=Fy/F0
   Fy0.order=order(Fy0)
-  print(Fy0.order)
   
   yy=y[Fy0.order]
   xx=x[Fy0.order]

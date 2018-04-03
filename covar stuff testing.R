@@ -133,7 +133,7 @@ sim.df = data.frame(x = simDat$x, y = simDat$y, stratum=rep(1,length(simDat$x)),
                    transect = rep(1,length(simDat$x)), L = Lsim, area = Asim,
                    object = 1:length(simDat$x), size = rep(1, length(simDat$x)))
 
-sim.df$species = factor(sample(1:4, length(simDat$x), replace=T))
+
 
 B8 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
@@ -144,10 +144,33 @@ B8$fit$par
 B9 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
               pi.x='pi.const', logphi=NULL, w=w)
 
+
+# Create another sample, but with a detection function with a different
+# intercept parameter, so that we may create an artificial covariate
+simDat2 = simXY(500, 'pi.const', NULL, 'h1', c(b[1]-1,b[2]), w, ystart)$locs
+
+n1 = length(simDat$x)
+n2 = length(simDat2$x)
+
+sim.df2 = data.frame(x = c(simDat$x, simDat2$x),
+                     y = c(simDat$y, simDat2$y),
+                     stratum = rep(1,n1+n2),
+                     transect = rep(1, n1+n2),
+                     L = Lsim,
+                     area = Asim,
+                     object = 1:(n1+n2),
+                     size = rep(1,n1+n2),
+                     fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
 # And with covariates:
-B10 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
-              pi.x='pi.const', logphi=NULL, w=w, formulas = list(fi), 
-              ipars = i.parameters)
+B10 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
+              pi.x='pi.const', logphi=NULL, w=w,
+              formulas = list(formula(i~fakeFactor)), 
+              ipars = c(-1))
+
+# trying to get abundance without taking into account the added covar:
+B11 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
+               pi.x='pi.const', logphi=NULL, w=w)
 
 # remove(Sy, px, phat, ParamNumRequired, p.pi.x, negloglik.yx, NDest, LT2D.fit,
 #        LinPredictor, invp1_replacement, HazardBCheck, HazardCovarsAllowed,
@@ -155,4 +178,30 @@ B10 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
 #        ep1, DesignMatrix, DensityNumberLookup,data.with.b.conversion)
 
 
-gof.LT2D(B9, plot=T)
+gof.LT2D(B10, plot=T)
+Betas = data.with.b.conversion(B10$fit)$beta
+Sy(sim.df2$x[2],0,ystart,as.list(Betas[[2]]),'h1')
+
+# Try with an ep1 model: 
+
+# Create another sample, but with a detection function with a different
+# intercept parameter, so that we may create an artificial covariate
+simDat3 = simXY(500, 'pi.const', NULL, 'ep1',
+               b=c(1000,1000,1000), w, ystart)$locs
+
+n3 = length(simDat3$x);n3 
+
+number.seen = function(par) -length(simXY(1000, 'pi.const',NULL,'ep1',
+                                         par,w,ystart)$locs)
+
+optim(c(1.5,1.7,-20.22), number.seen, hessian=F)
+
+sim.df3 = data.frame(x = simDat3$x,
+                     y = simDat3$y,
+                     stratum = rep(1,n3),
+                     transect = rep(1, n3),
+                     L = Lsim,
+                     area = Asim,
+                     object = 1:(n3),
+                     size = rep(1,n3))
+
