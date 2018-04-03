@@ -877,7 +877,7 @@ get.y.from.x = function(x,rmin){
 #'@return numeric ; survival function evaluated with relevant parameters
 #'@export
 Sy.of.x.rounded.data = function(x,rmin,ymax,hr,b){
-  #Â integrate passes a vector of inputs, rather than calling
+  #Â integrate passes a vector of inputs, rather than calling
   # the function many times, we must be able to deal with this
   if (class('hr')!='character'){stop('hr must be a character')}
   y = get.y.from.x(x,rmin)
@@ -2786,21 +2786,21 @@ Sy=function(x,y,ymax,b,hr) {
   if(length(y)!=n) stop("Lengths of x and y must be the same.")
   pS=rep(NA,n)
 
-  if(hr=="h1") { # Hayes & Buckland hazard rate model, so can do analytically
-    hmax=h1(y,x,b)
-    for(i in 1:n){
-      if(y[i]==0 | hmax[i]>1e10){ # computer will think integral divergent for large hmax
-        pS[i]=1-HBhr(x[i],h1.to.HB(b))
-      } else {
-        pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,subdivisions = 1000L)$value)
-        pS<<-pS[i]
-      }
-    }
-  } else { # Not Hayes & Buckland hazard rate model, so can't do analytically
+  # if(hr=="h1") { # Hayes & Buckland hazard rate model, so can do analytically
+  #   hmax=h1(y,x,b)
+  #   for(i in 1:n){
+  #     if(y[i]==0 | hmax[i]>1e10){ # computer will think integral divergent for large hmax
+  #       pS[i]=1-HBhr(x[i],h1.to.HB(b))
+  #     } else {
+  #       pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,subdivisions = 1000L)$value)
+  #       pS<<-pS[i]
+  #     }
+  #   }
+  # } else { # Not Hayes & Buckland hazard rate model, so can't do analytically
     for(i in 1:n){
       pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,subdivisions = 1000L)$value)
       pS2<<-pS[i]
-    }
+    #}
   }
   return(pS)
 }

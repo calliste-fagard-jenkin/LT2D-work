@@ -127,7 +127,7 @@ B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
 set.seed(0)
 simDat = simXY(500, 'pi.const', NULL, 'h1', b, w, ystart)$locs
 
-Lsim = 10 ; Asim = Lsim*w*2
+Lsim = 20 ; Asim = Lsim*w*2
 
 sim.df = data.frame(x = simDat$x, y = simDat$y, stratum=rep(1,length(simDat$x)),
                    transect = rep(1,length(simDat$x)), L = Lsim, area = Asim,
@@ -153,3 +153,6 @@ B10 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
 #        LinPredictor, invp1_replacement, HazardBCheck, HazardCovarsAllowed,
 #        HazardCovarSlots, HazardNumberLookup, h1, fyx, FormulaChecking, fityx,
 #        ep1, DesignMatrix, DensityNumberLookup,data.with.b.conversion)
+
+
+gof.LT2D(B9, plot=T)
