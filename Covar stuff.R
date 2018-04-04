@@ -653,9 +653,10 @@ fyx=function(y,x,b,hr,ystart,nint=100)
     
     int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
     intval[i]=exp(-int)
+    
+    hrval[i]=hr(y,x,integration.b) # value of hr at each (x,y)
   }
   
-  hrval=hr(y,x,b) # value of hr at each (x,y)
   bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
   if(length(bads)>0) { # infinite hazard so p(detect)=0
     
@@ -694,7 +695,9 @@ Sy=function(x,y,ymax,b,hr) {
   if(length(y)!=n) stop("Lengths of x and y must be the same.")
   pS=rep(NA,n)
   
-  if(hr=="h1") { # Hayes & Buckland hazard rate model, so can do analytically
+  # The '&F' was added to mute this workaround, as I believe it contains a 
+  # bug, and the numerical alternative seems to be fine - Cal
+  if(hr=="h1"&F) { # Hayes & Buckland hazard rate model, so can do analytically
     hmax=h1(y,x,b) 
     for(i in 1:n){
       if(y[i]==0 | hmax[i]>1e10){ # computer will think the integral is 
@@ -707,6 +710,8 @@ Sy=function(x,y,ymax,b,hr) {
       }
     }
   } else { # Not Hayes & Buckland hazard rate model, so can't do analytically
+    # Because of the bug I found in the above work around, all cases are now 
+    # done numerically, including the H1 case - Cal
     for(i in 1:n){
       pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,
                            subdivisions = 1000L)$value)
@@ -927,15 +932,20 @@ data.with.b.conversion <- function(fityx.output.object){
 }
 
 h1=function(y,x,b){
-  # print(b)
-  # print(length(x))
-  # print(length(y))
-  # print(lapply(b,length))
-  # print('__________________')
+  if (class(b)!='list') print(b)
   HazardBCheck(y,x,b,'h1')     # Check inputs are of correct dimension.
   theta1 = exp(b[[1]])         # Log link functions for parameters.
   theta2 = exp(b[[2]])
   return(theta1*(y^2+x^2)^(-theta2/2)) # return evaluated hazard
+}
+
+ip0=function(y,x,b)
+{
+  HazardBCheck(y,x,b,'ip0')
+  theta1=exp(b[[1]])
+  theta2=exp(b[[2]])
+  p=theta1*(1/sqrt(1+(x)^2+(y)^2))^(theta2+1)
+  return(p)
 }
 
 ep1=function(y,x,b){
@@ -998,7 +1008,6 @@ gof.LT2D = function(fit, plot=FALSE){
     for (i in 1:n){
       Fy[i]=(1-Sy(x=x[i],y=y[i],ymax=ystart,b=as.list(B[[i]]),hr=hrname))
       F0[i]=(1-Sy(x=x[i],y=0,ymax=ystart,b=as.list(B[[i]]),hr=hrname))
-      print(Sy(x=x[i],y=0,ymax=ystart,b=as.list(B[[i]]),hr=hrname))
     }
   }
   

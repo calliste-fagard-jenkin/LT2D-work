@@ -179,29 +179,3 @@ B11 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
 
 
 gof.LT2D(B10, plot=T)
-Betas = data.with.b.conversion(B10$fit)$beta
-Sy(sim.df2$x[2],0,ystart,as.list(Betas[[2]]),'h1')
-
-# Try with an ep1 model: 
-
-# Create another sample, but with a detection function with a different
-# intercept parameter, so that we may create an artificial covariate
-simDat3 = simXY(500, 'pi.const', NULL, 'ep1',
-               b=c(1000,1000,1000), w, ystart)$locs
-
-n3 = length(simDat3$x);n3 
-
-number.seen = function(par) -length(simXY(1000, 'pi.const',NULL,'ep1',
-                                         par,w,ystart)$locs)
-
-optim(c(1.5,1.7,-20.22), number.seen, hessian=F)
-
-sim.df3 = data.frame(x = simDat3$x,
-                     y = simDat3$y,
-                     stratum = rep(1,n3),
-                     transect = rep(1, n3),
-                     L = Lsim,
-                     area = Asim,
-                     object = 1:(n3),
-                     size = rep(1,n3))
-
