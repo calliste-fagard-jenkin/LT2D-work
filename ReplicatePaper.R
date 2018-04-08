@@ -70,7 +70,7 @@ Dolphin.Fit = LT2D.fit(DataFrameInput =  dolphin.df,
                        pi.x = 'pi.hnorm',
                        logphi = logphi,
                        w = w,
-                       hessian = T, rmin=-0.1)
+                       hessian = , rmin=-0.1)
 
 gof.LT2D(Dolphin.Fit)
 #EHSW:

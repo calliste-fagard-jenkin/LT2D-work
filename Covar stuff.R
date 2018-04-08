@@ -390,9 +390,14 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
   logphi = try(par.as.list[[2]], silent=T)
   if (class(logphi)=='try-error'){logphi = NA}
 
-  if (hessian){
-    
+  if (hessian==TRUE){
     mNames = names(fit$par)
+    
+    vcov=solve(fit$hessian)
+    corr = cov2cor(vcov)
+    row.names(corr) = mNames
+    colnames(corr) = mNames
+    corr[upper.tri(corr,diag = TRUE)] = NA
     
     if (any(diag(fit$vcov) <= 0)) {
       warning('Failed to invert hessian.  Model convergance problem in fityx?')
@@ -401,12 +406,6 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     }
     
     else {CVpar = sqrt(diag(solve(fit$hessian))) / abs(fit$par)}
-    
-    vcov=solve(fit$hessian)
-    corr = cov2cor(vcov)
-    row.names(corr) = mNames
-    colnames(corr) = mNames
-    corr[upper.tri(corr,diag = TRUE)] = NA
     
     corrIND = which(abs(corr) > corrFlag,arr.ind = T)
     if (nrow(corrIND)) {
@@ -419,7 +418,8 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     }
     output$hessian = hessian
     output$CVpar = CVpar
-    output$corr = corr 
+    output$corr = corr
+    output$vcov = vcov
   }
   
   AICval = 2 * fit$value + 2 * length(fit$par)
@@ -436,6 +436,8 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
   output$unrounded.points.with.betas = unrounded.points.with.betas
   #output$p0 = p0
   output$rmin = rmin
+  output$skeleton = pars
+  output$designMatrices = DesignMatrices
   
   class(output) = 'LT2D.fit.object'
   return(output)
@@ -600,78 +602,6 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
   return(output)
 }
 
-fyx=function(y,x,b,hr,ystart,nint=100)
-{
-  if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
-  n=length(x)
-  f=intval=rep(NA,n)
-  if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
-                                    a character')}
-  hr=match.fun(hr)
-
-  # The below loop was added to generalise the function enough to deal with 
-  # covariate inclusion.
-  
-  if (class(b)=='likelihood.level.b'){
-    j = b[[2]] # keep track of the number of parameters
-    b = b[[1]] # the b list with all columns of equal dimension is found here
-  }
-  
-  else {
-    # This loop is largely redundant. It is expected this function will
-    # only get called by the likelihood function (negloglik.yx), which performs
-    # all the necessary checks and produces the 'likelihood.level.b' object.
-    # Leaving it in means that if this fyx function is called manually, or by
-    # a different function, it is able to handle a list b with a mixture 
-    # of dimension 1 and linear predictor parameters. 
-
-    j = 1 # At the end of this loop, j-1 will be the number of hr parameters
-    while (class(try(b[[j]],silent=T))!='try-error'){
-      
-      # if there's only one element in a column, make a column of that 
-      # element repeated the correct number of times to match the number of 
-      # (x,y) coordinates we have:
-      
-     if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
-     j = j + 1
-    }
-    j = j - 1 # Remove 1 from j so that it now represents the dimension of b
-  }
-  
-  for(i in (1:n)) {
-    # create an empty list to insert b values for this individual (x,y):
-    integration.b = list()
-
-    for (column.number in (1:j)){
-      # Take the i th element of each beta column to obtain the correct 
-      # parameter values for the point (x,y) in position i
-      integration.b[[column.number]] = b[[column.number]][i]
-    }
-    
-    dy=(ystart-y[i])/nint/2                           # for crude integration
-    yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
-    
-    int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
-    intval[i]=exp(-int)
-    
-    hrval[i]=hr(y,x,integration.b) # value of hr at each (x,y)
-  }
-  
-  bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
-  if(length(bads)>0) { # infinite hazard so p(detect)=0
-    
-    # We can't simply do b[-bads], so we are forced to redo a for loop:
-    for (col.num in (1:j)){b.bads = b[[col.num]][-bads]}
-    
-    f = rep(NA,length(x))
-    f[bads]=.Machine$double.xmax
-    f[-bads]=hr(y[-bads],x[-bads],b.bads)*intval[-bads]
-  }else{
-    f=hr(y,x,b)*intval
-  }
-  return(f)
-}
-
 p.pi.x=function(x,b,hr,ystart,pi.x,logphi,w){
   
   if (!class(hr)=='character'){stop('hr must be supplied as character')}
@@ -691,10 +621,11 @@ px=function(x,b,hrname,ystart){
 Sy=function(x,y,ymax,b,hr) {
   if (!class(hr)=='character'){stop('hr must be passed as a 
                                     character')}
+  if (class(b)!='list') stop('b must be a list')
   n=length(x)
   if(length(y)!=n) stop("Lengths of x and y must be the same.")
   pS=rep(NA,n)
-  
+  if(n>1 & length(b[[1]])>1) stop('Sy needs more work')
   # The '&F' was added to mute this workaround, as I believe it contains a 
   # bug, and the numerical alternative seems to be fine - Cal
   if(hr=="h1"&F) { # Hayes & Buckland hazard rate model, so can do analytically
@@ -712,10 +643,12 @@ Sy=function(x,y,ymax,b,hr) {
   } else { # Not Hayes & Buckland hazard rate model, so can't do analytically
     # Because of the bug I found in the above work around, all cases are now 
     # done numerically, including the H1 case - Cal
+    # if the data only has one row we need to ensure the list structure is 
+    # still preserved for the b=as.list(b[[i]]) below
+    if (class(b)!='list') b = list(b,NULL)
     for(i in 1:n){
       pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,
                            subdivisions = 1000L)$value)
-      pS2<<-pS[i]
     }
   }
   return(pS)
@@ -897,13 +830,16 @@ phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
   return(int)
 }
 
-data.with.b.conversion <- function(fityx.output.object){
+data.with.b.conversion <- function(fityx.output.object=NULL,
+                                   beta=NULL){
   # purpose : Converts the list of lists in the $unrounded.points.with.betas
   #           attribute of the output of the fityx function into a different
   #           list of lists with a structure which provides ease of calculation
   #           later down the line
   # inputs  : fityx.output.object - The output of a call to fityx which contains
-  #           unrounded.points.with.betas object of interest
+  #                                 unrounded.points.with.betas object of
+  #                                 interest
+  #                               - beta ; a list of betas to be converted
   # output  : a list of lists with entries equal to the number of rows of data
   #           provided in the call to fityx. Each entry of this list is a list
   #           with 3 elements, x, y and beta. Where beta is the list containing
@@ -912,14 +848,28 @@ data.with.b.conversion <- function(fityx.output.object){
   #           function which evaluates this detection function. x and y are
   #           both numeric
   
-  if (class(fityx.output.object)!='LT2D.fit.object') stop('invalid argument')
+  if (is.null(fityx.output.object)==FALSE){
+    if (class(fityx.output.object)!='LT2D.fit.object') stop('invalid argument')
+    
+    urpwb <- fityx.output.object$unrounded.points.with.betas
+    XY <- urpwb[[1]]
+    betas <- urpwb[[2]]
+    dim.data.rows <- length(XY$x)
+    
+    output <- list(x=XY$x,y=XY$y)
+  }
   
-  urpwb <- fityx.output.object$unrounded.points.with.betas
-  XY <- urpwb[[1]]
-  betas <- urpwb[[2]]
-  dim.data.rows <- length(XY$x)
-  
-  output <- list(x=XY$x,y=XY$y)
+  else{
+    if (class(beta)!='list') stop('b must be a list')
+    n = length(b)
+    
+    dim.data.rows = length(b[[1]])
+    for (i in 2:n){
+      if (length(b[[i]])!=dim.data.rows) stop('mismatch in b dimensions')
+    }
+    
+    betas = b
+  }
   
   output.betas <- as.list(rep(NA, dim.data.rows))
   
@@ -927,8 +877,12 @@ data.with.b.conversion <- function(fityx.output.object){
     for (j in 1:length(betas)) output.betas[[i]][[j]] = betas[[j]][i]
   }
   
-  output$beta <- output.betas
-  return(output)
+  if(is.null(beta)==TRUE){
+    output$beta <- output.betas
+    return(output)
+  }
+  
+  else{return(betas)}
 }
 
 h1=function(y,x,b){
@@ -1124,4 +1078,368 @@ h1.to.HB=function(b){
   a=exp(b[[1]])
   a1=a*gamma((b1-1)/2)*gamma(0.5)/(2*gamma(b1/2))
   return(c(a1,b1))
+}
+
+
+fyx=function(y,x,b,hr,ystart,nint=100)
+{
+  if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
+  n=length(x)
+  f=intval=rep(NA,n)
+  if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
+                                    a character')}
+  hr=match.fun(hr)
+  # The below loop was added to generalise the function enough to deal with 
+  # covariate inclusion.
+  
+  if (class(b)=='likelihood.level.b'){
+    j = b[[2]] # keep track of the number of parameters
+    b = b[[1]] # the b list with all columns of equal dimension is found here
+  }
+  
+  else {
+    # This loop is largely redundant. It is expected this function will
+    # only get called by the likelihood function (negloglik.yx), which performs
+    # all the necessary checks and produces the 'likelihood.level.b' object.
+    # Leaving it in means that if this fyx function is called manually, or by
+    # a different function, it is able to handle a list b with a mixture 
+    # of dimension 1 and linear predictor parameters. 
+    
+    j = 1 # At the end of this loop, j-1 will be the number of hr parameters
+    while (class(try(b[[j]],silent=T))!='try-error'){
+      
+      # if there's only one element in a column, make a column of that 
+      # element repeated the correct number of times to match the number of 
+      # (x,y) coordinates we have:
+      
+      if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
+      j = j + 1
+    }
+    j = j - 1 # Remove 1 from j so that it now represents the dimension of b
+  }
+  
+  hrval = rep(NA, n)
+  for(i in (1:n)) {
+    # create an empty list to insert b values for this individual (x,y):
+    integration.b = list()
+    
+    for (column.number in (1:j)){
+      # Take the i th element of each beta column to obtain the correct 
+      # parameter values for the point (x,y) in position i
+      integration.b[[column.number]] = b[[column.number]][i]
+    }
+    
+    dy=(ystart-y[i])/nint/2                           # for crude integration
+    yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
+    
+    int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
+    intval[i]=exp(-int)
+    
+    hrval[i]=hr(y[i],x[i],integration.b) # value of hr at each (x,y)
+  }
+  
+  
+  bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
+  if(length(bads)>0){ # infinite hazard so p(detect)=0
+    
+    # We can't simply do b[-bads], so we are forced to redo a for loop:
+    b.bads = list()
+    for (col.num in (1:j)){b.bads[[col.num]] = b[[col.num]][-bads]}
+    #print(b.bads)
+    #print(length(x[-bads]))
+    #print(length(y[-bads]))
+    #print(j)
+    f = rep(NA,length(x))
+    f[bads]=.Machine$double.xmax
+    f[-bads]=hr(y[-bads],x[-bads],b.bads)*intval[-bads]
+  }else{
+    f=hr(y,x,b)*intval
+  }
+  return(f)
+}
+
+# fyx=function(y,x,b,hr,ystart,nint=100)
+# {
+#   if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
+#   n=length(x)
+#   f=intval=rep(NA,n)
+#   if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
+#                                     a character')}
+#   hr=match.fun(hr)
+#   
+#   # The below loop was added to generalise the function enough to deal with 
+#   # covariate inclusion.
+#   
+#   if (class(b)=='likelihood.level.b'){
+#     j = b[[2]] # keep track of the number of parameters
+#     b = b[[1]] # the b list with all columns of equal dimension is found here
+#   }
+#   
+#   else {
+#     # This loop is largely redundant. It is expected this function will
+#     # only get called by the likelihood function (negloglik.yx), which performs
+#     # all the necessary checks and produces the 'likelihood.level.b' object.
+#     # Leaving it in means that if this fyx function is called manually, or by
+#     # a different function, it is able to handle a list b with a mixture 
+#     # of dimension 1 and linear predictor parameters. 
+#     
+#     j = 1 # At the end of this loop, j-1 will be the number of hr parameters
+#     while (class(try(b[[j]],silent=T))!='try-error'){
+#       
+#       # if there's only one element in a column, make a column of that 
+#       # element repeated the correct number of times to match the number of 
+#       # (x,y) coordinates we have:
+#       
+#       if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
+#       j = j + 1
+#     }
+#     j = j - 1 # Remove 1 from j so that it now represents the dimension of b
+#   }
+#   
+#   hrval = rep(NA, n)
+#   for(i in (1:n)) {
+#     # create an empty list to insert b values for this individual (x,y):
+#     integration.b = list()
+#     
+#     for (column.number in (1:j)){
+#       # Take the i th element of each beta column to obtain the correct 
+#       # parameter values for the point (x,y) in position i
+#       integration.b[[column.number]] = b[[column.number]][i]
+#     }
+#     
+#     dy=(ystart-y[i])/nint/2                           # for crude integration
+#     yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
+#     
+#     int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
+#     intval[i]=exp(-int)
+#     
+#     hrval[i]=hr(y[i],x[i],integration.b) # value of hr at each (x,y)
+#   }
+#   
+#   bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
+#   if(length(bads)>0) { # infinite hazard so p(detect)=0
+#     f = rep(NA,length(x))
+#     f[bads]=.Machine$double.xmax
+#     f[-bads]=hrval[-bads]*intval[-bads]
+#   }else{
+#     f=hrval*intval
+#   }
+#   
+#   if (length(unique(b[[1]]))!=1){
+#     print(b[[1]])
+#     stop('b thing debug shit')
+#   }
+#   return(f)
+# }
+
+fyx=function(y,x,b,hr,ystart,nint=100)
+{
+  if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
+  n=length(x)
+  f=intval=rep(NA,n)
+  if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
+                                    a character')}
+  hr=match.fun(hr)
+  
+  # The below loop was added to generalise the function enough to deal with 
+  # covariate inclusion.
+  
+  if (class(b)=='likelihood.level.b'){
+    j = b[[2]] # keep track of the number of parameters
+    b = b[[1]] # the b list with all columns of equal dimension is found here
+  }
+  
+  else {
+    # This loop is largely redundant. It is expected this function will
+    # only get called by the likelihood function (negloglik.yx), which performs
+    # all the necessary checks and produces the 'likelihood.level.b' object.
+    # Leaving it in means that if this fyx function is called manually, or by
+    # a different function, it is able to handle a list b with a mixture 
+    # of dimension 1 and linear predictor parameters. 
+    
+    j = 1 # At the end of this loop, j-1 will be the number of hr parameters
+    while (class(try(b[[j]],silent=T))!='try-error'){
+      
+      # if there's only one element in a column, make a column of that 
+      # element repeated the correct number of times to match the number of 
+      # (x,y) coordinates we have:
+      
+      if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
+      j = j + 1
+    }
+    j = j - 1 # Remove 1 from j so that it now represents the dimension of b
+  }
+  
+  for(i in (1:n)) {
+    # create an empty list to insert b values for this individual (x,y):
+    integration.b = list()
+    
+    for (column.number in (1:j)){
+      # Take the i th element of each beta column to obtain the correct 
+      # parameter values for the point (x,y) in position i
+      integration.b[[column.number]] = b[[column.number]][i]
+    }
+    
+    dy=(ystart-y[i])/nint/2                           # for crude integration
+    yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
+    
+    int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
+    intval[i]=exp(-int)
+  }
+  
+  hrval=hr(y,x,b) # value of hr at each (x,y)
+  bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
+  if(length(bads)>0) { # infinite hazard so p(detect)=0
+    # We can't simply do b[-bads], so we are forced to redo a for loop:
+    b.bads=list()
+    for (col.num in (1:j)){b.bads[[col.num]] = b[[col.num]][-bads]}
+    print('fail is in here')
+    f = rep(NA,length(x))
+    f[bads]=.Machine$double.xmax
+    f[-bads]=hr(y[-bads],x[-bads],b.bads)*intval[-bads]
+  }else{
+    f=hr(y,x,b)*intval
+  }
+  return(f)
+}
+
+simXY=function(N,pi.x,logphi,hr,b,w,ystart,xSampL=5*N,discardNotSeen=TRUE,...)
+{
+  if (class(hr)!='character'|class(pi.x)!='character'){
+    stop('SimXY: hr and pi.x must be supplied as characters')}
+  
+  xV=seq(0,w,length=xSampL)
+  
+  if(class(b)!='list') b = as.list(b)
+  print('correct sim func')
+  
+  # It seems that for even for reasonable values, the call to simnhPP produces
+  # an error roughly 2% of the time. To avoid this becoming an inconvenience
+  # to the user more often than it should, I put in place a loop to retry the
+  # call some reasonable number of times, before deciding that the user chosen
+  # start values consistently lead to errors. - Cal
+  
+  lt2d.tryCounter = 0                         
+  lt2d.Error = TRUE                           
+  
+  while (lt2d.tryCounter<10 & lt2d.Error==TRUE){
+    
+    x=sample(x=xV,size=N,replace=TRUE,        # resample from the Xs, since its
+             prob=match.fun(pi.x)               # these values which lead to
+             (x=xV,logphi=logphi,w=w))          # the errors during integration
+    
+    y = try({simnhPP(x,b,ystart,hr,...)},     # we try to call the function,
+            silent = T )                      # supressing the error to the user
+    
+    if (class(y)=="try-error"){
+      lt2d.tryCounter = lt2d.tryCounter + 1 #+1 to count of unsuccessful tries
+      lt2d.simXY.error.message = y[[1]]     # remember the error message
+    }
+    else{lt2d.Error = FALSE}                # succesful call;  stop loop
+  }
+  
+  if (lt2d.Error){                            # If after 10 tries we still have
+    stop(lt2d.simXY.error.message)          # an error, pass it to the user
+  }
+  
+  
+  if(discardNotSeen){
+    keep=which(y>=0)
+    n=length(keep)
+    x=x[keep]
+    y=y[keep]}
+  
+  output = list(locs=cbind.data.frame(x,y),settings=
+                  list(N=N,pi.x=pi.x,logphi=logphi,
+                       hr=hr,b=b,w=w,ystart=ystart,
+                       discardNotSeen=discardNotSeen))
+  class(output) = 'LT2D.simulated.data'
+  return(output)
+}
+
+LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
+  # purpose : Produce a 1-alpha % confidence interval of abundance using a
+  #           parametric percentile bootstrap.
+  # inputs  : FittedObject - The object resulting from a fit using LT2D.fit
+  #           r            - The number of bootstrap iterations to perform
+  #                          to produce the sample
+  #           alpha        - a (1-alpha)% CI will be produced from the call
+  # NOTE    : This function deals both with covariate included and covariate
+  #           excluded fitted models
+  
+  if(r%%1!=0 | r<1) stop('invalid choice of bootstrap iterations')
+  if(r<100) warning('Small bootstrap iteration number selected')
+  if(alpha<=0 | alpha>=1) stop('invalid alpha selected')
+  if(class(FittedObject)!='LT2D.fit.function.object') stop('invalid input')
+  if(FittedObject$fit$hessian==FALSE){
+    stop('call to LT2D.fit must include hessian=TRUE')
+  }
+  
+  # 0. Extract some information which is required further down:
+  optim.fit <- FittedObject$fit
+  hr <- optim.fit$hr
+  w <- optim.fit$w
+  ystart <- optim.fit$ystart
+  pi.x <- optim.fit$pi.x
+  DesignMatrices <- optim.fit$designMatrices
+  skeleton <- optim.fit$skeleton
+  x <- optim.fit$unrounded.points.with.betas[[1]]$x
+  y <- optim.fit$unrounded.points.with.betas[[1]]$y
+  
+  
+  # 1. Get samples
+  
+  # extract vcov matrix for MLEs and do some sanity checking:
+  vcov <- FittedObject$fit$vcov
+  if(any(is.na(vcov))) stop('variance-covariance matrix contains NA element')
+  if(any(diag(vcov)<0)){
+    stop('variance-covariance matrix contains negative variance estimation')
+  }
+  
+  # extract the parameter values and check they match the vcovmat dimension:
+  mean <- FittedObject$fit$par
+  optim.names <- names(mean)
+  if(length(mean)!=dim(vcov)[1]) stop('par and vcov matrix dimension mismatch')
+  
+  # generate a bunch of samples and include the original:
+  samples <- mvtnorm::rmvnorm(r, mean = mean, sigma = vcov)
+  samples <- rbind(samples, mean)
+  
+  bootstrap.Ns <- rep(NA, r+1)
+  
+  for(i in 1:r+1){
+    # 2. Produce information for NDest
+    
+    # We take a sample of randomly generated fitted parameter values and name
+    # them in the same way optim would have during the fitting process:
+    optim.pars <- samples[i,]
+    names(optim.pars) <- optim.names
+    
+    # We then use these to work out the appropriate unrounded.points.with.betas
+    # object that is central to NDest doing its job:
+    bootstrap.upwb <- pars.to.betas(optim.pars, y, x, hr, ystart,
+                                    pi.x, w, DesignMatrices, skeleton)
+    
+    # We use this bootstrap.upwb to creat a dummy data frame and a dummy fitted
+    # optim object to 'trick' NDest to calculate estimates in the normal way:
+    bootstrap.df <- FittedObject$invp
+    bootstrap.df$invp <- NULL
+    bootstrap.fitted.model <- optim.fit
+    bootstrap.fitted.model$unrounded.points.with.betas <- bootstrap.upwb
+    
+    
+    # 3. Produce and extract estimates of N
+    
+    N <- NDest(bootstrap.df, bootstrap.fitted.model)$ests$N
+    N <- N[length(N)] # take the final element, all the others refer to strata
+    
+    bootstrap.Ns[i] <- N
+  }
+  
+  # 4. Get interval using percentile method
+  Ns <- sort(bootstrap.Ns)
+  ci <- quantile(Ns, c(alpha,1-alpha))
+  
+  # 5. return bootstrap result
+  return(ci)
 }
