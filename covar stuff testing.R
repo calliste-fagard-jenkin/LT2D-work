@@ -164,9 +164,9 @@ sim.df2 = data.frame(x = c(simDat$x, simDat2$x),
 
 # And with covariates:
 B10 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
-              pi.x='pi.const', logphi=NULL, w=w,
-              formulas = list(formula(i~fakeFactor)), 
-              ipars = c(-1))
+               pi.x='pi.const', logphi=NULL, w=w,
+               formulas = list(formula(i~fakeFactor)), 
+               ipars = c(-1))
 
 # trying to get abundance without taking into account the added covar:
 B11 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
@@ -213,3 +213,11 @@ C4 = LT2D.fit(DataFrameInput = sim.df.size, hr = 'h1', b=b, ystart=ystart,
 
 
 CI = LT2D.bootstrap(C4)
+
+# see if the bootstrap works on a covariate model:
+C5 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
+               pi.x='pi.const', logphi=NULL, w=w,
+               formulas = list(formula(i~fakeFactor)), 
+               ipars = c(-1),hessian=T)
+
+profvis(LT2D.bootstrap(C5,r=99))

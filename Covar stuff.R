@@ -1311,7 +1311,6 @@ simXY=function(N,pi.x,logphi,hr,b,w,ystart,xSampL=5*N,discardNotSeen=TRUE,...)
   xV=seq(0,w,length=xSampL)
   
   if(class(b)!='list') b = as.list(b)
-  print('correct sim func')
   
   # It seems that for even for reasonable values, the call to simnhPP produces
   # an error roughly 2% of the time. To avoid this becoming an inconvenience
