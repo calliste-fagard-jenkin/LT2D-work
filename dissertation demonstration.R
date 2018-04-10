@@ -40,7 +40,7 @@ T3 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=c(1,-0.55), ystart=ystart,
 T1$ests ; T2$ests ; T3$ests
 
 # A quick test of the bootstrap functionality to prove it works:
-LT2D.bootstrap(T3, r=499)
+boot <- LT2D.bootstrap(T3, r=499)
 
 
 # Now we create a data frame with covariates artificially introduced and see
@@ -98,7 +98,3 @@ T6 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
 
 T7 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
-
-# trying to get abundance without taking into account the added covar:
-B11 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
-               pi.x='pi.norm', logphi=logphi, w=w)

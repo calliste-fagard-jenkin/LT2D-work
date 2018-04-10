@@ -1416,7 +1416,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
     
     # We then use these to work out the appropriate unrounded.points.with.betas
     # object that is central to NDest doing its job:
-    bootstrap.upwb <- negloglik.yx(pars,
+    bootstrap.upwb <- negloglik.yx(optim.pars,
                                    y=y, x=x, hr=hr, ystart=ystart,
                                    pi.x=pi.x, w=w,
                                    DesignMatrices=DesignMatrices,
@@ -1446,5 +1446,70 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   ci <- quantile(Ns, c(alpha,1-alpha))
   
   # 5. return bootstrap result
-  return(ci)
+  return(list(ci=ci,Ns=Ns))
+}
+
+#-------------------------------------------------------------------------------
+# Simulate non-homogeneous Poisson Process data by solving inverse CDF.
+# Inputs:
+#  x       : perp. dist. (scalar or vector)
+#  b: log(theta), where theta is vector of hazard rate parameters
+#  hr      : name of hazard rate function to use.
+#  ystart  : max forward distance at which could possibly detect animal.
+#            NB: need to ensure hazard has decayed to (very close to) zero by
+#            this distance.
+#  miss    : If TRUE, allows animals not detected by y=0 to have no y.
+#            Misses are indicated by y==-999.
+#-------------------------------------------------------------------------------
+{
+  if (class(hr)!='character'){stop('simnhPP: hr must be supplied as character')}
+  obj=function(y,x,b,hr,ystart,u) return(((1-exp(-Eyx(y,x,b,hr,ystart)))-u)^2)
+  n=length(x)
+  u=runif(n)
+  y=rep(-999,n)
+  for(i in 1:n) {
+    if(!miss) {
+      while(y[i]<0) {
+        if(u[i]>(1-exp(-Eyx(ylo,x[i],b,hr,ystart)))) u[i]=runif(1) # y<0, so missed: try again
+        else {
+          ymin=optimize(f=obj,interval=c(ylo,ystart),x[i],b,hr,ystart,u[i])
+          y[i]=ymin$minimum
+        }
+      }
+    } else if(u[i]<=(1-exp(-Eyx(ylo,x[i],b,hr,ystart)))) {
+      ymin=optimize(f=obj,interval=c(ylo,ystart),x[i],b,hr,ystart,u[i])
+      y[i]=ymin$minimum
+    }
+  }
+  return(y)
+}
+
+Eyx=function(y,x,b,hr,ystart)
+  #Eyx=function(y,x,b,hr,ystart,nint=500)
+  #-------------------------------------------------------------------------------
+# Returns Expectation \int_y^ystart h(t,x) dt.
+# Inputs:
+#  y       : forward dist. (scalar or vector)
+#  x       : perp. dist. (scalar or vector)
+#  b: log(theta), where theta is vector of hazard rate parameters
+#  hr      : name of hazard rate function to use.
+#  ystart  : max forward distance at which could possibly detect animal.
+#            NB: need to ensure hazard has decayed to (very close to) zero by
+#            this distance
+#-------------------------------------------------------------------------------
+{
+  if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
+  if (class(hr)!='character'){stop('Eyx: hr must be supplied as character')}
+  n=length(x)
+  int=rep(NA,n)
+  hr=match.fun(hr)
+  ylo=1e-5  # set to avoid evaluating hr at y=0, which gives Inf
+  for(i in 1:n) {
+    y0=max(y[i],ylo)
+    #    dy=(ystart-y0)/nint/2                           # for crude integration
+    #    yy=seq(y0,ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
+    #    int[i]=sum(hr(yy,rep(x[i],nint),b)*dy*2)  # crude integration
+    int[i]=integrate(f=hr,lower=max(y[i],ylo),upper=ystart,x=x[i],b=b)$value
+  }
+  return(int)
 }
