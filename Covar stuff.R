@@ -1416,8 +1416,14 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
     
     # We then use these to work out the appropriate unrounded.points.with.betas
     # object that is central to NDest doing its job:
-    bootstrap.upwb <- pars.to.betas(optim.pars, y, x, hr, ystart,
-                                    pi.x, w, DesignMatrices, skeleton)
+    bootstrap.upwb <- negloglik.yx(pars,
+                                   y=y, x=x, hr=hr, ystart=ystart,
+                                   pi.x=pi.x, w=w,
+                                   DesignMatrices=DesignMatrices,
+                                   skeleton=skeleton, 
+                                   returnB = T)[[1]]
+    
+    bootstrap.upwb <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
     
     # We use this bootstrap.upwb to creat a dummy data frame and a dummy fitted
     # optim object to 'trick' NDest to calculate estimates in the normal way:
