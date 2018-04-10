@@ -501,6 +501,10 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
   num=sum(log(fyx(y,x,likelihood.level.b,hrname,ystart))
                                 + log(pi.x(x,logphi,w)))
   
+  # We do a parameter check for B to avoid having to do it at every call
+  # of the hazard function:
+  HazardBCheck(y,x,likelihood.level.b[[1]],hrname)
+  
   # calculate denominator:
   if (is.null(DesignMatrices)){                 # Easy with no covariates:
     b.normal <- as.list(sapply(b, '[[', 1))     # Extract the 'normal' b
@@ -667,7 +671,7 @@ NDest <- function(dat, hmltm.fit){
   dat$invp <- rep(NA,dim(dat)[1])
   invp <- invp1_replacement(dat, hmltm.fit)
   
-  for(i in 1:length(invp$object)) {
+  for(i in 1:length(invp$object)){
     
     row <- which(dat$stratum==invp$stratum[i]     # ensures data is consistent
                  & dat$transect==invp$transect[i] # with invp version, and that
@@ -886,8 +890,6 @@ data.with.b.conversion <- function(fityx.output.object=NULL,
 }
 
 h1=function(y,x,b){
-  if (class(b)!='list') print(b)
-  HazardBCheck(y,x,b,'h1')     # Check inputs are of correct dimension.
   theta1 = exp(b[[1]])         # Log link functions for parameters.
   theta2 = exp(b[[2]])
   return(theta1*(y^2+x^2)^(-theta2/2)) # return evaluated hazard
@@ -895,7 +897,6 @@ h1=function(y,x,b){
 
 ip0=function(y,x,b)
 {
-  HazardBCheck(y,x,b,'ip0')
   theta1=exp(b[[1]])
   theta2=exp(b[[2]])
   p=theta1*(1/sqrt(1+(x)^2+(y)^2))^(theta2+1)
@@ -903,7 +904,6 @@ ip0=function(y,x,b)
 }
 
 ep1=function(y,x,b){
-  HazardBCheck(y,x,b,'ep1')
   g0 = plogis(b[[1]])
   theta = exp(c(b[[2]],b[[3]]))
   dF=function(y,x,theta) exp(-(x^theta[2]+y^theta[2])/(theta[1]^theta[2]))
