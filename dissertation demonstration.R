@@ -84,11 +84,12 @@ sim.df2.2 = data.frame(x = simDat2$x,
                        object = 1:n2,
                        size = rep(1,n2))
 
-T4 = LT2D.fit(DataFrameInput = sim.df2.1, hr = 'h1', b=c(1,-0.55), ystart=ystart,
-               pi.x='pi.norm', logphi=logphi, w=w)
+# first fit the two data sets separately:
+T4 = LT2D.fit(DataFrameInput = sim.df2.1, hr = 'h1', b=c(1,-0.55),
+              ystart=ystart,pi.x='pi.norm', logphi=logphi, w=w)
 
-T5 = LT2D.fit(DataFrameInput = sim.df2.2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
-               pi.x='pi.norm', logphi=logphi, w=w)
+T5 = LT2D.fit(DataFrameInput = sim.df2.2, hr = 'h1', b=c(1,-0.55),
+              ystart=ystart,pi.x='pi.norm', logphi=logphi, w=w)
 
 # with covariates:
 T6 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
@@ -96,5 +97,6 @@ T6 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
                formulas = list(formula(i~fakeFactor)), 
                ipars = c(0))
 
+# without taking covariates into account:
 T7 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)

@@ -205,13 +205,6 @@ LinPredictor = function(parameters, DM){
   return(LP)
 }
 
-h1=function(y,x,b)
-{ 
-  HazardBCheck(y,x,b,'h1')
-  theta1 = as.vector(exp(b[[1]])) ; theta2 = as.vector(exp(b[[2]]))
-  return(theta1*(y^2+x^2)^(-theta2/2))
-}
-
 fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
                  covarPars=NULL,control = list(),hessian = FALSE,corrFlag = 0.7,
                  debug = FALSE, DataFrameInput=NULL,...){
@@ -890,6 +883,7 @@ data.with.b.conversion <- function(fityx.output.object=NULL,
 }
 
 h1=function(y,x,b){
+  'correct h1'
   theta1 = exp(b[[1]])         # Log link functions for parameters.
   theta2 = exp(b[[2]])
   return(theta1*(y^2+x^2)^(-theta2/2)) # return evaluated hazard
@@ -1089,157 +1083,6 @@ fyx=function(y,x,b,hr,ystart,nint=100)
   if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
                                     a character')}
   hr=match.fun(hr)
-  # The below loop was added to generalise the function enough to deal with 
-  # covariate inclusion.
-  
-  if (class(b)=='likelihood.level.b'){
-    j = b[[2]] # keep track of the number of parameters
-    b = b[[1]] # the b list with all columns of equal dimension is found here
-  }
-  
-  else {
-    # This loop is largely redundant. It is expected this function will
-    # only get called by the likelihood function (negloglik.yx), which performs
-    # all the necessary checks and produces the 'likelihood.level.b' object.
-    # Leaving it in means that if this fyx function is called manually, or by
-    # a different function, it is able to handle a list b with a mixture 
-    # of dimension 1 and linear predictor parameters. 
-    
-    j = 1 # At the end of this loop, j-1 will be the number of hr parameters
-    while (class(try(b[[j]],silent=T))!='try-error'){
-      
-      # if there's only one element in a column, make a column of that 
-      # element repeated the correct number of times to match the number of 
-      # (x,y) coordinates we have:
-      
-      if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
-      j = j + 1
-    }
-    j = j - 1 # Remove 1 from j so that it now represents the dimension of b
-  }
-  
-  hrval = rep(NA, n)
-  for(i in (1:n)) {
-    # create an empty list to insert b values for this individual (x,y):
-    integration.b = list()
-    
-    for (column.number in (1:j)){
-      # Take the i th element of each beta column to obtain the correct 
-      # parameter values for the point (x,y) in position i
-      integration.b[[column.number]] = b[[column.number]][i]
-    }
-    
-    dy=(ystart-y[i])/nint/2                           # for crude integration
-    yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
-    
-    int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
-    intval[i]=exp(-int)
-    
-    hrval[i]=hr(y[i],x[i],integration.b) # value of hr at each (x,y)
-  }
-  
-  
-  bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
-  if(length(bads)>0){ # infinite hazard so p(detect)=0
-    
-    # We can't simply do b[-bads], so we are forced to redo a for loop:
-    b.bads = list()
-    for (col.num in (1:j)){b.bads[[col.num]] = b[[col.num]][-bads]}
-    #print(b.bads)
-    #print(length(x[-bads]))
-    #print(length(y[-bads]))
-    #print(j)
-    f = rep(NA,length(x))
-    f[bads]=.Machine$double.xmax
-    f[-bads]=hr(y[-bads],x[-bads],b.bads)*intval[-bads]
-  }else{
-    f=hr(y,x,b)*intval
-  }
-  return(f)
-}
-
-# fyx=function(y,x,b,hr,ystart,nint=100)
-# {
-#   if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
-#   n=length(x)
-#   f=intval=rep(NA,n)
-#   if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
-#                                     a character')}
-#   hr=match.fun(hr)
-#   
-#   # The below loop was added to generalise the function enough to deal with 
-#   # covariate inclusion.
-#   
-#   if (class(b)=='likelihood.level.b'){
-#     j = b[[2]] # keep track of the number of parameters
-#     b = b[[1]] # the b list with all columns of equal dimension is found here
-#   }
-#   
-#   else {
-#     # This loop is largely redundant. It is expected this function will
-#     # only get called by the likelihood function (negloglik.yx), which performs
-#     # all the necessary checks and produces the 'likelihood.level.b' object.
-#     # Leaving it in means that if this fyx function is called manually, or by
-#     # a different function, it is able to handle a list b with a mixture 
-#     # of dimension 1 and linear predictor parameters. 
-#     
-#     j = 1 # At the end of this loop, j-1 will be the number of hr parameters
-#     while (class(try(b[[j]],silent=T))!='try-error'){
-#       
-#       # if there's only one element in a column, make a column of that 
-#       # element repeated the correct number of times to match the number of 
-#       # (x,y) coordinates we have:
-#       
-#       if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
-#       j = j + 1
-#     }
-#     j = j - 1 # Remove 1 from j so that it now represents the dimension of b
-#   }
-#   
-#   hrval = rep(NA, n)
-#   for(i in (1:n)) {
-#     # create an empty list to insert b values for this individual (x,y):
-#     integration.b = list()
-#     
-#     for (column.number in (1:j)){
-#       # Take the i th element of each beta column to obtain the correct 
-#       # parameter values for the point (x,y) in position i
-#       integration.b[[column.number]] = b[[column.number]][i]
-#     }
-#     
-#     dy=(ystart-y[i])/nint/2                           # for crude integration
-#     yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
-#     
-#     int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
-#     intval[i]=exp(-int)
-#     
-#     hrval[i]=hr(y[i],x[i],integration.b) # value of hr at each (x,y)
-#   }
-#   
-#   bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
-#   if(length(bads)>0) { # infinite hazard so p(detect)=0
-#     f = rep(NA,length(x))
-#     f[bads]=.Machine$double.xmax
-#     f[-bads]=hrval[-bads]*intval[-bads]
-#   }else{
-#     f=hrval*intval
-#   }
-#   
-#   if (length(unique(b[[1]]))!=1){
-#     print(b[[1]])
-#     stop('b thing debug shit')
-#   }
-#   return(f)
-# }
-
-fyx=function(y,x,b,hr,ystart,nint=100)
-{
-  if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
-  n=length(x)
-  f=intval=rep(NA,n)
-  if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
-                                    a character')}
-  hr=match.fun(hr)
   
   # The below loop was added to generalise the function enough to deal with 
   # covariate inclusion.
@@ -1293,7 +1136,6 @@ fyx=function(y,x,b,hr,ystart,nint=100)
     # We can't simply do b[-bads], so we are forced to redo a for loop:
     b.bads=list()
     for (col.num in (1:j)){b.bads[[col.num]] = b[[col.num]][-bads]}
-    print('fail is in here')
     f = rep(NA,length(x))
     f[bads]=.Machine$double.xmax
     f[-bads]=hr(y[-bads],x[-bads],b.bads)*intval[-bads]
@@ -1449,6 +1291,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   return(list(ci=ci,Ns=Ns))
 }
 
+simnhPP=function(x,b,ystart,hr,miss=TRUE,ylo=1e-5)
 #-------------------------------------------------------------------------------
 # Simulate non-homogeneous Poisson Process data by solving inverse CDF.
 # Inputs:
@@ -1512,4 +1355,219 @@ Eyx=function(y,x,b,hr,ystart)
     int[i]=integrate(f=hr,lower=max(y[i],ylo),upper=ystart,x=x[i],b=b)$value
   }
   return(int)
+}
+
+
+plot.LT2D.fit.object = function(fit,
+                                xbins=20,
+                                ybins=20,
+                                smooth.fy=FALSE,
+                                addrug=FALSE,
+                                covar.row=FALSE){
+  
+  # type-check input:
+  if (class(fit)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
+  
+  n = length(fit$dat$x)
+  dataFrameBetas = data.frame(fit$unrounded.points.with.betas$b)
+  # The names created by the default method are horribly long and so it
+  # it is far more simple to remove them entirely:
+  names(dataFrameBetas) = NULL
+  
+  # Wrapper function which calls the appropriate functions to plot LT2D fits.
+  if(fit$covariates==TRUE){
+    
+    if(covar.row==FALSE){
+      stop('covar row must be specified for covariate models')
+    }
+    
+    if(class(covar.row)=='numeric' & 
+       covar.row%%1!=0 & covar.row>=1 &
+       covar.row<=length(fit$unrounded.points.with.betas[[1]]$x)){
+      
+      # In this situation covar.row represents the row of the fitted data.frame
+      # that contains the element whose covariate values we wish to plot at, so 
+      # we extract them in the following way:
+      
+      
+      # we hijack the fit$b of this copy of the object to contain the value of 
+      # b that we truly want to plot:
+      fit$b = as.list(dataFrameBetas[covar.row,])
+    }
+    
+    else{
+      fit$b = as.list(dataFrameBetas[1,]) # by default, take the first row.
+    }
+  }
+  
+  
+  X = plotfit.x(fit,nclass=xbins)
+  if (addrug){rug(x[x<=w])}                        # perpendicular distance plot
+  
+  if (smooth.fy){
+    # plotfit.smoothfy truncates troublesome data
+    # before calling the appropriate function,
+    # to produce a smoother plot
+    Y = plotfit.smoothfy(fit,nclass = ybins)       # forward distance plot
+    if (addrug){rug(x=y[x<=w])}
+  }
+  else{ # We plot without calling .smoothfy
+    plotfit.y(fit,nclass=ybins)
+    Y = if (addrug){rug(x=y[x<=w])}
+  }
+}
+
+#'@title Plot LT2D fit
+#'
+#'@description acts as a wrapper for the appropriate
+#' plotting function.
+#'
+#'@param fit fitted object output by \code{\link{LT2D.fit}}
+#'@param ..., parameters to be passed to \code{\link{plot.LT2D.fit.object}}
+#'@seealso \code{\link{LT2D.fit}}
+#'@export
+plot.LT2D.fit.function.object = function(fit, ...){
+  plot.LT2D.fit.object(fit$fit,...) # this line extracts
+  # the fit object created by fit.yx from the one
+  # created by LT2D.fit, and calls plot, which knows
+  # how to deal with it correctly, using the above
+  # function.
+}
+
+plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
+                   plot=TRUE,dotitle="FALSE",
+                   addTruth=FALSE,
+                   true.pi.x=NULL,
+                   true.logphi=NULL,
+                   true.hr=NULL,
+                   true.b=NULL,
+                   N=NULL,...)
+{
+  # Some type-checking to ensure we can extract the data in the usual way
+  if (class(est)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
+  
+  x = est$dat$x     # We extract the perpendicular distances from the fit
+  Nhat.yx=bias=NULL
+  b=est$b; hrname=est$hr; ystart=est$ystart; piname=est$pi.x
+  logphi=est$logphi; w=est$w
+  f.x=p.x.std=adbnTRUE=0
+  # calculate stuff to plot:
+  gridx=seq(1e-10,w,length=100)
+  # first do f(x)
+  p.xpifit=p.pi.x(gridx,b,hr=hrname,ystart,pi.x=piname,logphi,w)
+  mufit=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname
+                  ,ystart=ystart,pi.x=piname,logphi=logphi,w=w)$value
+  f.xfit=p.xpifit/mufit
+  p.xfit=px(gridx,b,hr=hrname,ystart)
+  ptot=integrate(f=px,lower=0,upper=w,b=b,hr=hrname,ystart=ystart)$value
+  p.xfit.std=p.xfit/ptot
+  adbn=match.fun(piname)(gridx,logphi,w) # changed to use piname instead of pi.x
+  
+  if(addTruth) {   # Haven't really checked this yet - Cal
+    if(!is.null(true.pi.x)) pi.x=true.pi.x
+    if(!is.null(true.logphi)) logphi=true.logphi
+    if(!is.null(true.hr)) hr=true.hr
+    if(!is.null(true.b)) b=true.b
+    p.xpi=p.pi.x(gridx,b,hr,ystart,pi.x,logphi,w)
+    mu=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hr,ystart=ystart,pi.x=pi.x,logphi=logphi,w=w)$value
+    f.x=p.xpi/mu
+    adbnTRUE=pi.x(gridx,logphi,w)
+  }
+  if(plot){
+    breaks=seq(0,w,length=(nclass+1))
+    hx=hist(x,breaks=breaks,plot=FALSE) # get hist bar heights
+    ymax=max(f.xfit,p.xfit.std,adbn,f.x,p.x.std,adbnTRUE,hx$density)
+    main=""
+    if(dotitle) main="Fitted curves"
+    if(addTruth) main="Fitted curves (grey=true)"
+    hx=hist(x,breaks=breaks,freq=FALSE,ylim=c(0,ymax),
+            main=main,xlab="perpendicular distance (x)",ylab="pdf")
+    lines(gridx,f.xfit,lwd=1)
+    # overlay p(x), scaled to have area=1
+    lines(gridx,p.xfit.std,lty=2,col="black",lwd=2)
+    # overlay animal pdf:
+    lines(gridx,adbn,lty=3,col="black",lwd=2)
+    
+    if(addTruth) legend("topright",title="Estimated",legend=c("f(x)","p(x)",expression(pi(x)),
+                                                              col=c("black","black","black"),lwd=c(2,2,2),lty=c(1,2,3)))
+    else legend("topright",legend=c("f(x)","p(x)",expression(pi(x))),
+                col=c("black","black","black"),lwd=c(2,2,2),lty=c(1,2,3))
+    if(addTruth){
+      lines(gridx,f.x,col="grey",lwd=2)
+      p.x=px(gridx,b,hr,ystart)
+      ptot=integrate(f=px,lower=0,upper=w,b=b,hr=hr,ystart=ystart)$value
+      #      p.x.std=p.xfit.std=p.xfit/ptot
+      #      lines(gridx,p.x*p.x.std,col="grey",lty=2,lwd=2)
+      p.x.std=p.x/ptot
+      lines(gridx,p.x.std,col="grey",lty=2,lwd=2)
+      
+      lines(gridx,adbnTRUE,col="grey",lty=3,lwd=2)
+    }
+  }
+  if(!is.null(N)){
+    n=length(x)
+    Nhat.yx=n/mufit
+    bias=(Nhat.yx/N-1)*100
+    msg=paste("N=",N,"; n=",n,"; Nhat.yx=",signif(Nhat.yx,3),";``bias''=",signif(bias,3),"%\n",sep="")
+    message(msg)
+    if(plot) {
+      mtext(msg,cex=0.8)
+    }
+  }else{N=N;n=NULL;Nhat=NULL;bias=NULL}
+  invisible(list(gridx=gridx,p.xpifit=p.xpifit,mufit=mufit,
+                 f.xfit=f.xfit,p.xfit=p.xfit,ptot=ptot,p.xfit.std=p.xfit.std,adbn=adbn,
+                 N=N,n=n,Nhat=Nhat.yx,bias=bias))
+}
+
+plotfit.y=function(est,nclass=10,breaks=NULL,plot=TRUE,dotitle=FALSE,
+                   lineonly=FALSE,nint=100,max.obs=TRUE,add=FALSE,
+                   y=NULL,x=NULL,...)
+{
+  # Some type-checking to ensure we can extract the data in the usual way:
+  if (class(est)!='LT2D.fit.object')            # We want the fit object,
+    #& y==NULL & x==NULL)                       # or data passed by plot.smoothfy
+  {stop('Can only plot LT2D objects')}
+  
+  # barely made changes to this function (just type checking), worked fine - Cal
+  
+  b=est$b; hr=est$hr; ystart=est$ystart; pi.x=est$pi.x
+  logphi=est$logphi; w=est$w
+  if(is.null(y)) y=est$dat$y
+  if(is.null(x)) x=est$dat$x
+  # calculate stuff to plot:
+  n=length(y)
+  res=100
+  gridy=seq(1e-10,ystart,length=res)
+  fy.x=matrix(rep(NA,n*res),nrow=n)
+  for(i in 1:n) {
+    fy.x[i,]=fyx(gridy,rep(x[i],res),b,hr,ystart,nint=nint)
+  }
+  
+  fy.=apply(fy.x,2,mean)
+  fy.area=sum((fy.[-1]+fy.[-length(fy.)])/2*diff(gridy))
+  scaled.fy.=fy./fy.area
+  if(plot){
+    ymax=ystart
+    if(max.obs) ymax=max(y)
+    if(is.null(breaks)) breaks=seq(min(y,1e-10),ymax,length=(nclass+1))
+    fy.area=sum((fy.[-1]+fy.[-length(fy.)])/2*diff(gridy))
+    scaled.fy.=fy./fy.area
+    if(lineonly) {
+      if(add) lines(gridy,scaled.fy.,...)
+      else plot(gridy,scaled.fy.,ylim=c(0,max(scaled.fy.)),type="l",
+                xlab="forward distance (y)",ylab="f(y)",...)
+    }
+    else {
+      # hst=hist(y,plot=FALSE)
+      # hist(y,freq=FALSE,xlab="forward distance (y)",nclass=nclass,ylim=c(0,max(hst$intensities,fy.)))
+      hst=hist(y,breaks=breaks,plot=FALSE,...)
+      # cat("hist area=",hst$desity*diff(hst$breaks),"\n")
+      hmax=max(scaled.fy.,hst$density)
+      if(dotitle) hist(y,freq=FALSE,xlab="forward distance (y)",breaks=breaks,ylim=c(0,hmax),...)
+      else hist(y,freq=FALSE,xlab="forward distance (y)",breaks=breaks,ylim=c(0,hmax),main="",...)
+      lines(gridy,scaled.fy.,...)
+      # cat("fy area=",sum((fy.[-1]+fy.[-length(fy.)])/2*diff(gridy)),"\n")
+    }}
+  
+  invisible(list(gridy=gridy,fy.x=fy.x,fy.=fy.,scaled.fy.=scaled.fy.))
 }

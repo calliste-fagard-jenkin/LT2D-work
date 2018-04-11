@@ -73,14 +73,5 @@ Dolphin.Fit = LT2D.fit(DataFrameInput =  dolphin.df,
                        hessian = , rmin=-0.1)
 
 gof.LT2D(Dolphin.Fit)
-#EHSW:
-phatInterval(dfit.hn)
-phatInterval(dfit.hn)*wd
-# p(0):
-p0.hn=1-Sy(0,0,ystartd,dfit.hn$b,h1);p0.hn
-plotfit.smoothfy(dfit.hn,xmax=0.01)
-# Density estimate:
-n=length(dfit.hn$dat$x)
-L=1672.77 # from Canadas et al. (in nm)
-Dhat=(n/phatInterval(dfit.hn)$phat)/(2*wd*L)
-Dhat
+
+Dolphin.Fit$ests

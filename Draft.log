@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  4 FEB 2018 21:09
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  11 APR 2018 17:58
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -102,7 +102,359 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@float@everytoks=\toks16
 \@floatcapt=\box53
 )
-("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\frontendlayer\tikz.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\basiclayer\pgf.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\utilities\pgfrcs.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfutil-comm
+on.tex
+\pgfutil@everybye=\toks17
+\pgfutil@tempdima=\dimen114
+\pgfutil@tempdimb=\dimen115
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfutil-comm
+on-lists.tex))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfutil-late
+x.def
+\pgfutil@abb=\box54
+ (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\ms\everyshi.sty
+Package: everyshi 2001/05/15 v3.00 EveryShipout Package (MS)
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfrcs.code.
+tex
+Package: pgfrcs 2015/08/07 v3.0.1a (rcs-revision 1.31)
+))
+Package: pgf 2015/08/07 v3.0.1a (rcs-revision 1.15)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\basiclayer\pgfcore.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\systemlayer\pgfsys.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\systemlayer\pgfsys.cod
+e.tex
+Package: pgfsys 2014/07/09 v3.0.1a (rcs-revision 1.48)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfkeys.code
+.tex
+\pgfkeys@pathtoks=\toks18
+\pgfkeys@temptoks=\toks19
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfkeysfilte
+red.code.tex
+\pgfkeys@tmptoks=\toks20
+))
+\pgf@x=\dimen116
+\pgf@y=\dimen117
+\pgf@xa=\dimen118
+\pgf@ya=\dimen119
+\pgf@xb=\dimen120
+\pgf@yb=\dimen121
+\pgf@xc=\dimen122
+\pgf@yc=\dimen123
+\w@pgf@writea=\write3
+\r@pgf@reada=\read1
+\c@pgf@counta=\count97
+\c@pgf@countb=\count98
+\c@pgf@countc=\count99
+\c@pgf@countd=\count100
+\t@pgf@toka=\toks21
+\t@pgf@tokb=\toks22
+\t@pgf@tokc=\toks23
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\systemlayer\pgf.cfg
+File: pgf.cfg 2008/05/14  (rcs-revision 1.7)
+)
+Driver file for pgf: pgfsys-pdftex.def
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\systemlayer\pgfsys-pdf
+tex.def
+File: pgfsys-pdftex.def 2014/10/11  (rcs-revision 1.35)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\systemlayer\pgfsys-com
+mon-pdf.def
+File: pgfsys-common-pdf.def 2013/10/10  (rcs-revision 1.13)
+)))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\systemlayer\pgfsyssoft
+path.code.tex
+File: pgfsyssoftpath.code.tex 2013/09/09  (rcs-revision 1.9)
+\pgfsyssoftpath@smallbuffer@items=\count101
+\pgfsyssoftpath@bigbuffer@items=\count102
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\systemlayer\pgfsysprot
+ocol.code.tex
+File: pgfsysprotocol.code.tex 2006/10/16  (rcs-revision 1.4)
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\xcolor\xcolor.sty
+Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\color.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 225.
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1348.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1352.
+Package xcolor Info: Model `RGB' extended on input line 1364.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1366.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1367.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcore.cod
+e.tex
+Package: pgfcore 2010/04/11 v3.0.1a (rcs-revision 1.7)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmath.code.tex
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathcalc.code.
+tex
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathutil.code.
+tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathparser.cod
+e.tex
+\pgfmath@dimen=\dimen124
+\pgfmath@count=\count103
+\pgfmath@box=\box55
+\pgfmath@toks=\toks24
+\pgfmath@stack@operand=\toks25
+\pgfmath@stack@operation=\toks26
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+code.tex
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+basic.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+trigonometric.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+random.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+comparison.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+base.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+round.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+misc.code.tex)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfunctions.
+integerarithmetics.code.tex)))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmathfloat.code
+.tex
+\c@pgfmathroundto@lastzeros=\count104
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorepoin
+ts.code.tex
+File: pgfcorepoints.code.tex 2013/10/07  (rcs-revision 1.27)
+\pgf@picminx=\dimen125
+\pgf@picmaxx=\dimen126
+\pgf@picminy=\dimen127
+\pgf@picmaxy=\dimen128
+\pgf@pathminx=\dimen129
+\pgf@pathmaxx=\dimen130
+\pgf@pathminy=\dimen131
+\pgf@pathmaxy=\dimen132
+\pgf@xx=\dimen133
+\pgf@xy=\dimen134
+\pgf@yx=\dimen135
+\pgf@yy=\dimen136
+\pgf@zx=\dimen137
+\pgf@zy=\dimen138
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorepath
+construct.code.tex
+File: pgfcorepathconstruct.code.tex 2013/10/07  (rcs-revision 1.29)
+\pgf@path@lastx=\dimen139
+\pgf@path@lasty=\dimen140
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorepath
+usage.code.tex
+File: pgfcorepathusage.code.tex 2014/11/02  (rcs-revision 1.24)
+\pgf@shorten@end@additional=\dimen141
+\pgf@shorten@start@additional=\dimen142
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorescop
+es.code.tex
+File: pgfcorescopes.code.tex 2015/05/08  (rcs-revision 1.46)
+\pgfpic=\box56
+\pgf@hbox=\box57
+\pgf@layerbox@main=\box58
+\pgf@picture@serial@count=\count105
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoregrap
+hicstate.code.tex
+File: pgfcoregraphicstate.code.tex 2014/11/02  (rcs-revision 1.12)
+\pgflinewidth=\dimen143
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoretran
+sformations.code.tex
+File: pgfcoretransformations.code.tex 2015/08/07  (rcs-revision 1.20)
+\pgf@pt@x=\dimen144
+\pgf@pt@y=\dimen145
+\pgf@pt@temp=\dimen146
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorequic
+k.code.tex
+File: pgfcorequick.code.tex 2008/10/09  (rcs-revision 1.3)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoreobje
+cts.code.tex
+File: pgfcoreobjects.code.tex 2006/10/11  (rcs-revision 1.2)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorepath
+processing.code.tex
+File: pgfcorepathprocessing.code.tex 2013/09/09  (rcs-revision 1.9)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorearro
+ws.code.tex
+File: pgfcorearrows.code.tex 2015/05/14  (rcs-revision 1.43)
+\pgfarrowsep=\dimen147
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoreshad
+e.code.tex
+File: pgfcoreshade.code.tex 2013/07/15  (rcs-revision 1.15)
+\pgf@max=\dimen148
+\pgf@sys@shading@range@num=\count106
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoreimag
+e.code.tex
+File: pgfcoreimage.code.tex 2013/07/15  (rcs-revision 1.18)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoreexte
+rnal.code.tex
+File: pgfcoreexternal.code.tex 2014/07/09  (rcs-revision 1.21)
+\pgfexternal@startupbox=\box59
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorelaye
+rs.code.tex
+File: pgfcorelayers.code.tex 2013/07/18  (rcs-revision 1.7)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcoretran
+sparency.code.tex
+File: pgfcoretransparency.code.tex 2013/09/30  (rcs-revision 1.5)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\basiclayer\pgfcorepatt
+erns.code.tex
+File: pgfcorepatterns.code.tex 2013/11/07  (rcs-revision 1.5)
+)))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\modules\pgfmoduleshape
+s.code.tex
+File: pgfmoduleshapes.code.tex 2014/03/21  (rcs-revision 1.35)
+\pgfnodeparttextbox=\box60
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\modules\pgfmoduleplot.
+code.tex
+File: pgfmoduleplot.code.tex 2015/08/03  (rcs-revision 1.13)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\compatibility\pgfcomp-ve
+rsion-0-65.sty
+Package: pgfcomp-version-0-65 2007/07/03 v3.0.1a (rcs-revision 1.7)
+\pgf@nodesepstart=\dimen149
+\pgf@nodesepend=\dimen150
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\compatibility\pgfcomp-ve
+rsion-1-18.sty
+Package: pgfcomp-version-1-18 2007/07/23 v3.0.1a (rcs-revision 1.1)
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\utilities\pgffor.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\utilities\pgfkeys.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgfkeys.code
+.tex)) (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\pgf\math\pgfmath.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmath.code.tex)
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\utilities\pgffor.code.
+tex
+Package: pgffor 2013/12/13 v3.0.1a (rcs-revision 1.25)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\math\pgfmath.code.tex)
+\pgffor@iter=\dimen151
+\pgffor@skip=\dimen152
+\pgffor@stack=\toks27
+\pgffor@toks=\toks28
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\frontendlayer\tikz\tik
+z.code.tex
+Package: tikz 2015/08/07 v3.0.1a (rcs-revision 1.151)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\libraries\pgflibrarypl
+othandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2013/08/31 v3.0.1a (rcs-revision 1.20)
+\pgf@plot@mark@count=\count107
+\pgfplotmarksize=\dimen153
+)
+\tikz@lastx=\dimen154
+\tikz@lasty=\dimen155
+\tikz@lastxsaved=\dimen156
+\tikz@lastysaved=\dimen157
+\tikzleveldistance=\dimen158
+\tikzsiblingdistance=\dimen159
+\tikz@figbox=\box61
+\tikz@figbox@bg=\box62
+\tikz@tempbox=\box63
+\tikz@tempbox@bg=\box64
+\tikztreelevel=\count108
+\tikznumberofchildren=\count109
+\tikznumberofcurrentchild=\count110
+\tikz@fig@count=\count111
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\modules\pgfmodulematri
+x.code.tex
+File: pgfmodulematrix.code.tex 2013/09/17  (rcs-revision 1.8)
+\pgfmatrixcurrentrow=\count112
+\pgfmatrixcurrentcolumn=\count113
+\pgf@matrix@numberofcolumns=\count114
+)
+\tikz@expandcount=\count115
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\pgf\frontendlayer\tikz\lib
+raries\tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2008/06/17 v3.0.1a (rcs-revision 1.2)
+)))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\tikz-qtree\tikz-qtree.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\tikz-qtree\pgftree.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\tikz-qtree\pgfsubpic.sty
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\tikz-qtree\pgfsubpic.tex
+\pgf@subpicminx=\dimen160
+\pgf@subpicminy=\dimen161
+\pgf@subpicmaxx=\dimen162
+\pgf@subpicmaxy=\dimen163
+)) (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\tikz-qtree\pgftree.tex
+\levelsep=\dimen164
+\subtreesep=\dimen165
+\smuggle@levelsep=\dimen166
+\smuggle@subtreesep=\dimen167
+\this@levelsep=\dimen168
+\this@subtreesep=\dimen169
+\pgftree@childx=\dimen170
+\pgftree@savechildx=\dimen171
+\pgftree@childy=\dimen172
+\pgftree@savechildy=\dimen173
+\pgftree@childi=\count116
+\pgftree@savechildi=\count117
+\pgftree@level=\count118
+\pgftree@depth=\dimen174
+\pgf@subpic@hbox@children=\box65
+\pgf@subpic@minx@children=\dimen175
+\pgf@subpic@miny@children=\dimen176
+\pgf@subpic@maxx@children=\dimen177
+\pgf@subpic@maxy@children=\dimen178
+\pgftree@lastchildx=\dimen179
+\pgftree@lastchildy=\dimen180
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\generic\tikz-qtree\tikz-qtree.tex
+\@result=\toks29
+\child@list=\toks30
+\root@node=\toks31
+)) (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrextend.sty
+Package: scrextend 2018/03/30 v3.25 KOMA-Script package (extend other classes w
+ith features of KOMA-Script classes)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrkbase.sty
+Package: scrkbase 2018/03/30 v3.25 KOMA-Script package (KOMA-Script-dependent b
+asics and keyval usage)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrbase.sty
+Package: scrbase 2018/03/30 v3.25 KOMA-Script package (KOMA-Script-independent 
+basics and keyval usage)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\koma-script\scrlfile.sty
+Package: scrlfile 2018/03/30 v3.25 KOMA-Script package (loading files)
+)))) ("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
 Package: geometry 2010/09/12 v5.6 Page Geometry
 
 ("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
@@ -115,18 +467,18 @@ Package ifvtex Info: VTeX not detected.
 ("C:\Program Files\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
-\Gm@cnth=\count97
-\Gm@cntv=\count98
-\c@Gm@tempcnt=\count99
-\Gm@bindingoffset=\dimen114
-\Gm@wd@mp=\dimen115
-\Gm@odd@mp=\dimen116
-\Gm@even@mp=\dimen117
-\Gm@layoutwidth=\dimen118
-\Gm@layoutheight=\dimen119
-\Gm@layouthoffset=\dimen120
-\Gm@layoutvoffset=\dimen121
-\Gm@dimlist=\toks17
+\Gm@cnth=\count119
+\Gm@cntv=\count120
+\c@Gm@tempcnt=\count121
+\Gm@bindingoffset=\dimen181
+\Gm@wd@mp=\dimen182
+\Gm@odd@mp=\dimen183
+\Gm@even@mp=\dimen184
+\Gm@layoutwidth=\dimen185
+\Gm@layoutheight=\dimen186
+\Gm@layouthoffset=\dimen187
+\Gm@layoutvoffset=\dimen188
+\Gm@dimlist=\toks32
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.cfg")) (Draft.aux)
 \openout1 = `Draft.aux'.
@@ -146,17 +498,17 @@ LaTeX Font Info:    ... okay on input line 8.
 
 (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count100
-\scratchdimen=\dimen122
-\scratchbox=\box54
-\nofMPsegments=\count101
-\nofMParguments=\count102
-\everyMPshowfont=\toks18
-\MPscratchCnt=\count103
-\MPscratchDim=\dimen123
-\MPnumerator=\count104
-\makeMPintoPDFobject=\count105
-\everyMPtoPDFconversion=\toks19
+\scratchcounter=\count122
+\scratchdimen=\dimen189
+\scratchbox=\box66
+\nofMPsegments=\count123
+\nofMParguments=\count124
+\everyMPshowfont=\toks33
+\MPscratchCnt=\count125
+\MPscratchDim=\dimen190
+\MPnumerator=\count126
+\makeMPintoPDFobject=\count127
+\everyMPtoPDFconversion=\toks34
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -205,6 +557,7 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
+ABD: EveryShipout initializing macros
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -245,7 +598,7 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <8> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <6> on input line 10.
-<Logo.png, id=1, 99.37125pt x 120.45pt>
+<Logo.png, id=4, 99.37125pt x 120.45pt>
 File: Logo.png Graphic file (type png)
 <use Logo.png>
 Package pdftex.def Info: Logo.png  used on input line 12. on input line 12.
@@ -254,51 +607,69 @@ Package pdftex.def Info: Requested size: 99.371pt x 120.44969pt on input line 1
 [1
 
 {C:/Users/Cal/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./Logo.png>]
-<StripSampling.jpg, id=10, 385.44pt x 384.6872pt>
+<StripSampling.jpg, id=13, 385.44pt x 384.6872pt>
 File: StripSampling.jpg Graphic file (type jpg)
 <use StripSampling.jpg>
-Package pdftex.def Info: StripSampling.jpg  used on input line 31. on input lin
-e 31.
+Package pdftex.def Info: StripSampling.jpg  used on input line 30. on input lin
+e 30.
 Package pdftex.def Info: Requested size: 192.71953pt x 192.34312pt on input lin
-e 31.
+e 30.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 35.
+(Font)              <10.95> on input line 34.
  [1 <./StripSampling.jpg>]
-<DistanceHist.png, id=20, 451.6875pt x 542.025pt>
+<DistanceHist.png, id=23, 451.6875pt x 542.025pt>
 File: DistanceHist.png Graphic file (type png)
 <use DistanceHist.png>
-Package pdftex.def Info: DistanceHist.png  used on input line 48. on input line
- 48.
+Package pdftex.def Info: DistanceHist.png  used on input line 47. on input line
+ 47.
 Package pdftex.def Info: Requested size: 225.84319pt x 271.01183pt on input lin
-e 48.
-<DistHistDetec.png, id=21, 377.91188pt x 542.025pt>
+e 47.
+ [2 <./DistanceHist.png>]
+<DistHistDetec.png, id=28, 377.91188pt x 542.025pt>
 File: DistHistDetec.png Graphic file (type png)
 <use DistHistDetec.png>
-Package pdftex.def Info: DistHistDetec.png  used on input line 56. on input lin
-e 56.
+Package pdftex.def Info: DistHistDetec.png  used on input line 66. on input lin
+e 66.
 Package pdftex.def Info: Requested size: 181.52872pt x 260.35927pt on input lin
-e 56.
- [2 <./DistanceHist.png> <./DistHistDetec.png>]
-[3] [4] [5] (Draft.aux) ) 
+e 66.
+ [3 <./DistHistDetec.png>]
+[4]
+<LT2Dprecov.png, id=36, 453.94594pt x 459.96844pt>
+File: LT2Dprecov.png Graphic file (type png)
+<use LT2Dprecov.png>
+Package pdftex.def Info: LT2Dprecov.png  used on input line 120. on input line 
+120.
+Package pdftex.def Info: Requested size: 230.15173pt x 233.20515pt on input lin
+e 120.
+ [5]
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 127.
+
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 127.
+ [6 <./LT2Dprecov.png>] [7] (Draft.aux) ) 
 Here is how much of TeX's memory you used:
- 2116 strings out of 493312
- 30484 string characters out of 3138905
- 111244 words of memory out of 3000000
- 5649 multiletter control sequences out of 15000+200000
+ 12880 strings out of 493312
+ 259098 string characters out of 3138905
+ 323316 words of memory out of 3000000
+ 16172 multiletter control sequences out of 15000+200000
  8811 words of font info for 31 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,6n,32p,1674b,307s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
-ts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
-bx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb
-><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Prog
-ram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files
-/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/
-type1/public/amsfonts/cm/cmr8.pfb>
-Output written on Draft.pdf (6 pages, 200381 bytes).
+ 55i,8n,54p,1514b,318s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+mi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><
+C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Progra
+m Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/M
+iKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/
+fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on Draft.pdf (8 pages, 249335 bytes).
 PDF statistics:
- 61 PDF objects out of 1000 (max. 8388607)
+ 78 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 38 words of extra memory for PDF output out of 10000 (max. 10000000)
 

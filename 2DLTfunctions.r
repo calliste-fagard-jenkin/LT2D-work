@@ -2144,7 +2144,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
   # Some type-checking to ensure we can extract the data in the usual way
   if (class(est)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
 
-  x = est$dat$x     # We exract the perpendicular distances from the fit
+  x = est$dat$x     # We extract the perpendicular distances from the fit
   Nhat.yx=bias=NULL
   b=est$b; hrname=est$hr; ystart=est$ystart; piname=est$pi.x
   logphi=est$logphi; w=est$w
@@ -2416,7 +2416,7 @@ plot.LT2D.fit.object = function(fit,
 #'@seealso \code{\link{LT2D.fit}}
 #'@export
 plot.LT2D.fit.function.object = function(fit, ...){
-  plot(fit$fit, ...) # this rather cryptic line extracts
+  plot(fit$fit, covariates=,...) # this line extracts
   # the fit object created by fit.yx from the one
   # created by LT2D.fit, and calls plot, which knows
   # how to deal with it correctly, using the above
