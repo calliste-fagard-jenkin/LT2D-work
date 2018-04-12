@@ -1,7 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{multicol,graphicx,float,tikz,tikz-qtree,scrextend}
 \usepackage[margin=1 in]{geometry}
-\title{A Method for Analysing Heterogeneous Population Data Within the Two-Dimensional Detection Function Distance Sampling Framework, and its Associated Software}
+\title{A Method for Analysing Heterogeneous Population Data with 2D Detection Function Distance Sampling}
 \date{January 2018}
 \author{Calliste Fagard-Jenkin}
 
@@ -22,7 +22,7 @@ This project focuses on line-transect distance sampling; a hybrid method which u
 
 \subsubsection{What is distance sampling?}
 
-Distance sampling is a methodology within ecological statistics which allows us to produce unbiased estimates of animal population sizes even when the detection of any individual in the survey area is uncertain. First, a quick description of its simpler younger brother, strip sampling (in which detection of individuals is certain), will be given in order to illustrate the fundamental principles of greatest importance. 
+Distance sampling is a methodology within ecological statistics which allows us to produce unbiased estimates of animal population sizes even when the detection of any individual in the survey area is uncertain. First, a quick description of its simpler alternative, strip sampling (in which detection of individuals is certain), will be given in order to illustrate the fundamental principles of greatest importance. 
 
 Consider a survey area within which the population of interest is closed (there is no emigration or immigration of individuals). We further assume that births and deaths are considered to occur at a negligible rate throughout the duration of the survey. In this way, the survey is considered to be a snapshot of the population at some given moment. In our example, we choose a square survey area, which we subdivide into five strips of regular width. We must further assume that animals are uniformly distributed throughout the survey area, in both the perpendicular and the horizontal axis (in fact, we must simply assume that the distribution of animals with respect to the transect is known. Uniformity arises as a natural consequence of independently distributed transect lines in conventional distance sampling. In the case of point transect distance sampling, the assumed distribution is triangular). The below figure illustrates uniformly distributed animals within a survey area.
 \begin{figure}[H]
@@ -108,7 +108,8 @@ The project aims to include the ability for users to specify covariate inclusion
 All code calculating estimates of abundance ($\hat{N}$), average detection probability ($\hat{p}$) and AIC should be modified to work with all reasonable choices of covariates and related linear predictors. S3 methods should be written for the plot function to allow it to handle fitted models which contain cases of both discrete and continuous covariate inclusion. The goodness of fit function should also be generalised to use the Kolmogorov-Smirnov and Cramer Von Mises tests when the fitted model has included covariates. The inclusion of code which produces (non-parametric) bootstrap confidence intervals of estimated abundance would also be desirable, for both covariate-including and covariate-excluding models.
 
 \section{Algorithms and Implementation}
-\subsection{Understanding the LT2D software, and its architecture}
+\subsection{Covariates; why include them, and how?}
+\subsection{Understanding the LT2D software and its architecture}
 In order to implement covariate inclusion it is vital to first understand the inner workings of the LT2D package, so that we may ascertain both the complexity of the task at hand, and also the most efficient method with which to proceed. A simplification of the software's top-level fitting function call hierarchy (as of August 2017, before the project began), which retains the features of greatest importance and relevance is illustrated by figure 4.
 
 \begin{figure}[H]
@@ -157,13 +158,14 @@ This diagram illustrates in more detail the inner workings of the LT2D package, 
 \subsection{Covariate Inclusion into Abundance Estimation}
 \subsection{Modification of Goodness of Fit Functions}
 \subsection{Modification of Plot Functions}
-\subsection{Implementation of the Bootstrap}
+\subsection{Covariate implementation}
+\section{Usage of the new sofware}
+\subsection{Model specification for the user}
+\subsection{Simulation studies}
 
-\section{Case Studies}
-\subsection{Batang Toru}
-\subsection{Jantho}
-
-\section{Statistical Consultancy and Software Feedback}
+\section{Going forwards}
+\subsection{Additional desired features}
+\subsection{A proposed approach for mixture model incorporation}
 
 \end{multicols}
 \end{document}
