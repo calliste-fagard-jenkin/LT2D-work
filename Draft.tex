@@ -1,30 +1,38 @@
 \documentclass[11pt]{article}
-\usepackage{multicol,graphicx,float,tikz,tikz-qtree,scrextend}
-\usepackage[margin=1 in]{geometry}
-\title{A Method for Analysing Heterogeneous Population Data with 2D Detection Function Distance Sampling}
+\usepackage{multicol,graphicx,float,tikz,tikz-qtree,scrextend,apacite,amsbsy,inputenc}
+\usepackage[margin=0.7 in]{geometry}
+\title{A Method for Analysing Heterogeneous Data with 2D Detection Function Distance Sampling}
 \date{January 2018}
 \author{Calliste Fagard-Jenkin}
-
+\inputencoding{utf8}
+\makeindex
 \begin{document}
 \pagenumbering{gobble}
 \maketitle
 \begin{center}
 \includegraphics[scale=1]{Logo}
 \end{center}
+
+
 \newpage
+
 \begin{multicols}{2}
-\pagenumbering{arabic}	
-	
+\pagenumbering{arabic}
+\newpage
+
+\section{Abstract}
+This project focuses on line-transect distance sampling; a hybrid method which uses both design and model based inference to produce estimates on the sizes of animal populations. An extension of distance sampling by \cite{Borchers} allows for the use of 2D detection functions, describing the probability of detection of an animal in both forward and perpendicular directions. This methodology produces estimates of abundance which are far less biased when compared to estimates produced by conventional distance sampling, when the animals in the population of interest display responsive movement. The raison d'être of this project is to further extend the code-base of the \cite{Borchers} methodology's R package (called LT2D) to include the possibility of covariate inclusion to cope with data that are heterogeneous with respect to detection probability, and to provide a number of illustrative analyses on a range of simulated datasets to demonstrate the improved functionality.
+
 \section{Introduction}
 \subsection{Context and background}
-\subsubsection{Abstract}
-This project focuses on line-transect distance sampling; a hybrid method which uses both design and model based inference to produce estimates on the sizes of animal populations. An extension of distance sampling by Borchers and Cox (2017) allows for the use of 2D detection functions, describing the probability of detection of an animal in both forward and perpendicular directions. This methodology produces estimates of abundance which are far less biased when compared to estimates produced by conventional distance sampling, when the animals in the population of interest display responsive movement. The raison d'etre of this project is to further extend the code-base of the Borchers and Cox (2017) methodology's R package (called LT2D) to include the possibility of covariate inclusion to cope with data that are heterogeneous with respect to detection probability, and to provide a number of illustrative analyses on a range of simulated datasets to demonstrate the improved functionality.
+
 
 \subsubsection{What is distance sampling?}
 
 Distance sampling is a methodology within ecological statistics which allows us to produce unbiased estimates of animal population sizes even when the detection of any individual in the survey area is uncertain. First, a quick description of its simpler alternative, strip sampling (in which detection of individuals is certain), will be given in order to illustrate the fundamental principles of greatest importance. 
 
 Consider a survey area within which the population of interest is closed (there is no emigration or immigration of individuals). We further assume that births and deaths are considered to occur at a negligible rate throughout the duration of the survey. In this way, the survey is considered to be a snapshot of the population at some given moment. In our example, we choose a square survey area, which we subdivide into five strips of regular width. We must further assume that animals are uniformly distributed throughout the survey area, in both the perpendicular and the horizontal axis (in fact, we must simply assume that the distribution of animals with respect to the transect is known. Uniformity arises as a natural consequence of independently distributed transect lines in conventional distance sampling. In the case of point transect distance sampling, the assumed distribution is triangular). The below figure illustrates uniformly distributed animals within a survey area.
+
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.5]{StripSampling}
@@ -32,17 +40,19 @@ Consider a survey area within which the population of interest is closed (there 
 \end{figure}
 
 Given this rather simplistic design, obtaining an estimate of abundance in the survey area ($\hat{N}$) is extremely simple, so long as we are able to sample all of the individuals within whole strips. As an example we consider strips 2 and 4 (from the left) as the randomly selected strips which form our survey sample. Strip 2 contains 25 individuals, and strip 4 contains 15, giving us a total of $n=40$ observed individuals. If we denote the total survey area by $A$ and the sampled area by $a$, then we observe that our survey effort of $\frac{a}{A}=\frac{2}{5}$. Hence a reasonable intuitive estimator for the abundance in the whole survey area is
+
 \begin{equation}
 \hat{N}=\frac{n}{\frac{a}{A}}=\frac{40}{0.4}=100
 \end{equation}
+
 which is a simple rescaling of the number of observed animals which accounts for the portion of the survey area which has remained unseen. This example forms a basic overview of an easy methodology we can use when detection of every individual is guaranteed, however, we would now like to find a way of relaxing this rather unrealistic assumption. If we assume all animals in the strip have some fixed probability $p$ of being detected, then we can modify our estimator to account for the animals we expect we have missed:
+
 \begin{equation}
 \hat{N}=\frac{n}{\frac{a}{A}p}
 \end{equation} 
 
 
 This again is nothing more than rescaling the estimate by an appropriate constant, to account for animals that we believe were present, but not detected by any observers. 
-
 \begin{figure}[H]
 \includegraphics[scale=0.5]{DistanceHist}
 \caption{Histogram of perpendicular distances of detected animals}
@@ -56,10 +66,13 @@ A model-based approach which involves the fitting of a detection function, allow
 
 
 If we momentarily return to the case of perfect detection, we notice that we would expect to see a perfectly flat histogram of perpendicular detection distances (as a result of uniform distribution of animals about the transect line). In this case the bars of our histogram would perfectly cover both the shaded, and un-shaded areas of Figure 3. Hence, the ratio of our detections with respect to this 'perfect detection rectangle' gives us some indication of the average detection probability of the population of interest. In practice, the 'perfect area rectangle' is extremely easy to calculate, and the area covered by our own detections is seen as the integral of the detection function over an interval from $0$ to a chosen perpendicular truncation distance $w$. In order to obtain the sampled area ($a$, in the previous example) in the case of a line transect distance sampling survey, we simply consider $a=2Lw$, where $L$ is the total length of all covered transect lines and $w$ is the previously mentioned perpendicular truncation distance. Thus, with these tools at our disposal, we can modify (2) to obtain:
+
 \begin{equation}
 \hat{N}=\frac{n}{\frac{2Lw}{A}\hat{p}}
 \end{equation}
-where $\hat{p}$ is the estimate of average detection probability we obtain by integrating the detection function and considering the area of the 'perfect detection rectangle'. It should be noted that this description of distance sampling is extremely rudimentary, and is far more intuitive than it is technical. For a deeper understanding of the likelihood functions involved, the design-based, and model-based aspects of the method, reference should be made to classic literature, such as Buckland, et al. 2015 and Borchers, et al. 2002. 
+
+
+where $\hat{p}$ is the estimate of average detection probability we obtain by integrating the detection function and considering the area of the 'perfect detection rectangle'. It should be noted that this description of distance sampling is extremely rudimentary, and is far more intuitive than it is technical. For a deeper understanding of the likelihood functions involved, the design-based, and model-based aspects of the method, reference should be made to both classic and modern literature, such as \cite{EAB} and \cite{DS2015}.
 
 \begin{figure}[H]
 \centering
@@ -109,6 +122,41 @@ All code calculating estimates of abundance ($\hat{N}$), average detection proba
 
 \section{Algorithms and Implementation}
 \subsection{Covariates; why include them, and how?}
+There are many reasons for the desirability of covariate inclusion within the LT2D package. Firstly, when dealing with animal populations which are heterogeneous with respect to detection probability (that is, individuals in the population of interest do not all share a common detection function due to their varying behaviours or characteristics), failing to take this into account often leads to biased estimates of abundance and can even lead to an inability to distinguish amongst reasonable models \cite{Link}, this can be especially prominent in Mark-Recapture analyses, which are the subject of the aforementioned citation. Although distance sampling benefits from the property of pooling robustness, and hence can cope with reasonable levels of heterogeneity within a population \cite{Buckland2004}, 2D detection sampling is based more fundamentally on time-to-detection models and survival analysis, meaning there is no theoretical guarantee that it also shares this robustness with respect to heterogeneous populations. Secondly, we may be interested in performing an analysis on data for which we have associated environmental factors of particular interest. By fitting various models which include different combinations of these covariates, analysing these models' estimated parameters, and by comparing them by standard means of model selection and goodness-of-fit, we may gain insight into the relationship between these covariates and the detection probabilities of individuals within the survey population. Finally, we hope to be able to reduce variance in estimates of abundance and density, by providing more information with which to assess detection probability than the coordinates of detected individuals alone.
+
+We examine the detection functions outlined in \cite{Borchers} and available as part of the associated code-base in order to gain an appreciation for their general form and to ascertain which parameters are most appropriate for covariate inclusion. It should be noted that these detection functions are formulated as hazards of detection, given the location of an animal. Therefore, the terms 'detection function' and 'hazard function' will be used interchangeably henceforth, to allow us to remain consistent with the previous code-base of the LT2D package. Although other, less used hazard functions are present within this code-base, they shall not be examined nor considered for covariate implementation.
+
+%h1
+\begingroup
+\large
+
+\begin{equation}
+h_1\left(y,x,\boldsymbol{\theta}\right) = \theta_1\left(y^2+x^2\right)^{-\frac{\theta_2}{2}}
+\end{equation}
+
+%ip1
+\begin{equation}
+ip_1\left(y,x,\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_2}\right)^2}}\right\}^{\theta_3 + 1}
+\end{equation}
+
+%ip2
+\begin{equation}
+ip_2\left(y,x,\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}
+\end{equation}
+
+%ep1
+
+\begin{equation}
+ep_1\left(y,x,\boldsymbol{\theta}\right) = \theta_1exp\left\{-\frac{x^{\theta_3}+y^{\theta_3}}{{\theta_2}^{\theta_3}}\right\}
+\end{equation}
+
+%ep2$
+\begin{equation}
+ep_2\left(y,x,\boldsymbol{\theta}\right) = \theta_1exp\left\{-\left[\left(\frac{x}{\theta_2}\right)^{\theta_3}+\left(\frac{y}{\theta_4}\right)^{\theta_3}\right]\right\}
+\end{equation}
+\endgroup
+
+
 \subsection{Understanding the LT2D software and its architecture}
 In order to implement covariate inclusion it is vital to first understand the inner workings of the LT2D package, so that we may ascertain both the complexity of the task at hand, and also the most efficient method with which to proceed. A simplification of the software's top-level fitting function call hierarchy (as of August 2017, before the project began), which retains the features of greatest importance and relevance is illustrated by figure 4.
 
@@ -121,8 +169,7 @@ In order to implement covariate inclusion it is vital to first understand the in
 \includegraphics[scale=0.507]{LT2Dprecov}
 \caption{Simplified call hierarchy for the top-level fitting function in the LT2D software}
 \end{figure}
-
-This diagram illustrates in more detail the inner workings of the LT2D package, compared to the specifications of the methodology laid out by Borchers and Cox (2017). Below a brief outline and description of each of the functions in figure 4 will be given, to give the reader a general understanding of how the LT2D package used to fit models to data before covariate implementation, and how it evaluates the likelihood function outlined in (Borchers and Cox, 2017).
+This diagram illustrates in more detail the inner workings of the LT2D package, compared to the specifications of the methodology laid out by \cite{Borchers}. Below a brief outline and description of each of the functions in figure 4 will be given, to give the reader a general understanding of how the LT2D package used to fit models to data before covariate implementation, and how it evaluates the likelihood function outlined in \cite{Borchers}.
 
 \begin{itemize}
 \item LT2D.fit ; A function which given an appropriate input R data.frame and model specification settings, produces a two-dimensional detection function distance sampling maximum likelihood estimation of model parameters and abundance.
@@ -158,8 +205,7 @@ This diagram illustrates in more detail the inner workings of the LT2D package, 
 \subsection{Covariate Inclusion into Abundance Estimation}
 \subsection{Modification of Goodness of Fit Functions}
 \subsection{Modification of Plot Functions}
-\subsection{Covariate implementation}
-\section{Usage of the new sofware}
+\section{Usage of the new software}
 \subsection{Model specification for the user}
 \subsection{Simulation studies}
 
@@ -167,5 +213,8 @@ This diagram illustrates in more detail the inner workings of the LT2D package, 
 \subsection{Additional desired features}
 \subsection{A proposed approach for mixture model incorporation}
 
+
+\bibliographystyle{apacite}
+\bibliography{Biblio}
 \end{multicols}
 \end{document}

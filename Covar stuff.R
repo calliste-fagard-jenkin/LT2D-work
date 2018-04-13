@@ -69,7 +69,8 @@ DensityNumberLookup = function(DensityName){
     stop('DensityName must be a character')
   }
   
-  if      (DensityName=='pi.norm' | DensityName=='pi.chnorm'){return(2)} 
+  if      (DensityName=='pi.norm' | DensityName=='pi.chnorm' |
+           DensityName=='pi.chnorm.i'){return(2)} 
   else if (DensityName=='pi.const' | DensityName=='pi.hnorm'){return(1)}
   else{stop('Density function not found')}
 }
@@ -883,7 +884,6 @@ data.with.b.conversion <- function(fityx.output.object=NULL,
 }
 
 h1=function(y,x,b){
-  'correct h1'
   theta1 = exp(b[[1]])         # Log link functions for parameters.
   theta2 = exp(b[[2]])
   return(theta1*(y^2+x^2)^(-theta2/2)) # return evaluated hazard
@@ -897,11 +897,43 @@ ip0=function(y,x,b)
   return(p)
 }
 
+ip1=function(y,x,b)
+{
+  theta1=exp(b[[1]])
+  theta2=exp(b[[2]])
+  theta3=exp(b[[3]])
+  p=theta1*(1/sqrt(1+(x/theta2)^2+(y/theta2)^2))^(theta3+1)
+  return(p)
+}
+
+ip2=function(y,x,b)
+{
+  theta1=exp(b[[1]])
+  theta2=exp(b[[2]])
+  theta3=exp(b[[3]])
+  theta4=exp(b[[4]])
+  p=theta1*(1/sqrt(1+(x/theta2)^2+(y/theta4)^2))^(theta3+1)
+  return(p)
+}
+
+
 ep1=function(y,x,b){
   g0 = plogis(b[[1]])
   theta = exp(c(b[[2]],b[[3]]))
   dF=function(y,x,theta) exp(-(x^theta[2]+y^theta[2])/(theta[1]^theta[2]))
   return(dF(y,x,theta)*g0)
+}
+
+ep2=function(y,x,b)
+{
+  g0=plogis(b[[1]])
+  theta1=exp(b[[2]])
+  theta2=exp(b[[3]])
+  theta3=exp(b[[4]])
+  dF=function(y,x,theta1,theta2,theta3){
+    return(exp(-((x/theta1)^theta2+(y/theta3)^theta2)))
+  }
+  return(dF(y,x,theta1,theta2,theta3)*g0)
 }
 
 #' @title Goodness-of-fit for LT2D models.

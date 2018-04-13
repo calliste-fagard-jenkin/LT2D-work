@@ -1,0 +1,27 @@
+\contentsline {section}{\numberline {1}Abstract}{2}
+\contentsline {section}{\numberline {2}Introduction}{2}
+\contentsline {subsection}{\numberline {2.1}Context and background}{2}
+\contentsline {subsubsection}{\numberline {2.1.1}What is distance sampling?}{2}
+\contentsline {subsubsection}{\numberline {2.1.2}The significance of 2D detection functions}{4}
+\contentsline {subsection}{\numberline {2.2}Previous contributions}{4}
+\contentsline {subsubsection}{\numberline {2.2.1}Object Oriented Additions}{4}
+\contentsline {subsubsection}{\numberline {2.2.2}Adding in Abundance Estimation}{5}
+\contentsline {subsubsection}{\numberline {2.2.3}Rounded Angles}{5}
+\contentsline {subsubsection}{\numberline {2.2.4}New Perpendicular Density}{5}
+\contentsline {subsubsection}{\numberline {2.2.5}Concatenation of GoF Functions}{5}
+\contentsline {subsubsection}{\numberline {2.2.6}Model Collecting and Summarising}{5}
+\contentsline {subsection}{\numberline {2.3}Project objectives and outline}{5}
+\contentsline {section}{\numberline {3}Algorithms and Implementation}{6}
+\contentsline {subsection}{\numberline {3.1}Covariates; why include them, and how?}{6}
+\contentsline {subsection}{\numberline {3.2}Understanding the LT2D software and its architecture}{7}
+\contentsline {subsection}{\numberline {3.3}Covariate Inclusion into the Likelihood}{8}
+\contentsline {subsection}{\numberline {3.4}Covariate Inclusion into Abundance Estimation}{8}
+\contentsline {subsection}{\numberline {3.5}Modification of Goodness of Fit Functions}{8}
+\contentsline {subsection}{\numberline {3.6}Modification of Plot Functions}{8}
+\contentsline {section}{\numberline {4}Usage of the new software}{8}
+\contentsline {subsection}{\numberline {4.1}Model specification for the user}{8}
+\contentsline {subsection}{\numberline {4.2}Simulation studies}{8}
+\contentsline {section}{\numberline {5}Going forwards}{8}
+\contentsline {subsection}{\numberline {5.1}Additional desired features}{8}
+\contentsline {subsection}{\numberline {5.2}A proposed approach for mixture model incorporation}{8}
+\contentsline {section}{References}{8}

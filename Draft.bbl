@@ -1,0 +1,139 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Borchers%
+, Buckland%
+\BCBL {}\ \BBA {} Zucchini%
+}{%
+Borchers%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2002}}%
+}]{%
+EAB}
+\APACinsertmetastar {%
+EAB}%
+\begin{APACrefauthors}%
+Borchers, D\BPBI L.%
+, Buckland, S\BPBI T.%
+\BCBL {}\ \BBA {} Zucchini, W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2002}.
+\newblock
+\APACrefbtitle {Estimating animal abundance} {Estimating animal abundance}.
+\newblock
+\APACaddressPublisher{}{Springer, London}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Borchers%
+\ \BBA {} Cox%
+}{%
+Borchers%
+\ \BBA {} Cox%
+}{%
+{\protect \APACyear {2017}}%
+}]{%
+Borchers}
+\APACinsertmetastar {%
+Borchers}%
+\begin{APACrefauthors}%
+Borchers, D\BPBI L.%
+\BCBT {}\ \BBA {} Cox, M\BPBI J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2017}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Distance sampling detection functions: 2D or not 2D?}
+  {Distance sampling detection functions: 2d or not 2d?}{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Biometrics}{73}{2}{593-602}.
+\newblock
+\begin{APACrefDOI} \doi{10.1111/biom.12581} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Buckland%
+\ \protect \BOthers {.}}{%
+Buckland%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2015}}%
+}]{%
+Buckland2004}
+\APACinsertmetastar {%
+Buckland2004}%
+\begin{APACrefauthors}%
+Buckland, S\BPBI T.%
+, Anderson, D\BPBI R.%
+, Burnham, K\BPBI P.%
+, Laake, J\BPBI L.%
+, Borchers, D\BPBI L.%
+\BCBL {}\ \BBA {} Thomas, L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2015}.
+\newblock
+\APACrefbtitle {Advanced Distance Sampling} {Advanced distance sampling}.
+\newblock
+\APACaddressPublisher{}{Oxford University Press, Oxford.}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Buckland%
+, Rexstad%
+, Marques%
+\BCBL {}\ \BBA {} Oedekoven%
+}{%
+Buckland%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2004}}%
+}]{%
+DS2015}
+\APACinsertmetastar {%
+DS2015}%
+\begin{APACrefauthors}%
+Buckland, S\BPBI T.%
+, Rexstad, E\BPBI A.%
+, Marques, T\BPBI A.%
+\BCBL {}\ \BBA {} Oedekoven, C\BPBI S.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2004}.
+\newblock
+\APACrefbtitle {Distance Sampling} {Distance sampling}.
+\newblock
+\APACaddressPublisher{}{Springer}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Link%
+}{%
+Link%
+}{%
+{\protect \APACyear {2003}}%
+}]{%
+Link}
+\APACinsertmetastar {%
+Link}%
+\begin{APACrefauthors}%
+Link, W\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2003}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Nonidentifiability of Population Size from
+  Capture‐Recapture Data with Heterogeneous Detection Probabilities}
+  {Nonidentifiability of population size from capture‐recapture data with
+  heterogeneous detection probabilities}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Biometrics}{59}{4}{1123-1130}.
+\newblock
+\begin{APACrefDOI} \doi{10.1111/j.0006-341X.2003.00129.x} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
