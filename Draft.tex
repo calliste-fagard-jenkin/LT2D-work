@@ -120,7 +120,7 @@ The project aims to include the ability for users to specify covariate inclusion
 
 All code calculating estimates of abundance ($\hat{N}$), average detection probability ($\hat{p}$) and AIC should be modified to work with all reasonable choices of covariates and related linear predictors. S3 methods should be written for the plot function to allow it to handle fitted models which contain cases of both discrete and continuous covariate inclusion. The goodness of fit function should also be generalised to use the Kolmogorov-Smirnov and Cramer Von Mises tests when the fitted model has included covariates. The inclusion of code which produces (non-parametric) bootstrap confidence intervals of estimated abundance would also be desirable, for both covariate-including and covariate-excluding models.
 
-\section{Algorithms and Implementation}
+\section{Implementation}
 \subsection{Covariates; why include them, and how?}
 There are many reasons for the desirability of covariate inclusion within the LT2D package. Firstly, when dealing with animal populations which are heterogeneous with respect to detection probability (that is, individuals in the population of interest do not all share a common detection function due to their varying behaviours or characteristics), failing to take this into account often leads to biased estimates of abundance and can even lead to an inability to distinguish amongst reasonable models \cite{Link}, this can be especially prominent in Mark-Recapture analyses, which are the subject of the aforementioned citation. Although distance sampling benefits from the property of pooling robustness, and hence can cope with reasonable levels of heterogeneity within a population \cite{Buckland2004}, 2D detection sampling is based more fundamentally on time-to-detection models and survival analysis, meaning there is no theoretical guarantee that it also shares this robustness with respect to heterogeneous populations. Secondly, we may be interested in performing an analysis on data for which we have associated environmental factors of particular interest. By fitting various models which include different combinations of these covariates, analysing these models' estimated parameters, and by comparing them by standard means of model selection and goodness-of-fit, we may gain insight into the relationship between these covariates and the detection probabilities of individuals within the survey population. Finally, we hope to be able to reduce variance in estimates of abundance and density, by providing more information with which to assess detection probability than the coordinates of detected individuals alone.
 
@@ -131,31 +131,76 @@ We examine the detection functions outlined in \cite{Borchers} and available as 
 \large
 
 \begin{equation}
-h_1\left(y,x,\boldsymbol{\theta}\right) = \theta_1\left(y^2+x^2\right)^{-\frac{\theta_2}{2}}
+h_1\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left(y^2+x^2\right)^{-\frac{\theta_2}{2}}
 \end{equation}
 
 %ip1
 \begin{equation}
-ip_1\left(y,x,\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_2}\right)^2}}\right\}^{\theta_3 + 1}
+ip_1\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_2}\right)^2}}\right\}^{\theta_3 + 1}
 \end{equation}
 
 %ip2
 \begin{equation}
-ip_2\left(y,x,\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}
+ip_2\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}
 \end{equation}
 
 %ep1
 
 \begin{equation}
-ep_1\left(y,x,\boldsymbol{\theta}\right) = \theta_1exp\left\{-\frac{x^{\theta_3}+y^{\theta_3}}{{\theta_2}^{\theta_3}}\right\}
+ep_1\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\left(\frac{x}{\theta_2}\right)^{\theta_3}+\left(\frac{y}{\theta_2}\right)^{\theta_3}\right\}
 \end{equation}
 
 %ep2$
 \begin{equation}
-ep_2\left(y,x,\boldsymbol{\theta}\right) = \theta_1exp\left\{-\left[\left(\frac{x}{\theta_2}\right)^{\theta_3}+\left(\frac{y}{\theta_4}\right)^{\theta_3}\right]\right\}
+ep_2\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\left(\frac{x}{\theta_2}\right)^{\theta_3}+\left(\frac{y}{\theta_4}\right)^{\theta_3}\right\}
 \end{equation}
 \endgroup
 
+It should be noted that we introduce a log link function to all $\theta$ parameters, in order to allow numerical optimisation routines tasked with finding the maximum likelihood estimates of these parameters the possibility to perform their search anywhere on the real axis. This is with the exception of $ep_1$ and $ep_2$, which use a logit link function for their $\theta_1$ parameters instead.
+
+We notice that all of the above hazard functions share a similar parameter structure. Firstly, they all contain a scale parameter which multiplies the whole function. This is $\theta_1$, which can be interpreted as an 'intercept' for detection probability, given an increase in its value will increase the detection function's value for a given $x$ and $y$, and a reduction in its value will cause the opposite. Secondly, all hazard functions contain parameters which affect the behaviour of the function in the $x$ and $y$ directions. Sometimes the behaviour in both these directions is determined by a single parameter (such as $h_1$, $ip_1$ and $ep_1$, which have both their $x$ and $y$ direction dependent on $\theta_2$), however, in the cases of $ip_2$ and $ep_2$, the inclusion of a $\theta_4$ parameter allows the behaviour in the $y$ direction to be different to that in the $x$ direction.
+
+In the case of $\theta_1$, modifying this parameter to include covariates would enable us to allow for heterogeneity which we believe affects an individual's detection probability, but not the shape of its detection function. In the case of $\theta_2$, covariate inclusion would cause changes in detection function shape in either the $x$ direction alone, or in the $x$ and $y$ directions in the same way, depending on the user's selection of hazard within their model criteria. Any change in $\theta_4$ would cause a change in detection function shape in the $y$ direction alone. We propose the following reformulations of $\theta_1$, $\theta_2$ and $\theta_4$ which allow them to be modelled as the combination of an intercept and a user-specified formula:
+
+\begingroup
+\large
+\begin{equation}
+\mathcal{G}_m\left(\theta_1\right) = \lambda_1 + \mathcal{C}_i\left(\boldsymbol{\gamma}_i\right)
+\end{equation}
+
+\begin{equation}
+ln\left(\theta_2\right) = \lambda_2 + \mathcal{C}_x\left(\boldsymbol{\gamma}_x\right)
+\end{equation}
+
+\begin{equation}
+ln\left(\theta_4\right) = \lambda_4 + \mathcal{C}_y\left(\boldsymbol{\gamma}_y\right)
+\end{equation}
+\endgroup
+
+Where $\mathcal{G}_m$ is the link function appropriate to $\theta_1$ given the detection function given by model specification $m$ the user has selected, $\lambda_1$, $\lambda_2$ and $\lambda_4$ are intercept parameters for the $\theta$ parameter with the corresponding subscript, $\mathcal{C}_i$ is the user specified formula for covariate inclusion in the detection function's intercept, $\mathcal{C}_x$ is the user specified formula for covariate inclusion in the $x$ direction, and $\mathcal{C}_y$ is the user specified formula for covariate inclusion in the $y$ direction. The $\boldsymbol{\gamma}$ are vectors of parameters of the appropriate length required for the corresponding covariate relationship, $\mathcal{C}$. We must have $\mathcal{C}_x=\mathcal{C}_y$ if the detection function specified within model $m$ is $h_1$, $ip_1$ or $ep1$, since $\theta_2$ will affect the detection function's shape in both the $x$ and $y$ directions.
+
+Before considering an example model specification, we introduce the four perpendicular density functions within the LT2D package which allow the methodology to account for (and describe) the nature of the observed responsive movement:
+
+\begingroup
+\large
+
+\begin{equation}
+\pi_U\left(x;\boldsymbol{\phi}\right) = e^{-\frac{x^2}{2\phi_1^2}}\left\{\int_0^w{e^{-{\frac{x^2}{2\phi_1^2}}}\ \mathrm{d}x}\right\}^{-1}
+\end{equation}
+
+\begin{equation}
+\pi_N\left(x;\boldsymbol{\phi}\right) = e^{-\frac{\left(x-\phi_2\right)^2}{2\phi_1^2}}\left\{\int_0^w{e^{-\frac{\left(x-\phi_2\right)^2}{2\phi_1^2}}\mathrm{d}x}\right\}^{-1}
+\end{equation}
+
+\begin{equation}
+\pi_{CN}\left(x;\boldsymbol{\phi}\right) = \left\{1-e^{-\frac{x^2}{2\phi_1^2}}\right\}
+\end{equation}
+\endgroup
+
+ We consider an example model $m$ specified by a user of the LT2D package, which selects an $ep_2$ detection function. Data collected by the user includes all of the standard information required to perform an estimate of abundance through conventional distance sampling (CDS), as well as the forward distance of each detection, a factor covariate $species$, a continuous covariate $forest.cover$ and another factor covariate $size$, which for each detection refers to the number of individuals in the detected group. The user has specified that the $i$ direction (the intercept) should include the relationship $i\sim forest.cover$
+
+
+It becomes clear that allowing the user a selection of choices for covariate inclusion quickly becomes an issue of not only statistical theory, but also a problem rooted in software design. We must construct a general methodology which allows users to specify
 
 \subsection{Understanding the LT2D software and its architecture}
 In order to implement covariate inclusion it is vital to first understand the inner workings of the LT2D package, so that we may ascertain both the complexity of the task at hand, and also the most efficient method with which to proceed. A simplification of the software's top-level fitting function call hierarchy (as of August 2017, before the project began), which retains the features of greatest importance and relevance is illustrated by figure 4.
