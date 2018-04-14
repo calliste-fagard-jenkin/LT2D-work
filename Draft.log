@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  14 APR 2018 18:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  14 APR 2018 20:03
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -817,27 +817,21 @@ Now handling font encoding U ...
    defining Unicode char U+2026 (decimal 8230)
    defining Unicode char U+2122 (decimal 8482)
    defining Unicode char U+2423 (decimal 9251)
-)
-\@indexfile=\write4
-\openout4 = `Draft.idx'.
-
-
-Writing index file Draft.idx
-(Draft.aux)
+) (Draft.aux)
 \openout1 = `Draft.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
-LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
+LaTeX Font Info:    ... okay on input line 8.
 
 (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -943,88 +937,104 @@ LaTeX Info: Redefining \BHBI on input line 130.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 11.
+(Font)              <12> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 11.
+(Font)              <8> on input line 10.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 11.
+(Font)              <6> on input line 10.
 <Logo.png, id=4, 99.37125pt x 120.45pt>
 File: Logo.png Graphic file (type png)
 <use Logo.png>
-Package pdftex.def Info: Logo.png  used on input line 13. on input line 13.
+Package pdftex.def Info: Logo.png  used on input line 12. on input line 12.
 Package pdftex.def Info: Requested size: 99.371pt x 120.44969pt on input line 1
-3.
+2.
 [1
 
-{C:/Users/Cal/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./Logo.png>]
-<StripSampling.jpg, id=13, 385.44pt x 384.6872pt>
+{C:/Users/Cal/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./Logo.png>] 
+(Draft.toc
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <10.95> on input line 2.
+)
+\tf@toc=\write4
+\openout4 = `Draft.toc'.
+
+ [1]
+<StripSampling.jpg, id=20, 385.44pt x 384.6872pt>
 File: StripSampling.jpg Graphic file (type jpg)
 <use StripSampling.jpg>
-Package pdftex.def Info: StripSampling.jpg  used on input line 38. on input lin
-e 38.
+Package pdftex.def Info: StripSampling.jpg  used on input line 50. on input lin
+e 50.
 Package pdftex.def Info: Requested size: 192.71953pt x 192.34312pt on input lin
-e 38.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 42.
-<DistanceHist.png, id=14, 451.6875pt x 542.025pt>
+e 50.
+ [2]
+<DistanceHist.png, id=24, 451.6875pt x 542.025pt>
 File: DistanceHist.png Graphic file (type png)
 <use DistanceHist.png>
-Package pdftex.def Info: DistanceHist.png  used on input line 57. on input line
- 57.
+Package pdftex.def Info: DistanceHist.png  used on input line 73. on input line
+ 73.
 Package pdftex.def Info: Requested size: 225.84319pt x 271.01183pt on input lin
-e 57.
- [1 <./StripSampling.jpg>]
-<DistHistDetec.png, id=24, 377.91188pt x 542.025pt>
+e 73.
+ [3 <./StripSampling.jpg> <./DistanceHist.png>]
+<DistHistDetec.png, id=32, 377.91188pt x 542.025pt>
 File: DistHistDetec.png Graphic file (type png)
 <use DistHistDetec.png>
-Package pdftex.def Info: DistHistDetec.png  used on input line 79. on input lin
-e 79.
+Package pdftex.def Info: DistHistDetec.png  used on input line 92. on input lin
+e 92.
 Package pdftex.def Info: Requested size: 181.52872pt x 260.35927pt on input lin
-e 79.
- [2 <./DistanceHist.png>] [3 <./DistHistDetec.png>]
-[4] [5] [6]
-<LT2Dprecov.png, id=51, 453.94594pt x 459.96844pt>
+e 92.
+ [4 <./DistHistDetec.png>] [5] [6] [7]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 215.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 215.
+<LT2Dprecov.png, id=54, 453.94594pt x 459.96844pt>
 File: LT2Dprecov.png Graphic file (type png)
 <use LT2Dprecov.png>
-Package pdftex.def Info: LT2Dprecov.png  used on input line 214. on input line 
-214.
+Package pdftex.def Info: LT2Dprecov.png  used on input line 236. on input line 
+236.
 Package pdftex.def Info: Requested size: 230.15173pt x 233.20515pt on input lin
-e 214.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 220.
+e 236.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 242.
 
- ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 220.
- [7 <./LT2Dprecov.png>] (Draft.bbl) [8] (Draft.aux) ) 
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 242.
+ [8 <./LT2Dprecov.png>] (Draft.bbl [9]) [10] (Draft.aux) ) 
 Here is how much of TeX's memory you used:
- 13759 strings out of 493312
- 269075 string characters out of 3138905
- 340352 words of memory out of 3000000
- 17008 multiletter control sequences out of 15000+200000
- 12232 words of font info for 42 fonts, out of 3000000 for 9000
+ 13778 strings out of 493312
+ 269324 string characters out of 3138905
+ 341404 words of memory out of 3000000
+ 17019 multiletter control sequences out of 15000+200000
+ 14989 words of font info for 51 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,8n,54p,1767b,357s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 2
-.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/am
-sfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.
-pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/P
-rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program 
-Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiK
-TeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/f
-onts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
-1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
-/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.p
-fb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on Draft.pdf (9 pages, 344384 bytes).
+ 55i,7n,54p,1767b,397s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/
+fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/ty
+pe1/public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publ
+ic/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfo
+nts/cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
+mmi5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb>
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 
+2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts
+/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsf
+onts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+r6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:
+/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program F
+iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiK
+TeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmti10.pfb>
+Output written on Draft.pdf (11 pages, 392966 bytes).
 PDF statistics:
- 113 PDF objects out of 1000 (max. 8388607)
+ 139 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  38 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -5,7 +5,6 @@
 \date{January 2018}
 \author{Calliste Fagard-Jenkin}
 \inputencoding{utf8}
-\makeindex
 \begin{document}
 \pagenumbering{gobble}
 \maketitle
@@ -15,13 +14,26 @@
 
 
 \newpage
+\emph{I  certify  that  this  project  report  has  been  written  by  me,  is  a  record  of  work  carried  out  by  me,  and  is essentially different from work undertaken for any other purpose or assessment.}
 
-\begin{multicols}{2}
+\tableofcontents
 \pagenumbering{arabic}
+\newpage
+\begin{multicols}{2}
+
 \newpage
 
 \section{Abstract}
 This project focuses on line-transect distance sampling; a hybrid method which uses both design and model based inference to produce estimates on the sizes of animal populations. An extension of distance sampling by \cite{Borchers} allows for the use of 2D detection functions, describing the probability of detection of an animal in both forward and perpendicular directions. This methodology produces estimates of abundance which are far less biased when compared to estimates produced by conventional distance sampling, when the animals in the population of interest display responsive movement. The raison d'être of this project is to further extend the code-base of the \cite{Borchers} methodology's R package (called LT2D) to include the possibility of covariate inclusion to cope with data that are heterogeneous with respect to detection probability, and to provide a number of illustrative analyses on a range of simulated datasets to demonstrate the improved functionality.
+
+\subsection{Intended readership and summary of objectives}
+This project focuses heavily on computation within statistical ecology. Good knowledge of undergraduate statistics is preferable in order to understand the contents. Ideally the reader has an understanding of animal abundance estimation (specifically distance sampling) and has experience analysing and handling datasets which include covariates. This can be summarised by a level of statistical knowledge contained within the MT3507 and MT3508 modules, with knowledge of content within the MT5751 module being ideal.
+
+The intended demographic of readers is researches in ecological statistics, as well as ecologists who will benefit from reading the latter sections of the project in order to learn how to use the new LT2D software to perform 2D detection function distance sampling analyses on data which display responsive movement with respect to observers, as well as heterogeneity with respect to detection probability. 
+
+This project includes sections which encapsulate computer-theoretic as well as purely statistical content, in order to explain issues of software design, implementation and consideration of user interaction. This is done both to give the reader an in-depth appreciation of how the project achieved its desired outcomes and also to reflect the distribution of work hours the project required. The code-base being modified as part of this project is substantial and complicated, and therefore any implementation of added functionality requires a significant time commitment.
+
+succinctly, the aim of this project is to implement covariate inclusion into the hazard detection functions in the LT2D package resulting from \cite{Borchers}, to add a bootstrap measure of uncertainty on estimates of abundance into the package, to modify goodness of fit and plotting functions to handle covariate-including models and to provide example analyses of simulated data to provide ecologists with knowledge on how to analyse their own data with the new package.
 
 \section{Introduction}
 \subsection{Context and background}
@@ -53,13 +65,14 @@ which is a simple rescaling of the number of observed animals which accounts for
 
 
 This again is nothing more than rescaling the estimate by an appropriate constant, to account for animals that we believe were present, but not detected by any observers. 
+
+
+The real hard work begins when we start to ask ourselves how we can estimate this value of average detection probability, which turns out not to be so simple. However, distance sampling comes to the rescue!  In line transect distance sampling, one or multiple observers travel along a transect line which has been pre-determined by the experimental design. Observers look to the left and right of the line as they travel along its path (either on foot, by plane, boat, car etc) and record the perpendicular distance at which each observed animal was detected. Once we pool together all these perpendicular distances for all detected animals, we expect to see a histogram similar to figure 2, which clearly displays that the frequency of detection drops as perpendicular distance increases. This trend has a rather obvious explanation, owing to the fact that animals become harder and harder to see the farther away they find themselves from the observer(s).
+
 \begin{figure}[H]
 \includegraphics[scale=0.5]{DistanceHist}
 \caption{Histogram of perpendicular distances of detected animals}
 \end{figure}
-
-The real hard work begins when we start to ask ourselves how we can estimate this value of average detection probability, which turns out not to be so simple. However, distance sampling comes to the rescue!  In line transect distance sampling, one or multiple observers travel along a transect line which has been pre-determined by the experimental design. Observers look to the left and right of the line as they travel along its path (either on foot, by plane, boat, car etc) and record the perpendicular distance at which each observed animal was detected. Once we pool together all these perpendicular distances for all detected animals, we expect to see a histogram similar to figure 2, which clearly displays that the frequency of detection drops as perpendicular distance increases. This trend has a rather obvious explanation, owing to the fact that animals become harder and harder to see the farther away they find themselves from the observer(s).
-
 
 
 A model-based approach which involves the fitting of a detection function, allows us to estimate the way in which distance affects detection probability. Figure 3 illustrates this by overlaying a (scaled) half-normal detection function over simulated detection data. Over the course of an analysis, multiple detection functions will be fitted to the data and the most appropriate one selected. In the case of the Distance package written and maintained by the Centre for Research into Ecological and Environmental Modelling, Saint Andrews, this is done by the numerical computation of maximum likelihood estimates of the detection function parameters, and model selection is determined by goodness-of-fit tests as well as information criteria such as Akaike's Information Criterion.
@@ -193,14 +206,23 @@ Before considering an example model specification, we introduce the four perpend
 \end{equation}
 
 \begin{equation}
-\pi_{CN}\left(x;\boldsymbol{\phi}\right) = \left\{1-e^{-\frac{x^2}{2\phi_1^2}}\right\}
+\pi_{CN}\left(x;\boldsymbol{\phi}\right) = \left\{1-e^{-\frac{x^2}{2\phi_1^2}}\right\}\left\{w - \int_0^w{e^{-{\frac{x^2}{2\phi_1^2}}}\ \mathrm{d}x}\right\}^{-1}
 \end{equation}
 \endgroup
 
- We consider an example model $m$ specified by a user of the LT2D package, which selects an $ep_2$ detection function. Data collected by the user includes all of the standard information required to perform an estimate of abundance through conventional distance sampling (CDS), as well as the forward distance of each detection, a factor covariate $species$, a continuous covariate $forest.cover$ and another factor covariate $size$, which for each detection refers to the number of individuals in the detected group. The user has specified that the $i$ direction (the intercept) should include the relationship $i\sim forest.cover$
+\begingroup
+\small
+\begin{equation}
+\pi_{CNi}\left(x;\boldsymbol{\phi}\right) =  \left\{1-\phi_2e^{-\frac{x^2}{2\phi_1^2}}\right\}\left\{w - \phi_2\int_0^w{e^{-{\frac{x^2}{2\phi_1^2}}}\ \mathrm{d}x}\right\}^{-1}
+\end{equation}
+\endgroup
+
+Equation (12), known as 'pi.const' throughout the LT2D package is the perpendicular density which **TO FINISH**
+
+We consider an example model $m$ specified by a user of the LT2D package, which selects an $ep_2$ detection function. Data collected by the user includes all of the standard information required to perform an estimate of abundance through conventional distance sampling (CDS), as well as the forward distance of each detection, a factor covariate $species$, a continuous covariate $forest.cover$ and another factor covariate $size$, which for each detection refers to the number of individuals in the detected group. The user has specified that the $i$ direction (the intercept) should include the relationship $i\sim forest.cover$ **TO FINISH**
 
 
-It becomes clear that allowing the user a selection of choices for covariate inclusion quickly becomes an issue of not only statistical theory, but also a problem rooted in software design. We must construct a general methodology which allows users to specify
+It becomes clear that allowing the user a selection of choices for covariate inclusion quickly becomes an issue of not only statistical theory, but also a problem rooted in software design. We must construct a general methodology which allows users to specify **TO FINISH**
 
 \subsection{Understanding the LT2D software and its architecture}
 In order to implement covariate inclusion it is vital to first understand the inner workings of the LT2D package, so that we may ascertain both the complexity of the task at hand, and also the most efficient method with which to proceed. A simplification of the software's top-level fitting function call hierarchy (as of August 2017, before the project began), which retains the features of greatest importance and relevance is illustrated by figure 4.
