@@ -14,15 +14,15 @@
 \contentsline {subsection}{\numberline {2.3}Project objectives and outline}{6}
 \contentsline {section}{\numberline {3}Implementation}{6}
 \contentsline {subsection}{\numberline {3.1}Covariates; why include them, and how?}{6}
-\contentsline {subsection}{\numberline {3.2}Understanding the LT2D software and its architecture}{8}
-\contentsline {subsection}{\numberline {3.3}Covariate Inclusion into the Likelihood}{9}
-\contentsline {subsection}{\numberline {3.4}Covariate Inclusion into Abundance Estimation}{9}
-\contentsline {subsection}{\numberline {3.5}Modification of Goodness of Fit Functions}{9}
-\contentsline {subsection}{\numberline {3.6}Modification of Plot Functions}{9}
-\contentsline {section}{\numberline {4}Usage of the new software}{9}
-\contentsline {subsection}{\numberline {4.1}Model specification for the user}{9}
-\contentsline {subsection}{\numberline {4.2}Simulation studies}{9}
-\contentsline {section}{\numberline {5}Going forwards}{9}
-\contentsline {subsection}{\numberline {5.1}Additional desired features}{9}
-\contentsline {subsection}{\numberline {5.2}A proposed approach for mixture model incorporation}{9}
-\contentsline {section}{References}{9}
+\contentsline {subsection}{\numberline {3.2}Understanding the LT2D software and its architecture}{9}
+\contentsline {subsection}{\numberline {3.3}Covariate Inclusion into the Likelihood}{10}
+\contentsline {subsection}{\numberline {3.4}Covariate Inclusion into Abundance Estimation}{10}
+\contentsline {subsection}{\numberline {3.5}Modification of Goodness of Fit Functions}{10}
+\contentsline {subsection}{\numberline {3.6}Modification of Plot Functions}{10}
+\contentsline {section}{\numberline {4}Usage of the new software}{10}
+\contentsline {subsection}{\numberline {4.1}Model specification for the user}{10}
+\contentsline {subsection}{\numberline {4.2}Simulation studies}{10}
+\contentsline {section}{\numberline {5}Going forwards}{10}
+\contentsline {subsection}{\numberline {5.1}Additional desired features}{10}
+\contentsline {subsection}{\numberline {5.2}A proposed approach for mixture model incorporation}{10}
+\contentsline {section}{References}{10}
