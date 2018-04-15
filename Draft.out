@@ -1,0 +1,21 @@
+\BOOKMARK [2][]{Outline0.1}{Abstract}{}% 1
+\BOOKMARK [3][]{Outline0.1.1.2}{Intended readership and summary of objectives}{Outline0.1}% 2
+\BOOKMARK [2][]{Outline0.2}{Introduction}{}% 3
+\BOOKMARK [3][]{Outline0.2.1.4}{Context and background}{Outline0.2}% 4
+\BOOKMARK [3][]{Outline0.2.2.15}{Previous contributions}{Outline0.2}% 5
+\BOOKMARK [3][]{Outline0.2.3.19}{Project objectives and outline}{Outline0.2}% 6
+\BOOKMARK [2][]{Outline0.3}{Implementation}{}% 7
+\BOOKMARK [3][]{Outline0.3.1.21}{Covariates; why include them, and how?}{Outline0.3}% 8
+\BOOKMARK [3][]{Outline0.3.2.30}{Understanding the LT2D software and its architecture}{Outline0.3}% 9
+\BOOKMARK [3][]{Outline0.3.3.35}{Implementation of covariates into the likelihood}{Outline0.3}% 10
+\BOOKMARK [3][]{Outline0.3.4.40}{Covariate inclusion into abundance estimation}{Outline0.3}% 11
+\BOOKMARK [3][]{Outline0.3.5.41}{Modification of goodness of fit functions}{Outline0.3}% 12
+\BOOKMARK [3][]{Outline0.3.6.43}{Implementation of confidence intervals}{Outline0.3}% 13
+\BOOKMARK [3][]{Outline0.3.7.45}{Modification of plot functions}{Outline0.3}% 14
+\BOOKMARK [2][]{Outline0.4}{Usage of the new software}{}% 15
+\BOOKMARK [3][]{Outline0.4.1.47}{Model specification for the user}{Outline0.4}% 16
+\BOOKMARK [3][]{Outline0.4.2.47}{Simulation studies}{Outline0.4}% 17
+\BOOKMARK [2][]{Outline0.5}{Going forwards}{}% 18
+\BOOKMARK [3][]{Outline0.5.1.47}{Additional desired features}{Outline0.5}% 19
+\BOOKMARK [3][]{Outline0.5.2.47}{A proposed approach for mixture model incorporation}{Outline0.5}% 20
+\BOOKMARK [2][]{Outline0.6}{References}{}% 21

@@ -1,0 +1,63 @@
+\headcommand {\slideentry {0}{0}{1}{1/1}{}{0}}
+\headcommand {\beamer@framepages {1}{1}}
+\headcommand {\beamer@sectionpages {1}{1}}
+\headcommand {\beamer@subsectionpages {1}{1}}
+\headcommand {\sectionentry {1}{Abstract}{2}{Abstract}{0}}
+\headcommand {\beamer@subsectionpages {2}{1}}
+\headcommand {\beamer@subsectionentry {0}{1}{1}{2}{Intended readership and summary of objectives}}
+\headcommand {\beamer@sectionpages {2}{3}}
+\headcommand {\beamer@subsectionpages {2}{3}}
+\headcommand {\sectionentry {2}{Introduction}{4}{Introduction}{0}}
+\headcommand {\beamer@subsectionpages {4}{3}}
+\headcommand {\beamer@subsectionentry {0}{2}{1}{4}{Context and background}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{1}{1}{4}{What is distance sampling?}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{1}{2}{12}{The significance of 2D detection functions}}
+\headcommand {\beamer@subsectionpages {4}{14}}
+\headcommand {\beamer@subsectionentry {0}{2}{2}{15}{Previous contributions}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{1}{16}{Object Oriented Additions}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{2}{16}{Adding in Abundance Estimation}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{3}{17}{Rounded Angles}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{4}{18}{New Perpendicular Density}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{5}{18}{Concatenation of GoF Functions}}
+\headcommand {\beamer@subsubsectionentry {0}{2}{2}{6}{18}{Model Collecting and Summarising}}
+\headcommand {\beamer@subsectionpages {15}{18}}
+\headcommand {\beamer@subsectionentry {0}{2}{3}{19}{Project objectives and outline}}
+\headcommand {\beamer@sectionpages {4}{20}}
+\headcommand {\beamer@subsectionpages {19}{20}}
+\headcommand {\sectionentry {3}{Implementation}{21}{Implementation}{0}}
+\headcommand {\beamer@subsectionpages {21}{20}}
+\headcommand {\beamer@subsectionentry {0}{3}{1}{21}{Covariates; why include them, and how?}}
+\headcommand {\beamer@subsectionpages {21}{29}}
+\headcommand {\beamer@subsectionentry {0}{3}{2}{30}{Understanding the LT2D software and its architecture}}
+\headcommand {\beamer@subsectionpages {30}{34}}
+\headcommand {\beamer@subsectionentry {0}{3}{3}{35}{Implementation of covariates into the likelihood}}
+\headcommand {\beamer@subsectionpages {35}{39}}
+\headcommand {\beamer@subsectionentry {0}{3}{4}{40}{Covariate inclusion into abundance estimation}}
+\headcommand {\beamer@subsectionpages {40}{40}}
+\headcommand {\beamer@subsectionentry {0}{3}{5}{41}{Modification of goodness of fit functions}}
+\headcommand {\beamer@subsectionpages {41}{42}}
+\headcommand {\beamer@subsectionentry {0}{3}{6}{43}{Implementation of confidence intervals}}
+\headcommand {\beamer@subsectionpages {43}{44}}
+\headcommand {\beamer@subsectionentry {0}{3}{7}{45}{Modification of plot functions}}
+\headcommand {\beamer@sectionpages {21}{45}}
+\headcommand {\beamer@subsectionpages {45}{45}}
+\headcommand {\sectionentry {4}{Usage of the new software}{46}{Usage of the new software}{0}}
+\headcommand {\beamer@subsectionpages {46}{46}}
+\headcommand {\beamer@subsectionentry {0}{4}{1}{47}{Model specification for the user}}
+\headcommand {\beamer@subsectionpages {47}{46}}
+\headcommand {\beamer@subsectionentry {0}{4}{2}{47}{Simulation studies}}
+\headcommand {\beamer@sectionpages {46}{46}}
+\headcommand {\beamer@subsectionpages {47}{46}}
+\headcommand {\sectionentry {5}{Going forwards}{47}{Going forwards}{0}}
+\headcommand {\beamer@subsectionpages {47}{46}}
+\headcommand {\beamer@subsectionentry {0}{5}{1}{47}{Additional desired features}}
+\headcommand {\beamer@subsectionpages {47}{46}}
+\headcommand {\beamer@subsectionentry {0}{5}{2}{47}{A proposed approach for mixture model incorporation}}
+\headcommand {\beamer@sectionpages {47}{46}}
+\headcommand {\beamer@subsectionpages {47}{46}}
+\headcommand {\sectionentry {6}{References}{47}{References}{0}}
+\headcommand {\beamer@partpages {1}{47}}
+\headcommand {\beamer@subsectionpages {1}{47}}
+\headcommand {\beamer@sectionpages {1}{47}}
+\headcommand {\beamer@documentpages {47}}
+\headcommand {\gdef \inserttotalframenumber {1}}

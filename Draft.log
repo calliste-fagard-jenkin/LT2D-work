@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  15 APR 2018 10:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  15 APR 2018 22:44
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -527,6 +527,61 @@ LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
 LaTeX Info: Redefining \[ on input line 2817.
 LaTeX Info: Redefining \] on input line 2818.
 )
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.sty
+\lst@mode=\count132
+\lst@gtempboxa=\box68
+\lst@token=\toks39
+\lst@length=\count133
+\lst@currlwidth=\dimen190
+\lst@column=\count134
+\lst@pos=\count135
+\lst@lostspace=\dimen191
+\lst@width=\dimen192
+\lst@newlines=\count136
+\lst@lineno=\count137
+\lst@maxwidth=\dimen193
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+\c@lstnumber=\count138
+\lst@skipnumbers=\count139
+\lst@framebox=\box69
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.cfg
+File: listings.cfg 2015/06/04 1.6 listings configuration
+))
+Package: listings 2015/06/04 1.6 (Carsten Heinz)
+
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\booktabs\booktabs.sty
+Package: booktabs 2005/04/14 v1.61803 publication quality tables
+\heavyrulewidth=\dimen194
+\lightrulewidth=\dimen195
+\cmidrulewidth=\dimen196
+\belowrulesep=\dimen197
+\belowbottomsep=\dimen198
+\aboverulesep=\dimen199
+\abovetopsep=\dimen256
+\cmidrulesep=\dimen257
+\cmidrulekern=\dimen258
+\defaultaddspace=\dimen259
+\@cmidla=\count140
+\@cmidlb=\count141
+\@aboverulesep=\dimen260
+\@belowrulesep=\dimen261
+\@thisruleclass=\count142
+\@lastruleclass=\count143
+\@thisrulewidth=\dimen262
+)
 ("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.sty"
 Package: geometry 2010/09/12 v5.6 Page Geometry
 
@@ -540,18 +595,18 @@ Package ifvtex Info: VTeX not detected.
 ("C:\Program Files\MiKTeX 2.9\tex\generic\ifxetex\ifxetex.sty"
 Package: ifxetex 2010/09/12 v0.6 Provides ifxetex conditional
 )
-\Gm@cnth=\count132
-\Gm@cntv=\count133
-\c@Gm@tempcnt=\count134
-\Gm@bindingoffset=\dimen190
-\Gm@wd@mp=\dimen191
-\Gm@odd@mp=\dimen192
-\Gm@even@mp=\dimen193
-\Gm@layoutwidth=\dimen194
-\Gm@layoutheight=\dimen195
-\Gm@layouthoffset=\dimen196
-\Gm@layoutvoffset=\dimen197
-\Gm@dimlist=\toks39
+\Gm@cnth=\count144
+\Gm@cntv=\count145
+\c@Gm@tempcnt=\count146
+\Gm@bindingoffset=\dimen263
+\Gm@wd@mp=\dimen264
+\Gm@odd@mp=\dimen265
+\Gm@even@mp=\dimen266
+\Gm@layoutwidth=\dimen267
+\Gm@layoutheight=\dimen268
+\Gm@layouthoffset=\dimen269
+\Gm@layoutvoffset=\dimen270
+\Gm@dimlist=\toks40
 
 ("C:\Program Files\MiKTeX 2.9\tex\latex\geometry\geometry.cfg"))
 ("C:\Program Files\MiKTeX 2.9\tex\latex\base\utf8.def"
@@ -869,32 +924,32 @@ Now handling font encoding U ...
 ) (Draft.aux)
 \openout1 = `Draft.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 8.
-LaTeX Font Info:    ... okay on input line 8.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 9.
+LaTeX Font Info:    ... okay on input line 9.
 
 (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count135
-\scratchdimen=\dimen198
-\scratchbox=\box68
-\nofMPsegments=\count136
-\nofMParguments=\count137
-\everyMPshowfont=\toks40
-\MPscratchCnt=\count138
-\MPscratchDim=\dimen199
-\MPnumerator=\count139
-\makeMPintoPDFobject=\count140
-\everyMPtoPDFconversion=\toks41
+\scratchcounter=\count147
+\scratchdimen=\dimen271
+\scratchbox=\box70
+\nofMPsegments=\count148
+\nofMParguments=\count149
+\everyMPshowfont=\toks41
+\MPscratchCnt=\count150
+\MPscratchDim=\dimen272
+\MPnumerator=\count151
+\makeMPintoPDFobject=\count152
+\everyMPtoPDFconversion=\toks42
 ) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -944,13 +999,15 @@ G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
 ABD: EveryShipout initializing macros
-\c@maskedRefs=\count141
+\c@maskedRefs=\count153
 
 (C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\apacite\english.apc
 File: english.apc 2013/07/21 v6.03 apacite language file
 LaTeX Info: Redefining \BPBI on input line 129.
 LaTeX Info: Redefining \BHBI on input line 130.
 )
+\c@lstlisting=\count154
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -985,87 +1042,162 @@ LaTeX Info: Redefining \BHBI on input line 130.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang2.sty
+File: lstlang2.sty 2015/06/04 1.6 listings language file
+)
+(C:\Users\Cal\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang3.sty
+File: lstlang3.sty 2015/06/04 1.6 listings language file
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 13.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 13.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
 <Logo.png, id=4, 99.37125pt x 120.45pt>
 File: Logo.png Graphic file (type png)
 <use Logo.png>
-Package pdftex.def Info: Logo.png  used on input line 12. on input line 12.
+Package pdftex.def Info: Logo.png  used on input line 15. on input line 15.
 Package pdftex.def Info: Requested size: 99.371pt x 120.44969pt on input line 1
-2.
-[1
+5.
+ [1
 
 {C:/Users/Cal/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map} <./Logo.png>] 
 (Draft.toc)
 \tf@toc=\write4
 \openout4 = `Draft.toc'.
 
- [1]
+
+[1]
 <StripSampling.jpg, id=20, 385.44pt x 384.6872pt>
 File: StripSampling.jpg Graphic file (type jpg)
 <use StripSampling.jpg>
-Package pdftex.def Info: StripSampling.jpg  used on input line 50. on input lin
-e 50.
+Package pdftex.def Info: StripSampling.jpg  used on input line 53. on input lin
+e 53.
 Package pdftex.def Info: Requested size: 192.71953pt x 192.34312pt on input lin
-e 50.
+e 53.
  [2]
 <DistanceHist.png, id=24, 451.6875pt x 542.025pt>
 File: DistanceHist.png Graphic file (type png)
 <use DistanceHist.png>
-Package pdftex.def Info: DistanceHist.png  used on input line 73. on input line
- 73.
+Package pdftex.def Info: DistanceHist.png  used on input line 76. on input line
+ 76.
 Package pdftex.def Info: Requested size: 225.84319pt x 271.01183pt on input lin
-e 73.
+e 76.
  [3 <./StripSampling.jpg> <./DistanceHist.png>]
 <DistHistDetec.png, id=32, 377.91188pt x 542.025pt>
 File: DistHistDetec.png Graphic file (type png)
 <use DistHistDetec.png>
-Package pdftex.def Info: DistHistDetec.png  used on input line 92. on input lin
-e 92.
+Package pdftex.def Info: DistHistDetec.png  used on input line 95. on input lin
+e 95.
 Package pdftex.def Info: Requested size: 181.52872pt x 260.35927pt on input lin
-e 92.
+e 95.
  [4 <./DistHistDetec.png>] [5] [6] [7] [8]
 <LT2Dprecov.png, id=58, 453.94594pt x 459.96844pt>
 File: LT2Dprecov.png Graphic file (type png)
 <use LT2Dprecov.png>
-Package pdftex.def Info: LT2Dprecov.png  used on input line 242. on input line 
-242.
+Package pdftex.def Info: LT2Dprecov.png  used on input line 245. on input line 
+245.
 Package pdftex.def Info: Requested size: 230.15173pt x 233.20515pt on input lin
-e 242.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 248.
+e 245.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 251.
 
-
-("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10.95> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 248.
- [9 <./LT2Dprecov.png>] (Draft.bbl) [10] (Draft.aux) ) 
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 251.
+
+[9 <./LT2Dprecov.png>]
+<LT2Dpostcovfityx.png, id=63, 558.58687pt x 252.945pt>
+File: LT2Dpostcovfityx.png Graphic file (type png)
+<use LT2Dpostcovfityx.png>
+Package pdftex.def Info: LT2Dpostcovfityx.png  used on input line 292. on input
+ line 292.
+Package pdftex.def Info: Requested size: 252.03511pt x 114.1291pt on input line
+ 292.
+<LT2Dpostcovoptim.png, id=64, 513.41812pt x 428.35031pt>
+File: LT2Dpostcovoptim.png Graphic file (type png)
+<use LT2Dpostcovoptim.png>
+Package pdftex.def Info: LT2Dpostcovoptim.png  used on input line 302. on input
+ line 302.
+Package pdftex.def Info: Requested size: 252.03929pt x 210.27911pt on input lin
+e 302.
+ [10 <./LT2Dpostcovfityx.png> <./LT2Dpostcovoptim.png>]
+[11] [12]
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 346.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 350.
+
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omlcmr.fd"
+File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 350.
+
+Overfull \hbox (0.44385pt too wide) in paragraph at lines 427--428
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+<fig7.png, id=78, 295.1025pt x 499.11469pt>
+File: fig7.png Graphic file (type png)
+<use fig7.png>
+Package pdftex.def Info: fig7.png  used on input line 436. on input line 436.
+Package pdftex.def Info: Requested size: 250.83829pt x 424.24947pt on input lin
+e 436.
+[13]
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <9> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 474.
+ [14 <./fig7.png>]
+<fig8.png, id=89, 295.1025pt x 499.11469pt>
+File: fig8.png Graphic file (type png)
+<use fig8.png>
+Package pdftex.def Info: fig8.png  used on input line 538. on input line 538.
+Package pdftex.def Info: Requested size: 250.83829pt x 424.24947pt on input lin
+e 538.
+ (Draft.bbl)
+Overfull \vbox (175.33922pt too high) has occurred while \output is active []
+
+
+[15 <./fig8.png>] [16] (Draft.aux) ) 
 Here is how much of TeX's memory you used:
- 14337 strings out of 493312
- 275692 string characters out of 3138905
- 353095 words of memory out of 3000000
- 17573 multiletter control sequences out of 15000+200000
- 13130 words of font info for 46 fonts, out of 3000000 for 9000
+ 17237 strings out of 493312
+ 312167 string characters out of 3138905
+ 473693 words of memory out of 3000000
+ 20417 multiletter control sequences out of 15000+200000
+ 18017 words of font info for 68 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,13n,54p,1767b,363s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:/Program Files/MiKTeX 
-2.9/fonts/type1/public/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/font
-s/type1/public/amsfonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
-public/amsfonts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
-cm/cmmi12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6
-.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/
-Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program
- Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/Mi
-KTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/
-fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
-e1/public/amsfonts/cm/cmr6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
-amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/c
-m/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.
-pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/P
-rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb>
-Output written on Draft.pdf (11 pages, 358242 bytes).
+ 55i,13n,54p,2005b,2116s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/pu
+blic/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmbx12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm
+/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.
+pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/
+Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program F
+iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmmi9.pfb><C:/Program Files/MiKTeX 2.9/fo
+nts/type1/public/amsfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 2.9/fonts/typ
+e1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmr17.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.
+pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Pr
+ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program File
+s/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX
+ 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/font
+s/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
+ublic/amsfonts/cm/cmsy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
+fonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/sy
+mbols/msbm10.pfb>
+Output written on Draft.pdf (17 pages, 482342 bytes).
 PDF statistics:
- 119 PDF objects out of 1000 (max. 8388607)
+ 162 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 38 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 58 words of extra memory for PDF output out of 10000 (max. 10000000)
 

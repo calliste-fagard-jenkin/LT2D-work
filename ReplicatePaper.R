@@ -3,7 +3,6 @@
 # included. 
 
 library(LT2D)              # We load the original package as of August 2017
-source('Covar stuff.R')    # and add in the changes made for the project
 
 # NOTE : Loading the LT2D package also loads primate.dat and dolphin.dat into
 #        the global environment, since these data sets are included within the 

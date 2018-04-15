@@ -1,11 +1,14 @@
 \documentclass[11pt]{article}
-\usepackage{multicol,graphicx,float,tikz,tikz-qtree,scrextend,apacite,amsbsy,inputenc,amsmath}
+\usepackage{multicol,graphicx,float,tikz,tikz-qtree,scrextend,apacite,amsbsy,inputenc,amsmath,amssymb,listings,booktabs}
 \usepackage[margin=0.7 in]{geometry}
 \title{A Method for Analysing Heterogeneous Data with 2D Detection Function Distance Sampling}
 \date{January 2018}
 \author{Calliste Fagard-Jenkin}
 \inputencoding{utf8}
+
 \begin{document}
+
+\lstset{language=R,keywordstyle=\color{blue},stringstyle=\color{green},commentstyle=\color{brown}}
 \pagenumbering{gobble}
 \maketitle
 \begin{center}
@@ -223,12 +226,12 @@ $\pi_U$ reflects the assumption of no responsive movement, whereas $\pi_{HN}$ re
 For illustration, we now consider an example model $m$ specified by a user of the LT2D package, which selects an $ip_2$ detection function as well as a $\pi_{HN}$ perpendicular density distribution. Data collected by the user includes all of the standard information required to perform an estimate of abundance through conventional distance sampling (CDS), as well as the forward distance of each detection, a factor covariate $species$ (with three levels), a continuous covariate $forest.cover$ and another continuous covariate $size$, which for each detection refers to the number of individuals in the detected group. The user has specified that the $i$ direction (the intercept) should include the relationship $i\sim forest.cover$ (using R tilde notation for the specification of formulas). The user would also like to assume that $x\sim species$ and $y\sim size$ to specify the nature of covariate inclusion in the $x$ and $y$ directions respectively. Given this, the full formula for the detection function is given by:
 
 \begin{multline}
-hr_m\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}\\\theta_1=exp\left\{{\lambda_1 + \gamma_{1,1}forest.cover_{y,x}}\right\} \\\theta_2 = exp\{\lambda_2 + \\\mathcal{I}_2\left(species_{y,x}\right)\gamma_{2,1}\\ +\mathcal{I}_3\left(species_{y,x}\right)\gamma_{2,2}\}  \\\theta_3 = exp\left\{\lambda_3 + \gamma_{3,1}size_{y,x}\right\}
+hr_m\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}\\\theta_1=exp\left\{{\lambda_1 + \gamma_{1,1}forest.cover_{y,x}}\right\} \\\theta_2 = exp\{\lambda_2 + \mathcal{I}_2\left(species_{y,x}\right)\gamma_{2,1}\\ +\mathcal{I}_3\left(species_{y,x}\right)\gamma_{2,2}\}  \\\theta_3 = exp\left\{\lambda_3 + \gamma_{3,1}size_{y,x}\right\}
 \end{multline}
 
 With equation (13) perpendicular density function. Where $hr_m$ represents the hazard detection function corresponding to the model specification m and the $\lambda$ parameters are intercepts for the corresponding $\theta$ parameters. $forest.cover_{y,x}$, $species_{y,x}$, and $size_{y,x}$ are the values of $forest.cover$, $species$ and $size$ respectively, for the detection at coordinate $(x,y)$.
 
-It becomes clear that allowing the user a selection of choices for covariate inclusion with complete freedom of choice for formulas as well as which detections function to select, which perpendicular density function to select, and allowing each parameter to have a different formula quickly becomes an issue of not only statistical theory, but also a problem rooted in software design. We must construct a general methodology which allows users to specify in simple terms the model specification they desire, with software capable of producing the corresponding design matrices and linear predictors whilst also being able to error-check the user's inputs for inconsistency. For example, a user attempting to fit different covariate formulas in the $x$ and $y$ directions when hazard function $h_1$ is selected should raise an error, since this detection function is not flexible enough to allow this. The following section provides an insight into the choices made to achieve the implementation of the above described functionality. Individuals primarily concerned with learning how to use the new LT2D software to produce analyses on their own data should feel free to skip to chapter 5.
+It becomes clear that allowing the user a selection of choices for covariate inclusion with complete freedom of choice for formulas as well as which detections function to select, which perpendicular density function to select, and allowing each parameter to have a different formula quickly becomes an issue of not only statistical theory, but also a problem rooted in software design. We must construct a general methodology which allows users to specify in simple terms the model specification they desire, with software capable of producing the corresponding design matrices and linear predictors whilst also being able to error-check the user's inputs for inconsistency. For example, a user attempting to fit different covariate formulas in the $x$ and $y$ directions when hazard function $h_1$ is selected should raise an error, since this detection function is not flexible enough to allow this. The following section provides an insight into the choices made to achieve the implementation of the above described functionality. Individuals primarily concerned with learning how to use the new LT2D software to produce analyses on their own data should feel free to skip to chapter 4.
 
 \subsection{Understanding the LT2D software and its architecture}
 In order to implement covariate inclusion it is vital to first understand the inner workings of the LT2D package, so that we may ascertain both the complexity of the task at hand, and also the most efficient method with which to proceed. A simplification of the software's top-level fitting function call hierarchy (as of August 2017, before the project began), which retains the features of greatest importance and relevance is illustrated by figure 4.
@@ -242,7 +245,7 @@ In order to implement covariate inclusion it is vital to first understand the in
 \includegraphics[scale=0.507]{LT2Dprecov}
 \caption{Simplified call hierarchy for the top-level fitting function in the LT2D software}
 \end{figure}
-This diagram illustrates in more detail the inner workings of the LT2D package, compared to the specifications of the methodology laid out by \cite{Borchers}. Below a brief outline and description of each of the functions in figure 4 will be given, to give the reader a general understanding of how the LT2D package used to fit models to data before covariate implementation, and how it evaluates the likelihood function outlined in \cite{Borchers}.
+This diagram illustrates the inner workings of the LT2D package in slightly more detail than the description given by \cite{Borchers}. Below, a brief outline and description of each of the functions in figure 4 will be given to give the reader a general understanding of how the LT2D package used to fit models to data before covariate implementation, and how it evaluates the likelihood function outlined in \cite{Borchers}:
 
 \begin{itemize}
 \item LT2D.fit ; A function which given an appropriate input R data.frame and model specification settings, produces a two-dimensional detection function distance sampling maximum likelihood estimation of model parameters and abundance.
@@ -274,12 +277,268 @@ This diagram illustrates in more detail the inner workings of the LT2D package, 
 \item Sy ; Calculates the survivor function to a given forward distance. Evaluates the probability of an animal remaining undetected until a given forward distance ahead of the observer, and then being detected at that distance, given model specifications and their estimated parameters.
 \end{itemize}
 
-\subsection{Covariate Inclusion into the Likelihood}
-\subsection{Covariate Inclusion into Abundance Estimation}
-\subsection{Modification of Goodness of Fit Functions}
-\subsection{Modification of Plot Functions}
+\subsection{Implementation of covariates into the likelihood}
+Fundamentally, an implementation of covariate inclusion requires the conversion of a model specification into a set of design matrices and corresponding linear predictors for the $\theta$ parameters of the user-selected detection function. For computational efficiency, we wish to perform this conversion as infrequently as possible. Because of this, performing these calculations at the lowest level of the tree illustrated by figure 4 is extremely wasteful, owing to the fact that at every evaluation of the detection function, we must recalculate the set of design matrices and corresponding linear predictors, and that the detection function may be called many times by any function which is only a single level above it in the figure 4 tree. To achieve optimal efficiency, we must perform the conversion calculations as high up the figure 4 tree as is possible, so that the results of these calculations can simply 'trickle down' the tree, rather than have to be recalculated at every step.
+
+The design matrices depend only the user selected formulas, and so can be calculated as soon as the LT2D.fit function passes the information which constitutes the model specification to the fitting function fityx. For this reason, all design matrices are calculated within fityx, as this is the highest level in the tree which has access to all the required information, whilst remaining modular enough a solution to leave the top-level function as streamlined as possible. The linear predictors however - which calculate the $\theta$ values of the detection function, given a set of estimated parameters - depend on not only the design matrices, but also the set of estimated $\lambda$ and $\gamma$ parameters estimated by the current iteration of the numerical optimisation. Because of this dependency, we must calculate the linear predictors below the level in which optim resides in figure 4. Therefore, the highest point in the tree we can calculate linear predictors is inside the negloglik.yx function itself. 
+
+% the following code was used to produce the image. It was then exported as an image and then reincluded into the document as a static to allow for easier resizing
+%\begin{tikzpicture}[scale=1.5, level distance=50]
+%\Tree[.fityx [.HazardCovarSlots ] [.FormulaChecking [.HazardCovarsAllowed ] ] [.DesignMatrix ] [.unlist ] [.optim ] ]
+%\end{tikzpicture}
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.4512]{LT2Dpostcovfityx}
+\caption{Simplified call hierarchy for fityx after covariate inclusion}
+\end{figure}
+
+%\begin{tikzpicture}[scale=2.5]
+%\Tree[.optim [.negloglik.yx [.p.pi.x [.pi.x ] [.px [.Sy [.hr ] [.pi.x ] ] ] ] [.fyx [.hr ] ] [.relist ] [.LinPredictor ] ] ]
+%\end{tikzpicture}
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.4909]{LT2Dpostcovoptim}
+\caption{Simplified call hierarchy for optim after covariate inclusion}
+\end{figure}
+
+Functions which perform these conversion calculations, error-check user choices of covariate formulas and model selection specifications as well as provide an interface with optim which allows the LT2D.fit function to be used for both covariate-including and covariate-excluding models were implemented and lead to the fityx call hierarchy becoming that which is illustrated by figures 5 and 6. 
+
+The call to the solve function is still present, but has been omitted from the diagram in the interest of simplicity and space. Post covariate implementation, detection functions now require their parameters to be given as an R list, as opposed to a vector (this allows us to provide a separate set of parameters for each detection). Elements in these lists will be referred to as 'slots' to avoid confusing them with 'elements' within R vectors. 
+
+HazardCovarSlots is a function which indicates to fityx which slots within the input list of $\theta$s are able to be turned into a linear predictor, depending on the user-selected detection function. FormulaChecking is a function which raises an error if the user has specified formulas incorrectly, or in a way which is not compatible with the detection function they have chosen. DesignMatrix produces the appropriate design matrix for a $\theta$  parameter, given the user-specified formula and the R data.frame which contains both the user's data and the covariates referred to in the covariate formula. unlist converts the list of $\theta$ parameters into a vector, since this is the only type of input allowed by the numerical optimisation routine 'optim'. Looking at figure 6 to further detail optim's call hierarchy with covariates implemented, we notice the addition of the relist function, which converts optim's vector of estimated parameters back into the list structure they were in previous to being passed to optim, and the function LinPredictor which uses the optim estimates and the design matrices calculated by fityx to produce the $\theta$ parameters for the detection function.
+
+The vast majority of functions within the fityx call hierarchy had to be modified and generalised to handle each detection having different estimated $\theta$ values for the same detection function. In many cases this had to involve the introduction of 'for' loops to produce a calculation separately for each detection, which represents part of the computational overhead required for giving the user the possibility to deal with  heterogeneous data. The other significant overheads being the calculation of design matrices, linear predictors and the estimation of multiple new parameters by the numerical optimisation routine.  
+
+\subsection{Covariate inclusion into abundance estimation}
+The function $invp1\_replacement$ needed to be modified to calculate separate estimates of effective strip half-width for each detection, given that with covariate-included models, we expect the estimated $\theta$ parameters to be different for all detections which do not share identical covariate values. This involved making individual calls to the $phat$ function to obtain the estimate of effective strip half width for each detection.
+
+If analyses on large datasets are required, it could be worth implementing a procedure which attempts to evaluate how many different covariate combinations are present within the data, and to produce a call to $phat$ for each of these once, rather than for each detection separately (which makes no consideration of whether or not a calculation has already been made for a detection with the same covariate values). This optimisation is likely to only be noticeable in the presence of factor covariates within large data sets, given that this scenario leads to the highest possible frequency of repeated covariate values between detections.
+
+\subsection{Modification of goodness of fit functions}
+The LT2D goodness of fit methodology divides the goodness of fit into separate calculations for the perpendicular and forward distances of detections. Aside from the modifications made to incorporate covariate-included goodness-of-fit, the goodness of fit functionality was already integrated into the LT2D package at the time of publication of \cite{Borchers}.
+
+In the $y$ direction, the test is performed by considering the CDF of the conditional survival function of detections, compared with the empirical CDF of the same function. For example, for a collection of detections, and for each detection within these, we consider the probability of the animal 'surviving' (remaining undetected) until its forward distance of detection $y$, and we call this probability $p$. $1-p$ is then the probability that this animal does not survive any further than forward distance $y$. We also denote by $1-p_0$ the probability that the animal does not survive all the way to the observer (at forward distance $y=0$). Hence by          considering the conditional probability $\mathbb{P}\left(A|B\right) = \frac{\mathbb{P}\left(A\cap B\right)}{\mathbb{P}\left(B\right)}$ and noticing that the probability of not surviving past $y$ whilst also not surviving past $0$ is simply the probability of not survivng past $y$, we can determine that the probability of not-surviving past $y$ given that the animal did not survive further than the forward distance of the observer ($0$), is $\frac{1-p}{1-p_0}$. By evaluating the theoretical CDF of conditional survival probability for each detection in this way, and comparing it to the empirical CDF, we obtain enough information to produce a Kolmogorov-Smirnov and Cramer von Mises goodness of fit test in the forward direction. To cope with covariate-included models, we use the fitted $\theta$ values for each individual point to produce the evaluation of $\frac{1-p}{1-p_0}$, rather than using a single set of $\theta$s for the whole data set. 
+
+In the $x$ direction we again consider the conditional CDF of a distribution. For the numerator we consider the probability of an animal being detected between perpendicular distance $0$ and the perpendicular distance $x$ at which its detection took place, given fitted values for both its perpendicular density and detection function. The denominator evaluates the probability of the animal being detected between perpendicular distances $0$ and truncation distance $w$ (the full range of the survey), and hence we obtain the probability of detection within $0$ and the observed perpendicular detection distance $x$, given the animal was detected within the perpendicular survey range (and given the fitted parameters of the model's detection function and perpendicular density function). To account for covariate-included models we again allow this probability to be calculated individually for each point, given its own estimated $\theta$ parameters, and then perform the rest of the test as before. 
+
+\subsection{Implementation of confidence intervals}
+Previous to this project, the LT2D package was only able to produce point estimates for abundance, with no measure of uncertainty. Due to the complexity of the 2D detection function distance sampling likelihood, analytical calculation of confidence intervals is infeasible, and therefore we consider the use of a bootstrap. The use of a parametric bootstrap, re-sampling detections from a set of simulations of the fitted detection and perpendicular density functions would allow us to circumvent making any assumptions on the distributions of the fitted maximum likelihood estimates. However, the LT2D software can take several minutes to fit complicated models with many covariates, and therefore obtaining a large enough re-sample size to produce a reasonable bootstrap confidence interval would represent a commitment in computation time which is too elevated to be of practical benefit.  Because of this, we settle on the use of a non-parametric bootstrap which is dependent on the estimated asymptotic distributions of the maximum likelihood estimates, despite these assumptions being somewhat unrealistic when sample sizes are small.  The $LT2D.bootstrap$ function uses information provided in the hessian matrix produced by optim to produce a variance-covariance matrix for the MLEs. A large sample (the size of which can be selected by the user) is then taken from  the multivariate normal distribution centred at the obtained MLEs, with variance-covariance matrix equal to the solved hessian matrix produced by optim. Each of these samples is then converted into a set of $\theta$ and $\phi$ parameters appropriate to the fitted model's covariates, detection function and perpendicular density. These parameters are then passed along with the original data to the $NDest$ function to obtain an estimate of abundance. Once this process has been completed for all generated re-samples, a $(1-\alpha) 100\%$ confidence interval for abundance is produced using the percentile method. 
+
+Due to relatively high parameter sensitivity, small changes in estimated parameters can cause a large change in estimated abundance. This leads to the implemented bootstrap producing intervals that tend to be too wide, resulting in a coverage which is superior the selected value of $(1-\alpha) 100\%$. Although coverage which is better than expected is not of itself undesirable, it highlights that we may be able to produce intervals with a smaller range should we switch to a different methodology, which is something to be considered during further development of the LT2D package. 
+
+\subsection{Modification of plot functions}
+The LT2D plot functions required slight modifications in order to be able to handle models with covariates included. Due to the infinite combination of choices of covariate values when these covariates are continuous (and growing according the the factorial of the number of levels for each of the factor level covariates), it was decided that producing plots for all covariate levels or for a fixed proportion of them was not possible. The plotting function therefore allows the user to select the integer number which represents the row of the original R data.frame which contains the detection who's covariate values are to be chosen as the values to be held fixed whilst plotting the various curves the plotting functions produce.  The option to overlay plots for a selection of these, or to manually specify a single set of covariate values which are to be held fixed would be desirable as the LT2D software develops further.
+
 \section{Usage of the new software}
-\subsection{Model specification for the user}
+We now provide a selection of illustrative uses of the new LT2D software through the use of simulated data. All the following code is in R, with the LT2D package installed as the version included in the appendix of this project. The detection functions which constitute equations (4) through (8) inclusive are named h1, ip1, 1p2, ep1 and ep2 respectively within the LT2D package. The perpendicular density functions given by equations (12) through (16) inclusive are called pi.const, pi.hnorm, pi.norm, pi.chnorm and pi.chnorm.i respectively. We will begin our example by simulating a collection of detections from a population of size $N=500$, with an h1 detection function and a normal perpendicular density. 
+
+\begingroup
+\small
+\begin{lstlisting}
+library('LT2D')
+
+# set perp trunc, forward trunc
+# total transect length and survey
+# area:
+w = 0.03 ; ystart = 0.05
+L = 10 ; A = 2*w*L
+
+# set value of 'true' parameters
+# for simulated data:
+b <- c(-4.04,0.79)
+logphi <- c(0.02,-4.42)
+
+# produce simulated data:
+set.seed(3)
+simDat = simXY(500, 'pi.norm',
+               logphi, 'h1', 
+               b, w, 
+               ystart)$locs
+\end{lstlisting}
+\endgroup
+
+Our next task is to put these simulated data into an R data.frame which contains the following categories:
+
+\begin{itemize}
+\item x - The $x$-coordinate for each detection. Can have the value NA if no detection was made on the given transect.
+\item y - The $y$-coordinate for each detection. Can have the value NA if no detection was made on the given transect.
+stratum - The stratum within which the detection was made
+\item transect - The transect on which the detection was made
+\item L - The total length of the transect on which the detection was made
+\item area - The survey area of the stratum within which the detection was made
+\item object - The object number of the detection. All detections must have a unique number, this can be set to NA on a transect where no detections were made.
+\item size - The number of animals in the group that was detected
+\end{itemize}
+
+The below code produces a simulated data.frame with the correct column names and values using the simulated data $simDat$:
+
+\begingroup
+\small
+\begin{lstlisting}
+# create the data.frame:
+all.1s <- rep(1,length(simDat$x))
+obj <- 1:length(simDat$x)
+sim.df <- data.frame(x = simDat$x,
+                    y = simDat$y,
+                    stratum = all.1s,
+                    transect = all.1s,
+                    L = L,
+                    area = A,
+                    object = obj,
+                    size = all.1s)
+\end{lstlisting}
+\endgroup
+
+For the simulated data set sim.df we created above, the first few rows (with some truncation in the x and y values) of the data frame are:
+
+\begin{center}
+\tabcolsep=0.07cm
+ \begin{tabular}{||c c c c c c c c||} 
+ \hline
+ x & y & stratum & transect & L & area & object & size\\ [0.5ex] 
+ \hline\hline
+ 0.0050 & 0.0327 & 1 & 1 & 10 & 0.6 & 1 & 1 \\ 
+ \hline
+ 0.0242 & 0.0322 & 1 & 1 & 10 & 0.6 & 2 & 1 \\
+ \hline
+ 0.0115 & 0.0079 & 1 & 1 & 10 & 0.6 & 3 & 1 \\
+ \hline
+ 0.0098 & 0.0305 & 1 & 1 & 10 & 0.6 & 4 & 1 \\
+ \hline
+ 0.0180 & 0.0186 & 1 & 1 & 10 & 0.6 & 5 & 1 \\
+ \hline
+\end{tabular}
+\end{center}
+
+To fit a simple model with no covariate inclusion, we call the LT2D.fit function in the following way:
+
+\begingroup
+\small
+\begin{lstlisting}
+# fit an LT2D model
+fit <- LT2D.fit(DataFrameInput = sim.df,
+                hr = 'h1',
+                # start values for b:
+                b = c(-3.72,0.74),
+                ystart = ystart,
+                pi.x = 'pi.norm',
+                # start values for logphi:
+                logphi = c(0.02, -4.42),
+                w = w,
+                hessian = TRUE)
+\end{lstlisting}
+\endgroup
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.85]{fig7}
+\caption{Fitted curves for simulated data in the $x$ direction}
+\end{figure}
+
+
+Calls to the $gof.LT2D$, $LT2D.bootstrap$ and $plot$ functions produce goodness of fit vales for us, calculate a confidence interval on abundance using our chosen number of re-samples and plot the fitted curves. We can also extract the AIC from the fitted model object:
+
+\begingroup
+\small
+\begin{lstlisting}
+gof.LT2D(fit)
+LT2D.bootstrap(fit,999)$ci
+plot(fit)
+fit$fit$AIC
+\end{lstlisting}
+\endgroup
+
+Which gives us the GoF values:
+\begin{center}
+ \begin{tabular}{|c c c|} 
+ \hline
+ \  & KS & CvM \\ [0.5ex] 
+ \hline
+ X & 0.7130 & 0.7933 \\ 
+ \hline
+ Y & 0.9429 & 0.9300  \\
+ \hline
+\end{tabular}
+\end{center}
+
+
+Figures 7 and 8 display the fitted curves the simulated data. The bootstrap results in a 95\% confidence interval of $(490,.88,514.20)$ with 999 re-samples, from $n=448$ detections, with our fitted model producing an estimate of $\hat{N}=503$.  We add in some simulated covariate values to our data frame. We consider a continuous covariate $altitude.sim$ and a factor covariate $observer.id$, it should be noted that we are not further changing the simulated data other than by adding artifical columns into the data.frame that contains them, and so models including these fake covariates are expected to fit poorly. Their inclusion is there solely to illustrate how to specify covariates as part of a model within the LT2D software. The formulas argument to the $LT2D.fit$ function must be a list of R objects with class 'formula'. These are all of the form described in section 3.1. For each formula which is included within the model in this way, a vector of initial guesses must be passed to LT2D.fit, with the name ipars, xpars or ypars, depending on the formula specified. It is possible to specify multiple formulas at the same time, if the choice of detection function allows it (the software returns a warning and sometimes also an error if invalid combinations are selected by the user).
+
+\begingroup
+\footnotesize
+\begin{lstlisting}
+set.seed(3)
+
+n <- length(simDat$x)
+
+sim.df$observer.id <- factor(sample(
+  1:3,n,replace=T))
+
+sim.df$altitude <-  rnorm(n,2,1)
+
+iform <- formula(i~sim.df$observer.id)
+xform <- formula(x~sim.df$altitude)
+yform <- formula(y~sim.df$altitude)
+# covariates in intercept only
+fit2 <- LT2D.fit(DataFrameInput = sim.df,
+                 hr = 'h1',
+                 # start values for b:
+                 b = c(-3.72,0.74),
+                 ystart = ystart,
+                 pi.x = 'pi.norm',
+                 # start values for logphi:
+                 logphi = c(0.02, -4.42),
+                 w = w,
+                 hessian = TRUE,
+                 formulas = list(iform),
+                 ipars=rep(0,2))
+
+# covariates in the x and y directions
+# (which must have the same effect in 
+# an h1 detection function)
+fit3 <- LT2D.fit(DataFrameInput = sim.df,
+                 hr = 'h1',
+                 # start values for b:
+                 b = c(-3.72,0.74),
+                 ystart = ystart,
+                 pi.x = 'pi.norm',
+                 # start values for logphi:
+                 logphi = c(0.02, -4.42),
+                 w = w,
+                 hessian = TRUE,
+                 formulas=list(xform,yform),
+                 xpars=0,
+                 ypars=0)
+
+# covariates in all of the h1 slots
+fit4 <- LT2D.fit(DataFrameInput = sim.df,
+                 hr = 'h1',
+                 # start values for b:
+                 b = c(-3.72,0.74),
+                 ystart = ystart,
+                 pi.x = 'pi.norm',
+                 # start values for logphi:
+                 logphi = c(0.02, -4.42),
+                 w = w,
+                 hessian = TRUE,
+                 formulas=list(iform,
+                 		xform,
+                 		yform),
+                 ipars=0
+                 xpars=0,
+                 ypars=0)
+\end{lstlisting}
+\endgroup
+
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.85]{fig8}
+\caption{Fitted curves for simulated data in the $y$ direction}
+\end{figure}
+
 \subsection{Simulation studies}
 
 \section{Going forwards}

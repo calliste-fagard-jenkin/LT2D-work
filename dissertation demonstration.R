@@ -2,7 +2,6 @@
 # functionality additions
 
 library(LT2D)
-source('Covar Stuff.R')
 # First we create a couple plain data sets (no covariates) and test that 
 # abundance estimation is reasonable, and that poorer models work less well.
 # After this we will examine the effect of covariates on the data:
