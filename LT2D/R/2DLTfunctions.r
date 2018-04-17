@@ -3699,7 +3699,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   
   # 4. Get interval using percentile method
   Ns <- sort(na.omit(bootstrap.Ns))
-  ci <- quantile(Ns, c(alpha,1-alpha))
+  ci <- quantile(Ns, c(alpha/2,1-alpha/2))
   
   if (failcount>=1) warning(sprintf('%o abundance estimations failed',
                                     failcount))
