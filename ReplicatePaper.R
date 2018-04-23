@@ -37,7 +37,7 @@ Primate.Fit = LT2D.fit(DataFrameInput =  primate.df,
                        hessian = T)
 
 gof.LT2D(Primate.Fit) # We confirm that these are the same as the paper's
-
+plot(Primate.Fit)
 # out of curiosity, we now also look at the estimate of abundance using the
 # method implemented in July 2017:
 Primate.Fit$ests
