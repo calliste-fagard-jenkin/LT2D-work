@@ -75,3 +75,4 @@ gof.LT2D(Dolphin.Fit)
 
 Dolphin.Fit$ests
 LT2D.bootstrap(Dolphin.Fit)$ci
+ 
