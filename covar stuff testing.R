@@ -2,18 +2,18 @@ library('LT2D')
 
 # SET WORKING DIRECTORY TO SOURCE FILE LOCATION
 
-Data = read.csv('JanthoData.csv',header=T)
-Data = subset(Data, !is.na(Data$PP.Distance))   # Remove NAs for testing
+# Data = read.csv('JanthoData.csv',header=T)
+# Data = subset(Data, !is.na(Data$PP.Distance))   # Remove NAs for testing
+# 
+# x = Data$PP.Distance ; y = Data$Forward.Distance
+# species = as.factor(Data$species)
 
-x = Data$PP.Distance ; y = Data$Forward.Distance
-species = as.factor(Data$species)
-
-DF = data.frame(x,y,species) ; DF=subset(DF, DF$x<0.03)
-
-fi = i~species # set the formula 
-DM = DesignMatrix(DF, fi)
-
-x = DF$x ; y = DF$y
+# DF = data.frame(x,y,species) ; DF=subset(DF, DF$x<0.03)
+# 
+fi = i~species # set the formula
+# DM = DesignMatrix(DF, fi)
+# 
+# x = DF$x ; y = DF$y
 
 # b = list(c(-10.2,-2.7,-9.0,0.0), -0.14) ; logphi = c(0,-4)
 # pars = list(beta=b,logphi=logphi)
@@ -28,30 +28,30 @@ x = DF$x ; y = DF$y
 #       DesignMatrices=list(DM),skeleton=pars)
 # 
 # A$par
-
+# 
 b = c(1.0122061, -0.6613409)
 i.parameters = c(-11.14648, -13.34820, -14.56664)
 logphi = c(0.01322874, -4.80826844)
 w = 0.03 ; ystart = 0.03
-
-A = fityx(DataFrameInput = DF, b=b, hr='h1', ystart=ystart,
-          pi.x='pi.norm', logphi = logphi, w=w, formulas=list(fi),
-          covarPars = list(i=i.parameters), hessian=F)
-A$par
-A$value
-A$convergence
-A$AIC
-
-b = c(A$par[1],A$par[5]) ; names(b) = NULL
-i.parameters = A$par[2:4] ; names(i.parameters) = NULL
-logphi = A$par[6:7]; names(logphi) = NULL
-
-# print(b)
-# print(i.parameters)
-# print(logphi)
-
-A = fityx(DataFrameInput = DF, b=b, hr='h1', ystart=ystart,
-          pi.x='pi.norm', logphi = logphi, w=w, hessian=F)
+# 
+# A = fityx(DataFrameInput = DF, b=b, hr='h1', ystart=ystart,
+#           pi.x='pi.norm', logphi = logphi, w=w, formulas=list(fi),
+#           covarPars = list(i=i.parameters), hessian=F)
+# A$par
+# A$value
+# A$convergence
+# A$AIC
+# 
+# b = c(A$par[1],A$par[5]) ; names(b) = NULL
+# i.parameters = A$par[2:4] ; names(i.parameters) = NULL
+# logphi = A$par[6:7]; names(logphi) = NULL
+# 
+# # print(b)
+# # print(i.parameters)
+# # print(logphi)
+# 
+# A = fityx(DataFrameInput = DF, b=b, hr='h1', ystart=ystart,
+#           pi.x='pi.norm', logphi = logphi, w=w, hessian=F)
 
 addObjectNumbers = function(Dataset){
   length = length(Dataset$x)
@@ -89,7 +89,8 @@ B2 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart,
              pi.x = 'pi.norm', logphi = logphi, w=w, formulas = list(fi), 
              ipars = i.parameters)
 
-# Testing covariate inclusion on h1, with wrong start parameters
+# Testing covariate inclusion on h1, with wrong start parameters, expect 
+# an error
 B2.1 = LT2D.fit(DataFrameInput = DF, hr = 'h1', b=b, ystart = ystart, 
               pi.x = 'pi.norm', logphi = logphi, w=w, formulas = list(fi), 
               ipars = x.parameters)
@@ -123,6 +124,26 @@ B7 = LT2D.fit(DataFrameInput = DF, hr = 'ep1',
               formulas = list(formula(x~species), formula(i~species)),
               xpars = i.parameters, ipars=i.parameters,
               ypars = i.parameters)
+
+# with ep2 detection function:
+B8 = LT2D.fit(DataFrameInput = DF, hr = 'ep2',
+              b=c(10.23357070,2.38792702,-20.23029177,2.38792702),
+              ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w)
+
+
+# covariate inclusion in x and y directions:
+B9 = LT2D.fit(DataFrameInput = DF, hr = 'ep2',
+              b=c(10.23357070,2.38792702,-20.23029177,2.38792702),
+              ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
+              formulas = list(formula(x~species),formula(y~species)),
+              xpars = i.parameters, ypars = i.parameters)
+
+B10 = LT2D.fit(DataFrameInput = DF, hr = 'ep2',
+               b=c(10.23357070,2.38792702,-20.23029177,2.38792702),
+               ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
+               formulas = list(formula(y~species),formula(x~species),
+                               formula(i~species)),
+               ypars = i.parameters, xpars = i.parameters,ipars=i.parameters)
 
 set.seed(1)
 simDat = simXY(500, 'pi.const', NULL, 'h1', b, w, ystart)$locs

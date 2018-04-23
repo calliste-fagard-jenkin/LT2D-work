@@ -1584,13 +1584,17 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     # where they aren't supposed to, and checks that other types of consistency
     # requirements are also satisfied. Errors are raised if they are not.
     checkedFormulas = FormulaChecking(hr, formulas)
+    print(checkedFormulas)
     i.formula = checkedFormulas[[1]]
     x.formula = checkedFormulas[[2]]
     y.formula = checkedFormulas[[3]]
+    
+    print(i.formula)
+    print(x.formula)
+    print(y.formula)
     # Knowing if x and y formulas are the same tells us if the y formula 
     # LP goes in slot 2 or 4
     ifelse('xy' %in% checkedFormulas[[4]], xy <-  TRUE, xy <-  FALSE)
-    
     DesignMatrices = list() # Make a list of all design matrices to pass to the 
     # negative log likelihood through optim. We insert the DM at the same index
     # as the parameters for the theta whose formula it describes, for simplicity
@@ -1622,14 +1626,14 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
       
       if (!is.null(y.formula)){
         if (is.null(covarPars$y)) stop('missing start parameters')
-        DesignMatrices[[4]]=DesignMatrix(unrounded.points.data.frame, x.formula)
+        DesignMatrices[[4]]=DesignMatrix(unrounded.points.data.frame, y.formula)
         b.for.optim[[4]]=c(b[4], covarPars$y)# if y is there, it goes in slot 4
       }
     }
     }
-  
+ 
   else{b.for.optim = as.list(b)} # No covariates, so b is simply the one we have
-  
+  print(DesignMatrices)
   # We pack the parameters as a vector:
   
   if (piname == "pi.const"){pars = list(beta = b.for.optim)} # construct a list
@@ -3488,7 +3492,7 @@ FormulaChecking = function(HazardName, Formulas){
         y.formula[[3]]=x.formula[[3]]          # If the RHSs are different, we have a problem...
         s1 = 'x and y covariate formulas must be the same for the'
         s2 = 'specificed hazard. User chosen formulas were'
-        s3 = 'different, or one was missinand so the x formula was used for both'
+        s3 = 'different, or one was missing and so the x formula was used for both'
         s4 = 'x and y'
         warning(paste(s1,s2,s3,s4))
       }
@@ -3522,6 +3526,21 @@ FormulaChecking = function(HazardName, Formulas){
     return(formulas.to.output)
     
   }
+  
+  # in this scenario the x and y formulas don't have to be the same, so we
+  # check if there is an x, and put it in if there is. We check if there is a
+  # y, and we put it in if it's allowed
+  else{
+    
+    if(exists('x.formula')){
+      formulas.to.output[[2]]=x.formula
+    }
+    
+    if(exists('y.formula') & 'y' %in% AllowedCovars){
+      formulas.to.output[[3]]=y.formula
+    }
+  }
+  
   return(formulas.to.output)
 }
 
