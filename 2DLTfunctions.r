@@ -49,7 +49,7 @@ ghy=function(y,x,b)
   #theta=c(exp(b[1:2]),b[3])
   theta1=theta[1]^(1/theta[2])
   return(((x/theta1)^2+((y+theta[3])/theta1)^2)^(-theta[2]/2))
-}
+} 
 
 #'@title Detection hazard function \code{ghy2} prob(detect | available at x,y)
 #'
