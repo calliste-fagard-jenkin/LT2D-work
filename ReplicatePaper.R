@@ -69,8 +69,9 @@ Dolphin.Fit = LT2D.fit(DataFrameInput =  dolphin.df,
                        pi.x = 'pi.hnorm',
                        logphi = logphi,
                        w = w,
-                       hessian = , rmin=-0.1)
+                       hessian = T, rmin=-0.1)
 
 gof.LT2D(Dolphin.Fit)
 
 Dolphin.Fit$ests
+LT2D.bootstrap(Dolphin.Fit)$ci

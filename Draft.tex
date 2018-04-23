@@ -226,7 +226,7 @@ $\pi_U$ reflects the assumption of no responsive movement, whereas $\pi_{HN}$ re
 For illustration, we now consider an example model $m$ specified by a user of the LT2D package, which selects an $ip_2$ detection function as well as a $\pi_{HN}$ perpendicular density distribution. Data collected by the user includes all of the standard information required to perform an estimate of abundance through conventional distance sampling (CDS), as well as the forward distance of each detection, a factor covariate $species$ (with three levels), a continuous covariate $forest.cover$ and another continuous covariate $size$, which for each detection refers to the number of individuals in the detected group. The user has specified that the $i$ direction (the intercept) should include the relationship $i\sim forest.cover$ (using R tilde notation for the specification of formulas). The user would also like to assume that $x\sim species$ and $y\sim size$ to specify the nature of covariate inclusion in the $x$ and $y$ directions respectively. Given this, the full formula for the detection function is given by:
 
 \begin{multline}
-hr_m\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}\\\theta_1=exp\left\{{\lambda_1 + \gamma_{1,1}forest.cover_{y,x}}\right\} \\\theta_2 = exp\{\lambda_2 + \mathcal{I}_2\left(species_{y,x}\right)\gamma_{2,1}\\ +\mathcal{I}_3\left(species_{y,x}\right)\gamma_{2,2}\}  \\\theta_3 = exp\left\{\lambda_3 + \gamma_{3,1}size_{y,x}\right\}
+hr_m\left(y,x;\boldsymbol{\theta}\right) = \theta_1\left\{\frac{1}{\sqrt{1+\left(\frac{x}{\theta_2}\right)^2+\left(\frac{y}{\theta_4}\right)^2}}\right\}^{\theta_3 + 1}\\\theta_1=exp\left\{{\lambda_1 + \gamma_{1,1}forest.cover_{y,x}}\right\} \\\theta_2 = exp\{\lambda_2 + \mathcal{I}_2\left(species_{y,x}\right)\gamma_{2,1}\\ +\mathcal{I}_3\left(species_{y,x}\right)\gamma_{2,2}\}  \\\theta_4 = exp\left\{\lambda_4 + \gamma_{4,1}size_{y,x}\right\}
 \end{multline}
 
 With equation (13) perpendicular density function. Where $hr_m$ represents the hazard detection function corresponding to the model specification m and the $\lambda$ parameters are intercepts for the corresponding $\theta$ parameters. $forest.cover_{y,x}$, $species_{y,x}$, and $size_{y,x}$ are the values of $forest.cover$, $species$ and $size$ respectively, for the detection at coordinate $(x,y)$.
@@ -533,20 +533,44 @@ fit4 <- LT2D.fit(DataFrameInput = sim.df,
 \endgroup
 
 
+\section{Simulation studies}
+Producing a simulation study to ascertain the new software's capacity to account for heterogeneous populations is made difficult by a number of factors. Firstly, as the \cite{Borchers} likelihood is complicated and requires multiple instances of numerical integration at every evaluation, model fitting and maximum likelihood estimation takes a significant amount of time. Models which have no covariate inclusion may take only a few seconds to be fitted to a relatively small sample, however, the inclusion of covariates increases this computational cost quite heavily, increasing the quantity of numerical integration involved (by having to evaluate each point individually, due to its own distinct estimated values of the detection function parameters, based on its covariate values) as well as requiring more calls to the likelihood function in order to numerically estimate its maximum likelihood estimates. This causes models with even relatively simple covariate formulas to sometimes take upwards of 15 minutes to compute. Therefore producing a simulation study which includes a large number of fitted models with covariate formulas is understandably difficult.
+
 \begin{figure}[H]
 \center
 \includegraphics[scale=0.85]{fig8}
 \caption{Fitted curves for simulated data in the $y$ direction}
 \end{figure}
 
-\subsection{Simulation studies}
+A second complication arises due to optim's sensitivity to specified starting values for the parameters which are being estimated. The numerical optimisation routine struggles to produce estimates for these parameters when the initial estimates are not close to the 'true' maximum likelihood estimate. This is made visible to the user by a constant sequence of convergence error codes and warnings produced by the optim function, when the initial values were too different from the 'true' parameter values. A common remedy to this problem is to fit a single model multiple times, using the previous iteration's estimated parameters as the set of initial parameter estimates specified within the current model specification. This reduces the difference between the 'true' parameters and the supplied initial values with each iteration, making it easier for optim to converge.
 
+Models which have covariates specified are more prone to this problem, due to their intrinsically more complicated nature. Pilot simulation studies revealed that not being able to manually re-fit models using the previous model's estimated parameters negatively affected covariate-including models more heavily than covariate-excluding models, due to the covariate-including models converging with more difficulty. This difficulty to converge lead to estimates of abundance produced by covariate-including models to be estimated as being far more biased than they would be in practice, as a result of the simulation relying on parameter estimates from poorly converging models to produce its estimates of abundance.
+
+A solution to this problem would be to include an option for the software to automatically recognise poor convergence in maximum likelihood estimates, and to perform a new estimation of the parameters using the previous estimates as initial values. This implementation would be complicated due to the desired flexibility of the covariate inclusion, and so is deemed too substantial to include as part of this project. We are therefore limited to simulation studies with very few fitted models, so that we may manually ensure that convergence for each model is reasonable, and therefore representative of the software's performance in practice. 
 \section{Going forwards}
 \subsection{Additional desired features}
 \subsection{A proposed approach for mixture model incorporation}
+\section{Conclusion}
+This project's primary aim has been the implementation of covariates within the 2-Dimensional detection functions of the methodology provided by \cite{Borchers}, and to provide this additional functionality within the LT2D package itself, to increase its scope and feature set. The work completed for this project has allowed the LT2D software  to provide flexible methods for the user to deal with data which are heterogeneous with respect to detection probability, with a simple user interface. The user is able to choose any combination of covariates, be they quantitative or qualitative, and is able to specify separate formulas for each direction of the detection function. Plotting and goodness of fit functions have been generalised to be able to handle models with covariates included, with the possibility of calling the plot function multiple times to produce figures of the fitted curves at different levels of the included covariates. Not only has the abundance estimation within the software been generalised to produce point estimates when covariates have been included within a user's selected model, but it has also been extended to produce a bootstrap confidence interval of abundance (with the flexibility for the user to modify both the expected coverage and the bootstrap's  number of re-samples). 
 
+The implementation of this covariate inclusion required intimate knowledge of the \cite{Borchers} paper and the theory which underpins its software, as well as the ability to work with its substantial and complicated pre-existing code base to include the desired additional functionality. A strong grasp of good programming practice, relevant computer theoretic notions and comfort with the R programming language were all required to make the desired changes in an computationally efficient way. The use of techniques and practices outlined in \cite{Hadley} allowed the inclusion of more advanced functionality to the user by making use of R features which go above the scope of undergraduate statistics content (such as object oriented programming, exception handling, etc). 
+
+Due to the feature set of the new software, its flexibility and easy of use, it is my belief that the objectives outlined by this project have been comfortably met. Further examples of the software's use and demonstrations of it's ability to handle general cases can be found in the appendix.
 
 \bibliographystyle{apacite}
 \bibliography{Biblio}
 \end{multicols}
+
+\section{Appendix}
+
+Given that the LT2D source code is approximately 3500 lines of R code after the completion of this project, and that the inclusions which constitute this project are over 1500 alone, GitHub links to the relevant files will be included to avoid bloating this document.
+
+
+The example code included in section 4, as well as an example of the type of code used to produce the pilot simulation studies mentioned in section 5 can be found here: 
+
+
+
+
+\subsection{LT2D code}
+
 \end{document}

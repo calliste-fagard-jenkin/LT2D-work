@@ -136,4 +136,26 @@ Link, W\BPBI A.%
 \begin{APACrefDOI} \doi{10.1111/j.0006-341X.2003.00129.x} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
+\bibitem [\protect \citeauthoryear {%
+Wickham%
+}{%
+Wickham%
+}{%
+{\protect \APACyear {2017}}%
+}]{%
+Hadley}
+\APACinsertmetastar {%
+Hadley}%
+\begin{APACrefauthors}%
+Wickham, H.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2017}.
+\newblock
+\APACrefbtitle {Advanced R} {Advanced r}.
+\newblock
+\APACaddressPublisher{}{Chapman and Hall/CRC}.
+\PrintBackRefs{\CurrentBib}
+
 \end{thebibliography}
