@@ -40,15 +40,15 @@ T1$ests ; T2$ests ; T3$ests
 
 # A quick test of the bootstrap functionality to prove it works:
 boot <- LT2D.bootstrap(T3, r=499)
-
+boot$ci
 
 # Now we create a data frame with covariates artificially introduced and see
 # how the system performs. We also change the perpendicular density function
 # from flat to a normal bump, so that our sample may be more representative of
 # the responsivement movement data that the package is designed to deal with:
-set.seed(314)
+set.seed(1)
 simDat1 = simXY(100, 'pi.norm', logphi, 'h1', c(1,-0.55), w, ystart)$locs
-simDat2 = simXY(100, 'pi.norm', logphi, 'h1', c(0.7,-0.55), w, ystart)$locs
+simDat2 = simXY(100, 'pi.norm', logphi, 'h1', c(-0.5,-0.55), w, ystart)$locs
 
 n1 = length(simDat1$x)
 n2 = length(simDat2$x)
@@ -95,7 +95,20 @@ T6 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
                pi.x='pi.norm', logphi=logphi, w=w,
                formulas = list(formula(i~fakeFactor)), 
                ipars = c(0))
+# Note : 0 is always a reasonable guess for the covariate parameters, given
+#        we have no real a priori knowledge on how they might be affecting the 
+#        data
+
+# same model again with previous optim parameters as start values, to try
+# and obtain better convergence...
+T6.2 = LT2D.fit(DataFrameInput = sim.df2, hr='h1',b=c(-0.58092971,-1.78361579),
+                ystart=ystart,pi.x='pi.norm',
+                logphi=c(0.01454569,-4.80212310 ), w=w,
+                formulas = list(formula(i~fakeFactor)), 
+                ipars = 0.24537293)
 
 # without taking covariates into account:
 T7 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
+
+plot(T6.2)
