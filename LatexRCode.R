@@ -13,7 +13,7 @@ logphi <- c(0.02,-4.42)
 
 # produce simulated data:
 set.seed(3)
-simDat = simXY(500, 'pi.norm',
+simDat = simXY(50, 'pi.norm',
                logphi, 'h1', 
                b, w, 
                ystart)$locs
@@ -43,7 +43,11 @@ fit <- LT2D.fit(DataFrameInput = sim.df,
                 hessian = TRUE)
 
 gof.LT2D(fit)
-LT2D.bootstrap(fit,r=999,alpha = 0.05)$ci
+boot <- LT2D.bootstrap(fit,r=999,alpha = 0.05)
+boot$ci
+
+#used fort he figure in the bootstrap section
+hist(boot$Ns,main='',xlab='Estimate of Abundance')
 plot(fit)
 fit$fit$AIC
 
@@ -56,9 +60,12 @@ sim.df$observer.id <- factor(sample(
 
 sim.df$altitude <-  rnorm(n,2,1)
 
+
 iform <- formula(i~sim.df$observer.id)
 xform <- formula(x~sim.df$altitude)
 yform <- formula(y~sim.df$altitude)
+ParamNumRequired(sim.df, iform)
+
 # covariates in intercept only
 fit2 <- LT2D.fit(DataFrameInput = sim.df,
                  hr = 'h1',
@@ -102,11 +109,13 @@ fit4 <- LT2D.fit(DataFrameInput = sim.df,
                  w = w,
                  hessian = TRUE,
                  formulas=list(iform,xform,yform),
-                 ipars=0,
+                 ipars=rep(0,2),
                  xpars=0,
                  ypars=0)
 
-
+plot(fit4, covar.row=1,smooth.fy=T)
+boot <- LT2D.bootstrap(fit4,r=999,alpha=0.05)
+boot$ci
 ############### SIMULATION STUDY #############################
 set.seed=(0)
 S <- 100
@@ -212,3 +221,510 @@ for(i in 1:n){
   }
 }
 hist3D(x,y,z)
+
+################################################################
+set.seed(1)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                   ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+          silent=T)
+
+
+# with covariates:
+T6 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                   ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                   formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+          silent=T)
+
+set.seed(2)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.2 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-9,1),
+                   ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+          silent=T)
+
+
+# with covariates:
+T6.2 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-9,1),
+                   ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                   formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+          silent=T)
+
+
+set.seed(3)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.3 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+T6.3 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+            silent=T)
+
+set.seed(4)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.4 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+T6.4 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+            silent=T)
+
+set.seed(5)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.5 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+T6.5 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+            silent=T)
+
+set.seed(6)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.6 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+T6.6 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+            silent=T)
+
+set.seed(7)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.7 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+# had a convergence issue
+T6.7 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1.10),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3.37)),
+            silent=T)
+
+
+set.seed(8)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.8 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+T6.8 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+            silent=T)
+
+
+
+set.seed(9)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.9 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+#convergence issue
+T6.9 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-11.438,1.15596),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3.954)),
+            silent=T)
+
+
+set.seed(10)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.10 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+            silent=T)
+
+
+# with covariates:
+T6.10 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-11.438,1.15596),
+                     ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                     formulas = list(formula(i~fakeFactor)), ipars = c(3.954)),
+            silent=T)
+
+
+set.seed(11)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.11 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+             silent=T)
+
+
+# with covariates:
+T6.11 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                      formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+             silent=T)
+
+
+set.seed(12)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.12 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+             silent=T)
+
+
+# with covariates:
+T6.12 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                      formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+             silent=T)
+
+
+set.seed(13)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.13 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-10,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+             silent=T)
+
+
+# with covariates:
+# convergence issue
+T6.13 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-7.59,0.901),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                      formulas = list(formula(i~fakeFactor)), ipars = c(2.30)),
+             silent=T)
+
+
+set.seed(14)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.14 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-9,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+             silent=T)
+
+
+# with covariates:
+# convergence issue
+T6.14 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-9,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                      formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+             silent=T)
+
+
+set.seed(15)
+simDat1 <- simXY(100, 'pi.norm', logphi, 'h1', c(-9,1), w, ystart)$locs
+simDat2 <- simXY(100, 'pi.norm', logphi, 'h1', c(-6,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# without taking covariates into account:
+T7.15 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-9,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w),
+             silent=T)
+
+
+# with covariates:
+# convergence issue
+T6.15 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(-9,1),
+                      ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                      formulas = list(formula(i~fakeFactor)), ipars = c(3)),
+             silent=T)
+
+#######################################################################
+set.seed(1)
+simDat1 <- simXY(500, 'pi.norm', logphi, 'ep1', c(20,10,10), w, ystart)$locs
+simDat2 <- simXY(3*50, 'pi.norm', logphi, 'ep1', c(20,10,1), w, ystart)$locs
+
+n1 <- length(simDat1$x)
+n2 <- length(simDat2$x)
+
+# We can consider fakeFactor to be a factor covariate representing species, 
+# where the second species has a far higher detectability.
+sim.df2 <- data.frame(x = c(simDat1$x, simDat2$x),
+                      y = c(simDat1$y, simDat2$y),
+                      stratum = rep(1,n1+n2),
+                      transect = rep(1, n1+n2),
+                      L = Lsim,
+                      area = Asim,
+                      object = 1:(n1+n2),
+                      size = rep(1,n1+n2),
+                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
+
+# with covariates:
+T6 <- try(LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55),
+                   ystart=ystart, pi.x='pi.norm', logphi=logphi, w=w,
+                   formulas = list(formula(i~fakeFactor)), ipars = c(-2)),
+          silent=T)

@@ -1584,14 +1584,9 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     # where they aren't supposed to, and checks that other types of consistency
     # requirements are also satisfied. Errors are raised if they are not.
     checkedFormulas = FormulaChecking(hr, formulas)
-    print(checkedFormulas)
     i.formula = checkedFormulas[[1]]
     x.formula = checkedFormulas[[2]]
     y.formula = checkedFormulas[[3]]
-    
-    print(i.formula)
-    print(x.formula)
-    print(y.formula)
     # Knowing if x and y formulas are the same tells us if the y formula 
     # LP goes in slot 2 or 4
     ifelse('xy' %in% checkedFormulas[[4]], xy <-  TRUE, xy <-  FALSE)
@@ -1633,7 +1628,6 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     }
  
   else{b.for.optim = as.list(b)} # No covariates, so b is simply the one we have
-  print(DesignMatrices)
   # We pack the parameters as a vector:
   
   if (piname == "pi.const"){pars = list(beta = b.for.optim)} # construct a list
@@ -2570,11 +2564,11 @@ plot.LT2D.fit.object = function(fit,
   if(fit$covariates==TRUE){
     
     if(covar.row==FALSE){
-      stop('covar row must be specified for covariate models')
+      stop('covar.row must be specified for covariate models')
     }
     
     if(class(covar.row)=='numeric' & 
-       covar.row%%1!=0 & covar.row>=1 &
+       covar.row%%1==0 & covar.row>=1 &
        covar.row<=length(fit$unrounded.points.with.betas[[1]]$x)){
       
       # In this situation covar.row represents the row of the fitted data.frame
@@ -2591,7 +2585,6 @@ plot.LT2D.fit.object = function(fit,
       fit$b = as.list(dataFrameBetas[1,]) # by default, take the first row.
     }
   }
-  
   
   X = plotfit.x(fit,nclass=xbins)
   if (addrug){rug(x[x<=w])}                        # perpendicular distance plot

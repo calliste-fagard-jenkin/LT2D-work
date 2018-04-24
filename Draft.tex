@@ -311,28 +311,66 @@ HazardCovarSlots is a function which indicates to fityx which slots within the i
 
 The vast majority of functions within the fityx call hierarchy had to be modified and generalised to handle each detection having different estimated $\theta$ values for the same detection function. In many cases this had to involve the introduction of 'for' loops to produce a calculation separately for each detection, which represents part of the computational overhead required for giving the user the possibility to deal with  heterogeneous data. The other significant overheads being the calculation of design matrices, linear predictors and the estimation of multiple new parameters by the numerical optimisation routine.  
 
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.57]{gofx}
+\caption{A perpendicular distance qq plot produced by the $gof.LT2D$ function for a model with covariate inclusion}
+\end{figure}
+
+
 \subsection{Covariate inclusion into abundance estimation}
 The function $invp1\_replacement$ needed to be modified to calculate separate estimates of effective strip half-width for each detection, given that with covariate-included models, we expect the estimated $\theta$ parameters to be different for all detections which do not share identical covariate values. This involved making individual calls to the $phat$ function to obtain the estimate of effective strip half width for each detection.
 
 If analyses on large datasets are required, it could be worth implementing a procedure which attempts to evaluate how many different covariate combinations are present within the data, and to produce a call to $phat$ for each of these once, rather than for each detection separately (which makes no consideration of whether or not a calculation has already been made for a detection with the same covariate values). This optimisation is likely to only be noticeable in the presence of factor covariates within large data sets, given that this scenario leads to the highest possible frequency of repeated covariate values between detections.
+
 
 \subsection{Modification of goodness of fit functions}
 The LT2D goodness of fit methodology divides the goodness of fit into separate calculations for the perpendicular and forward distances of detections. Aside from the modifications made to incorporate covariate-included goodness-of-fit, the goodness of fit functionality was already integrated into the LT2D package at the time of publication of \cite{Borchers}.
 
 In the $y$ direction, the test is performed by considering the CDF of the conditional survival function of detections, compared with the empirical CDF of the same function. For example, for a collection of detections, and for each detection within these, we consider the probability of the animal 'surviving' (remaining undetected) until its forward distance of detection $y$, and we call this probability $p$. $1-p$ is then the probability that this animal does not survive any further than forward distance $y$. We also denote by $1-p_0$ the probability that the animal does not survive all the way to the observer (at forward distance $y=0$). Hence by          considering the conditional probability $\mathbb{P}\left(A|B\right) = \frac{\mathbb{P}\left(A\cap B\right)}{\mathbb{P}\left(B\right)}$ and noticing that the probability of not surviving past $y$ whilst also not surviving past $0$ is simply the probability of not survivng past $y$, we can determine that the probability of not-surviving past $y$ given that the animal did not survive further than the forward distance of the observer ($0$), is $\frac{1-p}{1-p_0}$. By evaluating the theoretical CDF of conditional survival probability for each detection in this way, and comparing it to the empirical CDF, we obtain enough information to produce a Kolmogorov-Smirnov and Cramer von Mises goodness of fit test in the forward direction. To cope with covariate-included models, we use the fitted $\theta$ values for each individual point to produce the evaluation of $\frac{1-p}{1-p_0}$, rather than using a single set of $\theta$s for the whole data set. 
 
-In the $x$ direction we again consider the conditional CDF of a distribution. For the numerator we consider the probability of an animal being detected between perpendicular distance $0$ and the perpendicular distance $x$ at which its detection took place, given fitted values for both its perpendicular density and detection function. The denominator evaluates the probability of the animal being detected between perpendicular distances $0$ and truncation distance $w$ (the full range of the survey), and hence we obtain the probability of detection within $0$ and the observed perpendicular detection distance $x$, given the animal was detected within the perpendicular survey range (and given the fitted parameters of the model's detection function and perpendicular density function). To account for covariate-included models we again allow this probability to be calculated individually for each point, given its own estimated $\theta$ parameters, and then perform the rest of the test as before. 
+In the $x$ direction we again consider the conditional CDF of a distribution. For the numerator we consider the probability of an animal being detected between perpendicular distance $0$ and the perpendicular distance $x$ at which its detection took place, given fitted values for both its perpendicular density and detection function. The denominator evaluates the probability of the animal being detected between perpendicular distances $0$ and truncation distance $w$ (the full range of the survey), and hence we obtain the probability of detection within $0$ and the observed perpendicular detection distance $x$, given the animal was detected within the perpendicular survey range (and given the fitted parameters of the model's detection function and perpendicular density function). To account for covariate-included models we again allow this probability to be calculated individually for each point, given its own estimated $\theta$ parameters, and then perform the rest of the test as before.
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.57]{gofy}
+\caption{A forward distance qq plot produced by the $gof.LT2D$ function for a model with covariate inclusion}
+\end{figure}
 
 \subsection{Implementation of confidence intervals}
 Previous to this project, the LT2D package was only able to produce point estimates for abundance, with no measure of uncertainty. Due to the complexity of the 2D detection function distance sampling likelihood, analytical calculation of confidence intervals is infeasible, and therefore we consider the use of a bootstrap. The use of a parametric bootstrap, re-sampling detections from a set of simulations of the fitted detection and perpendicular density functions would allow us to circumvent making any assumptions on the distributions of the fitted maximum likelihood estimates. However, the LT2D software can take several minutes to fit complicated models with many covariates, and therefore obtaining a large enough re-sample size to produce a reasonable bootstrap confidence interval would represent a commitment in computation time which is too elevated to be of practical benefit.  Because of this, we settle on the use of a non-parametric bootstrap which is dependent on the estimated asymptotic distributions of the maximum likelihood estimates, despite these assumptions being somewhat unrealistic when sample sizes are small.  The $LT2D.bootstrap$ function uses information provided in the hessian matrix produced by optim to produce a variance-covariance matrix for the MLEs. A large sample (the size of which can be selected by the user) is then taken from  the multivariate normal distribution centred at the obtained MLEs, with variance-covariance matrix equal to the solved hessian matrix produced by optim. Each of these samples is then converted into a set of $\theta$ and $\phi$ parameters appropriate to the fitted model's covariates, detection function and perpendicular density. These parameters are then passed along with the original data to the $NDest$ function to obtain an estimate of abundance. Once this process has been completed for all generated re-samples, a $(1-\alpha) 100\%$ confidence interval for abundance is produced using the percentile method. 
 
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.57]{boothist}
+\caption{A bootstrap distribution of abundance estimates resulting from a call to $LT2D.bootstrap$}
+\end{figure}
+
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.57]{covarplot1}
+\caption{Fitted detection function for an LT2D model at a given covariate level, using the modified plot function}
+\end{figure}
+
+
 Due to relatively high parameter sensitivity, small changes in estimated parameters can cause a large change in estimated abundance. This leads to the implemented bootstrap producing intervals that tend to be too wide, resulting in a coverage which is superior the selected value of $(1-\alpha) 100\%$. Although coverage which is better than expected is not of itself undesirable, it highlights that we may be able to produce intervals with a smaller range should we switch to a different methodology, which is something to be considered during further development of the LT2D package. 
 
+
 \subsection{Modification of plot functions}
-The LT2D plot functions required slight modifications in order to be able to handle models with covariates included. Due to the infinite combination of choices of covariate values when these covariates are continuous (and growing according the the factorial of the number of levels for each of the factor level covariates), it was decided that producing plots for all covariate levels or for a fixed proportion of them was not possible. The plotting function therefore allows the user to select the integer number which represents the row of the original R data.frame which contains the detection who's covariate values are to be chosen as the values to be held fixed whilst plotting the various curves the plotting functions produce.  The option to overlay plots for a selection of these, or to manually specify a single set of covariate values which are to be held fixed would be desirable as the LT2D software develops further.
+The LT2D plot functions required slight modifications in order to be able to handle models with covariates included. Due to the infinite combination of choices of covariate values when these covariates are continuous (and growing according to the factorial of the number of levels for each of the factor level covariates), it was decided that producing plots for all covariate levels or for a fixed proportion of them was not reasonable. The plotting function therefore allows the user to select the integer number which represents the row of the original R data.frame which contains the detection who's covariate values are to be chosen as the values to be held fixed whilst plotting the various curves the plotting functions produce.  The option to overlay plots for a selection of these, or to manually specify a single set of covariate values which are to be held fixed would be desirable as the LT2D software develops further.
+
+Figures 10 and 11 display the plots with respect perpendicular distance produced by the LT2D software for the same model (fitted to the same data), with different covariate values. 
+
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.57]{covarplot2}
+\caption{Fitted detection function for an LT2D model at a given covariate level, using the modified plot function}
+\end{figure}
 
 \section{Usage of the new software}
-We now provide a selection of illustrative uses of the new LT2D software through the use of simulated data. All the following code is in R, with the LT2D package installed as the version included in the appendix of this project. The detection functions which constitute equations (4) through (8) inclusive are named h1, ip1, 1p2, ep1 and ep2 respectively within the LT2D package. The perpendicular density functions given by equations (12) through (16) inclusive are called pi.const, pi.hnorm, pi.norm, pi.chnorm and pi.chnorm.i respectively. We will begin our example by simulating a collection of detections from a population of size $N=500$, with an h1 detection function and a normal perpendicular density. 
+We now provide a selection of illustrative uses of the new LT2D software through the use of simulated data. All the following code is in R, with the LT2D package installed as the version included in the appendix of this project. The detection functions which constitute equations (4) through (8) inclusive are named h1, ip1, 1p2, ep1 and ep2 respectively within the LT2D package. The perpendicular density functions given by equations (12) through (16) inclusive are called pi.const, pi.hnorm, pi.norm, pi.chnorm and pi.chnorm.i respectively. We will begin our example by simulating a collection of detections from a population of size $N=50$, with an h1 detection function and a normal perpendicular density. The $b$ parameters in the code refer to detection function parameters, whereas $logphi$ refers to parameters of the perpendicular density function.
 
 \begingroup
 \small
@@ -342,17 +380,17 @@ library('LT2D')
 # set perp trunc, forward trunc
 # total transect length and survey
 # area:
-w = 0.03 ; ystart = 0.05
+w = 0.15 ; ystart = 0.55
 L = 10 ; A = 2*w*L
 
 # set value of 'true' parameters
 # for simulated data:
-b <- c(-4.04,0.79)
+b=c(-7.3287948, 0.9945317)
 logphi <- c(0.02,-4.42)
 
 # produce simulated data:
 set.seed(3)
-simDat = simXY(500, 'pi.norm',
+simDat = simXY(50, 'pi.norm',
                logphi, 'h1', 
                b, w, 
                ystart)$locs
@@ -399,15 +437,15 @@ For the simulated data set sim.df we created above, the first few rows (with som
  \hline
  x & y & stratum & transect & L & area & object & size\\ [0.5ex] 
  \hline\hline
- 0.0050 & 0.0327 & 1 & 1 & 10 & 0.6 & 1 & 1 \\ 
+ 0.0174 & 0.0162 & 1 & 1 & 10 & 3 & 1 & 1 \\ 
  \hline
- 0.0242 & 0.0322 & 1 & 1 & 10 & 0.6 & 2 & 1 \\
+ 0.0054 & 0.0223 & 1 & 1 & 10 & 3 & 2 & 1 \\
  \hline
- 0.0115 & 0.0079 & 1 & 1 & 10 & 0.6 & 3 & 1 \\
+ 0.0156 & 0.0178 & 1 & 1 & 10 & 3 & 3 & 1 \\
  \hline
- 0.0098 & 0.0305 & 1 & 1 & 10 & 0.6 & 4 & 1 \\
+ 0.0108 & 0.0303 & 1 & 1 & 10 & 3 & 4 & 1 \\
  \hline
- 0.0180 & 0.0186 & 1 & 1 & 10 & 0.6 & 5 & 1 \\
+ 0.0277 & 0.0458 & 1 & 1 & 10 & 3 & 5 & 1 \\
  \hline
 \end{tabular}
 \end{center}
@@ -421,56 +459,46 @@ To fit a simple model with no covariate inclusion, we call the LT2D.fit function
 fit <- LT2D.fit(DataFrameInput = sim.df,
                 hr = 'h1',
                 # start values for b:
-                b = c(-3.72,0.74),
+                b = b,
                 ystart = ystart,
                 pi.x = 'pi.norm',
                 # start values for logphi:
-                logphi = c(0.02, -4.42),
+                logphi = logphi,
                 w = w,
                 hessian = TRUE)
-\end{lstlisting}
-\endgroup
-
-\begin{figure}[H]
-\center
-\includegraphics[scale=0.85]{fig7}
-\caption{Fitted curves for simulated data in the $x$ direction}
-\end{figure}
-
-
-Calls to the $gof.LT2D$, $LT2D.bootstrap$ and $plot$ functions produce goodness of fit vales for us, calculate a confidence interval on abundance using our chosen number of re-samples and plot the fitted curves. We can also extract the AIC from the fitted model object:
-
-\begingroup
-\small
-\begin{lstlisting}
+                
 gof.LT2D(fit)
-LT2D.bootstrap(fit,999)$ci
-plot(fit)
-fit$fit$AIC
 \end{lstlisting}
 \endgroup
 
-Which gives us the GoF values:
+The $gof.LT2D$ function gives us goodness of fit values for the fitted model in the perpendicular and forward directions. For the above model, the output of the $gof.LT2D function$ is:
 \begin{center}
  \begin{tabular}{|c c c|} 
  \hline
  \  & KS & CvM \\ [0.5ex] 
  \hline
- X & 0.7130 & 0.7933 \\ 
+ X & 0.8810348 & 0.7445199 \\ 
  \hline
- Y & 0.9429 & 0.9300  \\
+ Y & 0.9999873 & 0.9830506  \\
  \hline
 \end{tabular}
 \end{center}
 
+We add in some simulated covariate values to our data frame. We consider a continuous covariate $altitude.sim$ and a factor covariate $observer.id$, it should be noted that we are not further changing the simulated data other than by adding artificial columns into the data.frame that contains them. The inclusion of these simulated covariates is solely to illustrate how to specify covariates as part of a model within the LT2D software. The formulas argument to the $LT2D.fit$ function must be a list of R objects with class 'formula'. These are all of the form described in section 3.1. For each formula which is included within the model in this way, a vector of initial guesses must be passed to LT2D.fit, with the name ipars, xpars or ypars, depending on the formula specified. If a user has selected a complicated formula, and is unsure on how many extra starting parameters must be supplied, they can use the $ParamNumRequired$ function to obtain an answer. It is possible to specify multiple formulas at the same time, if the choice of detection function allows it (the software returns a warning and sometimes also an error if invalid combinations are selected by the user). Once the model is fitted, we can also produce plots by specifying the row number of the input data frame which contains the covariate values of interest, as well as call the $LT2D.bootstrap$ function to produce a confidence interval with an expected coverage probability and chosen re-sample number.
+This gives us a 95\% confidence interval of (25,53) for model $fit4$, as well as figures 12 through 15.\\
 
-Figures 7 and 8 display the fitted curves the simulated data. The bootstrap results in a 95\% confidence interval of $(490,.88,514.20)$ with 999 re-samples, from $n=448$ detections, with our fitted model producing an estimate of $\hat{N}=503$.  We add in some simulated covariate values to our data frame. We consider a continuous covariate $altitude.sim$ and a factor covariate $observer.id$, it should be noted that we are not further changing the simulated data other than by adding artifical columns into the data.frame that contains them, and so models including these fake covariates are expected to fit poorly. Their inclusion is there solely to illustrate how to specify covariates as part of a model within the LT2D software. The formulas argument to the $LT2D.fit$ function must be a list of R objects with class 'formula'. These are all of the form described in section 3.1. For each formula which is included within the model in this way, a vector of initial guesses must be passed to LT2D.fit, with the name ipars, xpars or ypars, depending on the formula specified. It is possible to specify multiple formulas at the same time, if the choice of detection function allows it (the software returns a warning and sometimes also an error if invalid combinations are selected by the user).
 
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.5]{fig13}
+\caption{Fitted forward detection function for the first observation of $fit4$}
+\end{figure}
+
+The relevant code is found below:
 \begingroup
-\footnotesize
+\scriptsize
 \begin{lstlisting}
 set.seed(3)
-
 n <- length(simDat$x)
 
 sim.df$observer.id <- factor(sample(
@@ -478,9 +506,12 @@ sim.df$observer.id <- factor(sample(
 
 sim.df$altitude <-  rnorm(n,2,1)
 
+
 iform <- formula(i~sim.df$observer.id)
 xform <- formula(x~sim.df$altitude)
 yform <- formula(y~sim.df$altitude)
+ParamNumRequired(sim.df, iform)
+
 # covariates in intercept only
 fit2 <- LT2D.fit(DataFrameInput = sim.df,
                  hr = 'h1',
@@ -524,38 +555,99 @@ fit4 <- LT2D.fit(DataFrameInput = sim.df,
                  w = w,
                  hessian = TRUE,
                  formulas=list(iform,
-                 		xform,
-                 		yform),
-                 ipars=0
+                  	       xform,
+                 	       yform),
+                 ipars=rep(0,2),
                  xpars=0,
                  ypars=0)
+                 
+plot(fit4, covar.row=1,smooth.fy=T)
+plot(fit4, covar.row=2,smooth.fy=T)
+boot <- LT2D.bootstrap(fit4,r=999,alpha=0.05)
+boot$ci
 \end{lstlisting}
 \endgroup
 
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.53]{fig12}
+\caption{Fitted perpendicular curves for the first observation of $fit4$}
+\end{figure}
 
 \section{Simulation studies}
-Producing a simulation study to ascertain the new software's capacity to account for heterogeneous populations is made difficult by a number of factors. Firstly, as the \cite{Borchers} likelihood is complicated and requires multiple instances of numerical integration at every evaluation, model fitting and maximum likelihood estimation takes a significant amount of time. Models which have no covariate inclusion may take only a few seconds to be fitted to a relatively small sample, however, the inclusion of covariates increases this computational cost quite heavily, increasing the quantity of numerical integration involved (by having to evaluate each point individually, due to its own distinct estimated values of the detection function parameters, based on its covariate values) as well as requiring more calls to the likelihood function in order to numerically estimate its maximum likelihood estimates. This causes models with even relatively simple covariate formulas to sometimes take upwards of 15 minutes to compute. Therefore producing a simulation study which includes a large number of fitted models with covariate formulas is understandably difficult.
+Producing a simulation study to ascertain the new software's capacity to account for heterogeneous populations is made difficult by a number of factors. Firstly, as the \cite{Borchers} likelihood is complicated and requires multiple instances of numerical integration at every evaluation, model fitting and maximum likelihood estimation takes a significant amount of time. Models which have no covariate inclusion may take only a few seconds to be fitted to a relatively small sample, however, the inclusion of covariates increases this computational cost quite heavily, increasing the quantity of numerical integration involved (by having to evaluate each point individually, due to its own distinct estimated values of the detection function parameters, based on its covariate values) as well as requiring more calls to the likelihood function in order to numerically estimate its maximum likelihood estimates. This causes models with even relatively simple covariate formulas to sometimes take upwards of 15 minutes to compute. Therefore producing a simulation study which includes a large number of fitted models with covariate formulas is understandably difficult.\\\\
 
 \begin{figure}[H]
 \center
-\includegraphics[scale=0.85]{fig8}
-\caption{Fitted curves for simulated data in the $y$ direction}
+\includegraphics[scale=0.5]{fig14}
+\caption{Fitted perpendicular curves for the second observation of $fit4$}
 \end{figure}
+
+\begin{figure}[H]
+\center
+\includegraphics[scale=0.5]{fig15}
+\caption{Fitted forward detection function for the second observation of $fit4$}
+\end{figure}
+
+
 
 A second complication arises due to optim's sensitivity to specified starting values for the parameters which are being estimated. The numerical optimisation routine struggles to produce estimates for these parameters when the initial estimates are not close to the 'true' maximum likelihood estimate. This is made visible to the user by a constant sequence of convergence error codes and warnings produced by the optim function, when the initial values were too different from the 'true' parameter values. A common remedy to this problem is to fit a single model multiple times, using the previous iteration's estimated parameters as the set of initial parameter estimates specified within the current model specification. This reduces the difference between the 'true' parameters and the supplied initial values with each iteration, making it easier for optim to converge.
 
 Models which have covariates specified are more prone to this problem, due to their intrinsically more complicated nature. Pilot simulation studies revealed that not being able to manually re-fit models using the previous model's estimated parameters negatively affected covariate-including models more heavily than covariate-excluding models, due to the covariate-including models converging with more difficulty. This difficulty to converge lead to estimates of abundance produced by covariate-including models to be estimated as being far more biased than they would be in practice, as a result of the simulation relying on parameter estimates from poorly converging models to produce its estimates of abundance.
 
 A solution to this problem would be to include an option for the software to automatically recognise poor convergence in maximum likelihood estimates, and to perform a new estimation of the parameters using the previous estimates as initial values. This implementation would be complicated due to the desired flexibility of the covariate inclusion, and so is deemed too substantial to include as part of this project. We are therefore limited to simulation studies with very few fitted models, so that we may manually ensure that convergence for each model is reasonable, and therefore representative of the software's performance in practice. 
-\section{Going forwards}
-\subsection{Additional desired features}
-\subsection{A proposed approach for mixture model incorporation}
+
+The final issue with producing simulation studies to compare the bias between covariate-including and covariate-excluding models lies within the capacities of the LT2D package's simulation functions. These functions currently have no way of generating heterogeneous data with a single call to the function, and no way of incorporating any covariate which is not a factor. The inclusion of this functionality would be extremely desirable, in order to be able to further verify the effectiveness of covariate inclusion within the LT2D package, however this would represent an extension which is above the scope of this project, and therefore must be left as the subject of further research. 
+
+We conduct our 
+
+\begin{center}
+ \begin{tabular}{||c c c||} 
+ \hline
+ seed & covariate est & no-covariate est  \\ 
+ \hline
+ 1 & 267.6 & 265.7 \\
+ \hline
+ 2 & 197.1 & 195.7  \\
+ \hline
+ 3 & 173.1 & 173.4  \\
+ \hline
+ 4 & 199.3 & 201.4  \\
+ \hline
+ 5 & 214 & 224.4 \\
+ \hline
+ 6 & 210.8 & 209.4 \\
+ \hline
+ 7 & 162.1 & 155.4 \\
+ \hline
+ 8 & 190.5 & 188.1 \\
+ \hline
+ 9 & 212.7 & 227 \\
+ \hline
+ 10 & 156.4 & 157.2 \\
+ \hline
+ 11 & 164.4 & 169.2 \\
+ \hline
+ 12 & 165.6 & 168.9 \\
+ \hline
+ 13 & 179.7 & 177.6 \\
+ \hline
+ 14 & 197.9 & 198.8 \\
+ \hline
+ 15 & 162.5 & 163.6 \\
+ \hline
+ mean & 190.25 & 191.72 \\
+ \hline
+\end{tabular}
+\end{center}
+
+\section{A proposed approach for mixture model incorporation}
 \section{Conclusion}
 This project's primary aim has been the implementation of covariates within the 2-Dimensional detection functions of the methodology provided by \cite{Borchers}, and to provide this additional functionality within the LT2D package itself, to increase its scope and feature set. The work completed for this project has allowed the LT2D software  to provide flexible methods for the user to deal with data which are heterogeneous with respect to detection probability, with a simple user interface. The user is able to choose any combination of covariates, be they quantitative or qualitative, and is able to specify separate formulas for each direction of the detection function. Plotting and goodness of fit functions have been generalised to be able to handle models with covariates included, with the possibility of calling the plot function multiple times to produce figures of the fitted curves at different levels of the included covariates. Not only has the abundance estimation within the software been generalised to produce point estimates when covariates have been included within a user's selected model, but it has also been extended to produce a bootstrap confidence interval of abundance (with the flexibility for the user to modify both the expected coverage and the bootstrap's  number of re-samples). 
 
-The implementation of this covariate inclusion required intimate knowledge of the \cite{Borchers} paper and the theory which underpins its software, as well as the ability to work with its substantial and complicated pre-existing code base to include the desired additional functionality. A strong grasp of good programming practice, relevant computer theoretic notions and comfort with the R programming language were all required to make the desired changes in an computationally efficient way. The use of techniques and practices outlined in \cite{Hadley} allowed the inclusion of more advanced functionality to the user by making use of R features which go above the scope of undergraduate statistics content (such as object oriented programming, exception handling, etc). 
+The implementation of this covariate inclusion required intimate knowledge of the \cite{Borchers} paper and the theory which underpins its software, as well as the ability to work with its substantial and complicated pre-existing code base to include the desired additional functionality. A strong grasp of good programming practice, relevant computer theoretic notions and comfort with the R programming language were all required to make the desired changes in a computationally efficient way. The use of techniques and practices outlined in \cite{Hadley} allowed the inclusion of more advanced functionality to the user by making use of R features which go above the scope of undergraduate statistics content (such as object oriented programming, exception handling, etc). 
 
-Due to the feature set of the new software, its flexibility and easy of use, it is my belief that the objectives outlined by this project have been comfortably met. Further examples of the software's use and demonstrations of it's ability to handle general cases can be found in the appendix.
+Due to the feature set of the new software, its flexibility and easy of use, it is my belief that the objectives outlined by this project have been comfortably met. Further examples of the software's use and demonstrations of its ability to handle general cases can be found in the appendix.
 
 \bibliographystyle{apacite}
 \bibliography{Biblio}
@@ -563,8 +655,7 @@ Due to the feature set of the new software, its flexibility and easy of use, it 
 
 \section{Appendix}
 
-Given that the LT2D source code is approximately 3500 lines of R code (after the completion of this project), and that the inclusions which constitute this project are over 1500 alone, GitHub links to the relevant files will be included to avoid bloating this document.
-
+Given that the LT2D source code is approximately 3500 lines of R code (after the completion of this project), and that the inclusions which constitute this project are over 1500 alone, GitHub links to the relevant files will be included, rather than raw code, to avoid bloating this document.\\
 
 The example code included in section 4, as well as an example of the type of code used to produce the pilot simulation studies mentioned in section 5 can be found here: 
 \\
@@ -579,9 +670,6 @@ https://github.com/penguin-coding/LT2D-work/blob/master/LT2D/R/2DLTfunctions.r}\
 The LT2D GoF functions after the project:\\
 \url{https://github.com/penguin-coding/LT2D-work/blob/master/LT2D/R/2DLTGoF.R}\\
 
-An example of how to fit different covariate formulas to a real data set:\\
-
-
-\subsection{LT2D code}
+An example of how to fit different covariate formulas to a real data set (from the file which was used to fit examples useful for debugging during the development phase of the project):\\
 
 \end{document}

@@ -17,15 +17,12 @@
 \contentsline {subsection}{\numberline {3.2}Understanding the LT2D software and its architecture}{9}
 \contentsline {subsection}{\numberline {3.3}Implementation of covariates into the likelihood}{10}
 \contentsline {subsection}{\numberline {3.4}Covariate inclusion into abundance estimation}{11}
-\contentsline {subsection}{\numberline {3.5}Modification of goodness of fit functions}{11}
+\contentsline {subsection}{\numberline {3.5}Modification of goodness of fit functions}{12}
 \contentsline {subsection}{\numberline {3.6}Implementation of confidence intervals}{12}
-\contentsline {subsection}{\numberline {3.7}Modification of plot functions}{12}
-\contentsline {section}{\numberline {4}Usage of the new software}{13}
-\contentsline {section}{\numberline {5}Simulation studies}{15}
-\contentsline {section}{\numberline {6}Going forwards}{16}
-\contentsline {subsection}{\numberline {6.1}Additional desired features}{16}
-\contentsline {subsection}{\numberline {6.2}A proposed approach for mixture model incorporation}{16}
-\contentsline {section}{\numberline {7}Conclusion}{16}
-\contentsline {section}{References}{16}
-\contentsline {section}{\numberline {8}Appendix}{17}
-\contentsline {subsection}{\numberline {8.1}LT2D code}{17}
+\contentsline {subsection}{\numberline {3.7}Modification of plot functions}{13}
+\contentsline {section}{\numberline {4}Usage of the new software}{14}
+\contentsline {section}{\numberline {5}Simulation studies}{16}
+\contentsline {section}{\numberline {6}A proposed approach for mixture model incorporation}{18}
+\contentsline {section}{\numberline {7}Conclusion}{18}
+\contentsline {section}{References}{18}
+\contentsline {section}{\numberline {8}Appendix}{19}

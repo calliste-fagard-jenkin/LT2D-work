@@ -138,6 +138,7 @@ B9 = LT2D.fit(DataFrameInput = DF, hr = 'ep2',
               formulas = list(formula(x~species),formula(y~species)),
               xpars = i.parameters, ypars = i.parameters)
 
+# covariate inclusion in all directions
 B10 = LT2D.fit(DataFrameInput = DF, hr = 'ep2',
                b=c(10.23357070,2.38792702,-20.23029177,2.38792702),
                ystart = ystart, pi.x = 'pi.norm', logphi = logphi, w=w,
@@ -145,6 +146,9 @@ B10 = LT2D.fit(DataFrameInput = DF, hr = 'ep2',
                                formula(i~species)),
                ypars = i.parameters, xpars = i.parameters,ipars=i.parameters)
 
+gof.LT2D(B10)
+
+# Now working with simulated data:
 set.seed(1)
 simDat = simXY(500, 'pi.const', NULL, 'h1', b, w, ystart)$locs
 
@@ -156,13 +160,13 @@ sim.df = data.frame(x = simDat$x, y = simDat$y, stratum=rep(1,length(simDat$x)),
 
 
 
-B8 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
+B11 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
 B8$fit$par
 
 
 # Try using a different perp density:
-B9 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
+B12 = LT2D.fit(DataFrameInput = sim.df, hr = 'h1', b=b, ystart=ystart,
               pi.x='pi.const', logphi=NULL, w=w)
 
 
@@ -184,13 +188,17 @@ sim.df2 = data.frame(x = c(simDat$x, simDat2$x),
                      fakeFactor = factor(rep(c(1,2),c(n1,n2))))
 
 # And with covariates:
-B10 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
+B13 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
                pi.x='pi.const', logphi=NULL, w=w,
                formulas = list(formula(i~fakeFactor)), 
                ipars = c(-1))
 
+## used for plotting function figures in paper:
+plot(B13, covar.row=1)
+plot(B13, covar.row=50)
+
 # trying to get abundance without taking into account the added covar:
-B11 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
+B14 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
                pi.x='pi.const', logphi=NULL, w=w)
 
 # remove(Sy, px, phat, ParamNumRequired, p.pi.x, negloglik.yx, NDest, LT2D.fit,
@@ -199,7 +207,8 @@ B11 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=b, ystart=ystart,
 #        ep1, DesignMatrix, DensityNumberLookup,data.with.b.conversion)
 
 
-gof.LT2D(B10, plot=T)
+# used for GoF plots in paper
+gof.LT2D(B13, plot=T)
 
 
 ## Bootstrap testing and development:

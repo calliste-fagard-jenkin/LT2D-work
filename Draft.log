@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  23 APR 2018 19:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  24 APR 2018 22:33
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -1131,69 +1131,162 @@ Package pdftex.def Info: LT2Dpostcovoptim.png  used on input line 302. on input
 Package pdftex.def Info: Requested size: 252.03929pt x 210.27911pt on input lin
 e 302.
  [10 <./LT2Dpostcovfityx.png> <./LT2Dpostcovoptim.png>]
-[11] [12]
-LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 346.
-LaTeX Font Info:    Try loading font information for OML+cmr on input line 350.
+<gofx.png, id=70, 439.6425pt x 499.11469pt>
+File: gofx.png Graphic file (type png)
+<use gofx.png>
+Package pdftex.def Info: gofx.png  used on input line 316. on input line 316.
+Package pdftex.def Info: Requested size: 250.59882pt x 284.49832pt on input lin
+e 316.
 
- ("C:\Program Files\MiKTeX 2.9\tex\latex\base\omlcmr.fd"
+[11 <./gofx.png>]
+<gofy.png, id=75, 439.6425pt x 499.11469pt>
+File: gofy.png Graphic file (type png)
+<use gofy.png>
+Package pdftex.def Info: gofy.png  used on input line 336. on input line 336.
+Package pdftex.def Info: Requested size: 250.59882pt x 284.49832pt on input lin
+e 336.
+ [12 <./gofy.png>]
+<boothist.png, id=82, 480.29437pt x 499.11469pt>
+File: boothist.png Graphic file (type png)
+<use boothist.png>
+Package pdftex.def Info: boothist.png  used on input line 345. on input line 34
+5.
+Package pdftex.def Info: Requested size: 273.77063pt x 284.49832pt on input lin
+e 345.
+
+Overfull \hbox (22.21191pt too wide) in paragraph at lines 345--346
+ [] 
+ []
+
+<covarplot1.png, id=83, 462.22687pt x 499.11469pt>
+File: covarplot1.png Graphic file (type png)
+<use covarplot1.png>
+Package pdftex.def Info: covarplot1.png  used on input line 352. on input line 
+352.
+Package pdftex.def Info: Requested size: 263.47205pt x 284.49832pt on input lin
+e 352.
+
+Overfull \hbox (11.91333pt too wide) in paragraph at lines 352--353
+ [] 
+ []
+
+[13 <./boothist.png> <./covarplot1.png>]
+<covarplot2.png, id=89, 462.22687pt x 499.11469pt>
+File: covarplot2.png Graphic file (type png)
+<use covarplot2.png>
+Package pdftex.def Info: covarplot2.png  used on input line 368. on input line 
+368.
+Package pdftex.def Info: Requested size: 263.47205pt x 284.49832pt on input lin
+e 368.
+
+Overfull \hbox (11.91333pt too wide) in paragraph at lines 368--369
+ [] 
+ []
+
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 384.
+LaTeX Font Info:    Try loading font information for OML+cmr on input line 389.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\omlcmr.fd"
 File: omlcmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <10> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 350.
-
-Overfull \hbox (0.44385pt too wide) in paragraph at lines 427--428
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 389.
+ [14 <./covarplot2.png>]
+Overfull \hbox (0.44385pt too wide) in paragraph at lines 465--466
 [][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
  []
 
-<fig7.png, id=78, 295.1025pt x 499.11469pt>
-File: fig7.png Graphic file (type png)
-<use fig7.png>
-Package pdftex.def Info: fig7.png  used on input line 436. on input line 436.
-Package pdftex.def Info: Requested size: 250.83829pt x 424.24947pt on input lin
-e 436.
-[13]
-LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <9> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 474.
- [14 <./fig7.png>]
-<fig8.png, id=89, 295.1025pt x 499.11469pt>
-File: fig8.png Graphic file (type png)
-<use fig8.png>
-Package pdftex.def Info: fig8.png  used on input line 541. on input line 541.
-Package pdftex.def Info: Requested size: 250.83829pt x 424.24947pt on input lin
-e 541.
- [15 <./fig8.png>] (Draft.bbl [16])
-Underfull \hbox (badness 10000) in paragraph at lines 569--572
+
+Underfull \hbox (badness 10000) in paragraph at lines 487--489
+
+ []
+
+<fig13.png, id=94, 469.755pt x 499.11469pt>
+File: fig13.png Graphic file (type png)
+<use fig13.png>
+Package pdftex.def Info: fig13.png  used on input line 493. on input line 493.
+Package pdftex.def Info: Requested size: 234.87692pt x 249.55672pt on input lin
+e 493.
+LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <8> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 502.
+[15 <./fig13.png>]
+<fig12.png, id=99, 511.15968pt x 429.10312pt>
+File: fig12.png Graphic file (type png)
+<use fig12.png>
+Package pdftex.def Info: fig12.png  used on input line 573. on input line 573.
+Package pdftex.def Info: Requested size: 270.91333pt x 227.42357pt on input lin
+e 573.
+
+Overfull \hbox (19.35461pt too wide) in paragraph at lines 573--574
+ [] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 578--579
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 573--575
+Underfull \hbox (badness 10000) in paragraph at lines 578--579
+
+ []
+
+<fig14.png, id=100, 506.6428pt x 499.11469pt>
+File: fig14.png Graphic file (type png)
+<use fig14.png>
+Package pdftex.def Info: fig14.png  used on input line 582. on input line 582.
+Package pdftex.def Info: Requested size: 253.32079pt x 249.55672pt on input lin
+e 582.
+
+Overfull \hbox (1.76207pt too wide) in paragraph at lines 582--583
+ [] 
+ []
+
+[16 <./fig12.png>]
+<fig15.png, id=105, 456.20438pt x 499.11469pt>
+File: fig15.png Graphic file (type png)
+<use fig15.png>
+Package pdftex.def Info: fig15.png  used on input line 588. on input line 588.
+Package pdftex.def Info: Requested size: 228.10162pt x 249.55672pt on input lin
+e 588.
+ [17 <./fig14.png> <./fig15.png>] (Draft.bbl)
+Underfull \hbox (badness 10000) in paragraph at lines 658--659
+
+ []
+
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 660--663
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 576--578
+Underfull \hbox (badness 10000) in paragraph at lines 664--666
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 579--581
+Underfull \hbox (badness 10000) in paragraph at lines 667--669
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 582--583
+Underfull \hbox (badness 10000) in paragraph at lines 670--672
 
  []
 
-[17] (Draft.aux) ) 
+
+Underfull \hbox (badness 10000) in paragraph at lines 673--674
+
+ []
+
+[19] (Draft.aux) ) 
 Here is how much of TeX's memory you used:
- 17243 strings out of 493312
- 312239 string characters out of 3138905
- 423758 words of memory out of 3000000
- 20422 multiletter control sequences out of 15000+200000
- 18185 words of font info for 69 fonts, out of 3000000 for 9000
+ 17274 strings out of 493312
+ 312722 string characters out of 3138905
+ 433758 words of memory out of 3000000
+ 20450 multiletter control sequences out of 15000+200000
+ 16640 words of font info for 63 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  55i,13n,54p,2005b,2116s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
@@ -1203,22 +1296,20 @@ ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Program Files/MiKT
 eX 2.9/fonts/type1/public/amsfonts/cm/cmmi6.pfb><C:/Program Files/MiKTeX 2.9/fo
 nts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1
-/public/amsfonts/cm/cmmi9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
-msfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
-/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12
-.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb><C:/
-Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/Program Fi
-les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/MiKTeX
- 2.9/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Files/MiKTeX 2.9/fonts
-/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/p
-ublic/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/ams
-fonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/
-cmsy9.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pf
-b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmtt10.pfb><C:/Pr
-ogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on Draft.pdf (18 pages, 504357 bytes).
+/public/amsfonts/cm/cmmib10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public
+/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17
+.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr6.pfb><C:/P
+rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Fil
+es/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Program Files/MiKTe
+X 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program Files/MiKTeX 2.9/fon
+ts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
+public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
+msfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
+symbols/msbm10.pfb>
+Output written on Draft.pdf (20 pages, 526344 bytes).
 PDF statistics:
- 169 PDF objects out of 1000 (max. 8388607)
+ 178 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 58 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 93 words of extra memory for PDF output out of 10000 (max. 10000000)
 
