@@ -8,7 +8,7 @@
 \contentsline {subsubsection}{\numberline {2.2.1}Object Oriented Additions}{5}
 \contentsline {subsubsection}{\numberline {2.2.2}Adding in Abundance Estimation}{5}
 \contentsline {subsubsection}{\numberline {2.2.3}Rounded Angles}{5}
-\contentsline {subsubsection}{\numberline {2.2.4}New Perpendicular Density}{6}
+\contentsline {subsubsection}{\numberline {2.2.4}New Perpendicular Density}{5}
 \contentsline {subsubsection}{\numberline {2.2.5}Concatenation of GoF Functions}{6}
 \contentsline {subsubsection}{\numberline {2.2.6}Model Collecting and Summarising}{6}
 \contentsline {subsection}{\numberline {2.3}Project objectives and outline}{6}
@@ -22,7 +22,6 @@
 \contentsline {subsection}{\numberline {3.7}Modification of plot functions}{13}
 \contentsline {section}{\numberline {4}Usage of the new software}{14}
 \contentsline {section}{\numberline {5}Simulation studies}{16}
-\contentsline {section}{\numberline {6}A proposed approach for mixture model incorporation}{18}
-\contentsline {section}{\numberline {7}Conclusion}{18}
+\contentsline {section}{\numberline {6}Conclusion}{18}
 \contentsline {section}{References}{18}
-\contentsline {section}{\numberline {8}Appendix}{19}
+\contentsline {section}{\numberline {7}Appendix}{19}

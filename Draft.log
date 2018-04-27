@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  24 APR 2018 22:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (MiKTeX 2.9.6500 64-bit) (preloaded format=pdflatex 2018.1.28)  27 APR 2018 11:13
 entering extended mode
 **./Draft.tex
 (Draft.tex
@@ -1210,8 +1210,8 @@ Package pdftex.def Info: Requested size: 234.87692pt x 249.55672pt on input lin
 e 493.
 LaTeX Font Info:    Font shape `OML/cmr/m/n' in size <8> not available
 (Font)              Font shape `OML/cmm/m/it' tried instead on input line 502.
-[15 <./fig13.png>]
-<fig12.png, id=99, 511.15968pt x 429.10312pt>
+[15]
+<fig12.png, id=98, 511.15968pt x 429.10312pt>
 File: fig12.png Graphic file (type png)
 <use fig12.png>
 Package pdftex.def Info: fig12.png  used on input line 573. on input line 573.
@@ -1222,61 +1222,60 @@ Overfull \hbox (19.35461pt too wide) in paragraph at lines 573--574
  [] 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 578--579
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 578--579
+[16 <./fig13.png> <./fig12.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 580--581
 
  []
 
-<fig14.png, id=100, 506.6428pt x 499.11469pt>
+
+Underfull \hbox (badness 10000) in paragraph at lines 580--581
+
+ []
+
+<fig14.png, id=104, 506.6428pt x 499.11469pt>
 File: fig14.png Graphic file (type png)
 <use fig14.png>
-Package pdftex.def Info: fig14.png  used on input line 582. on input line 582.
+Package pdftex.def Info: fig14.png  used on input line 584. on input line 584.
 Package pdftex.def Info: Requested size: 253.32079pt x 249.55672pt on input lin
-e 582.
+e 584.
 
-Overfull \hbox (1.76207pt too wide) in paragraph at lines 582--583
+Overfull \hbox (1.76207pt too wide) in paragraph at lines 584--585
  [] 
  []
 
-[16 <./fig12.png>]
 <fig15.png, id=105, 456.20438pt x 499.11469pt>
 File: fig15.png Graphic file (type png)
 <use fig15.png>
-Package pdftex.def Info: fig15.png  used on input line 588. on input line 588.
+Package pdftex.def Info: fig15.png  used on input line 590. on input line 590.
 Package pdftex.def Info: Requested size: 228.10162pt x 249.55672pt on input lin
-e 588.
- [17 <./fig14.png> <./fig15.png>] (Draft.bbl)
-Underfull \hbox (badness 10000) in paragraph at lines 658--659
-
- []
-
-[18]
-Underfull \hbox (badness 10000) in paragraph at lines 660--663
+e 590.
+[17 <./fig14.png> <./fig15.png>] (Draft.bbl [18])
+Underfull \hbox (badness 10000) in paragraph at lines 618--619
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 664--666
+Underfull \hbox (badness 10000) in paragraph at lines 620--623
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 667--669
+Underfull \hbox (badness 10000) in paragraph at lines 624--626
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 670--672
+Underfull \hbox (badness 10000) in paragraph at lines 627--629
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 673--674
+Underfull \hbox (badness 10000) in paragraph at lines 630--632
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 633--634
 
  []
 
@@ -1284,11 +1283,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 673--674
 Here is how much of TeX's memory you used:
  17274 strings out of 493312
  312722 string characters out of 3138905
- 433758 words of memory out of 3000000
+ 432758 words of memory out of 3000000
  20450 multiletter control sequences out of 15000+200000
  16640 words of font info for 63 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 55i,13n,54p,2005b,2116s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 55i,13n,54p,2005b,2115s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/c
 mbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pf
 b><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmex10.pfb><C:/Pr
@@ -1307,7 +1306,7 @@ ts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/
 public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/a
 msfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/
 symbols/msbm10.pfb>
-Output written on Draft.pdf (20 pages, 526344 bytes).
+Output written on Draft.pdf (20 pages, 525971 bytes).
 PDF statistics:
  178 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
