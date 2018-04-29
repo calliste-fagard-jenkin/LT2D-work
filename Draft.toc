@@ -5,12 +5,12 @@
 \contentsline {subsubsection}{\numberline {2.1.1}What is distance sampling?}{2}
 \contentsline {subsubsection}{\numberline {2.1.2}The significance of 2D detection functions}{4}
 \contentsline {subsection}{\numberline {2.2}Previous contributions}{5}
-\contentsline {subsubsection}{\numberline {2.2.1}Object Oriented Additions}{5}
-\contentsline {subsubsection}{\numberline {2.2.2}Adding in Abundance Estimation}{5}
-\contentsline {subsubsection}{\numberline {2.2.3}Rounded Angles}{5}
-\contentsline {subsubsection}{\numberline {2.2.4}New Perpendicular Density}{5}
-\contentsline {subsubsection}{\numberline {2.2.5}Concatenation of GoF Functions}{6}
-\contentsline {subsubsection}{\numberline {2.2.6}Model Collecting and Summarising}{6}
+\contentsline {subsubsection}{\numberline {2.2.1}Object oriented additions}{5}
+\contentsline {subsubsection}{\numberline {2.2.2}Adding in abundance estimation}{5}
+\contentsline {subsubsection}{\numberline {2.2.3}Rounded angles}{5}
+\contentsline {subsubsection}{\numberline {2.2.4}New perpendicular density}{5}
+\contentsline {subsubsection}{\numberline {2.2.5}Concatenation of GoF functions}{6}
+\contentsline {subsubsection}{\numberline {2.2.6}Model collecting and summarising}{6}
 \contentsline {subsection}{\numberline {2.3}Project objectives and outline}{6}
 \contentsline {section}{\numberline {3}Implementation}{6}
 \contentsline {subsection}{\numberline {3.1}Covariates; why include them, and how?}{6}

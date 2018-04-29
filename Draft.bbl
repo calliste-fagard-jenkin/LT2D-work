@@ -110,6 +110,33 @@ Buckland, S\BPBI T.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Laake%
+}{%
+Laake%
+}{%
+{\protect \APACyear {2013}}%
+}]{%
+rmark}
+\APACinsertmetastar {%
+rmark}%
+\begin{APACrefauthors}%
+Laake, J\BPBI L.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYear{2013}.
+\newblock
+\APACrefbtitle {{RMark}: An R Interface for Analysis of Capture-Recapture Data
+  with {MARK}} {{RMark}: An r interface for analysis of capture-recapture data
+  with {MARK}}\ ({AFSC} Processed Rep.\ \BNUM\ 2013-01).
+\newblock
+\APACaddressPublisher{Seattle, {WA}}{}.
+\newblock
+\begin{APACrefURL} \url{http://www.afsc.noaa.gov/Publications/
+  ProcRpt/PR2013-01.pdf} \end{APACrefURL}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Link%
 }{%
 Link%
@@ -134,6 +161,36 @@ Link, W\BPBI A.%
 \APACjournalVolNumPages{Biometrics}{59}{4}{1123-1130}.
 \newblock
 \begin{APACrefDOI} \doi{10.1111/j.0006-341X.2003.00129.x} \end{APACrefDOI}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Thomas%
+\ \protect \BOthers {.}}{%
+Thomas%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2010}}%
+}]{%
+distance}
+\APACinsertmetastar {%
+distance}%
+\begin{APACrefauthors}%
+Thomas, L.%
+, Buckland, S\BPBI T.%
+, Rexstad, E\BPBI A.%
+, Laake, J\BPBI L.%
+, Strindberg, S.%
+, Hedley, S\BPBI L.%
+\BDBL {}Burnham, K\BPBI P.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2010}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Distance software} {Distance software}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of Applied Ecology}{}{}{5-14}.
+\newblock
+\begin{APACrefDOI} \doi{10.1111/j.1365-2664.2009.01737.x} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
