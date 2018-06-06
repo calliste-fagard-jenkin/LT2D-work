@@ -1000,86 +1000,86 @@ round.lik = function(rounded,pi.x,logphi,rmin,ymax,hr,b,w){
   return(-log(((frac)/int)**rounded))
 }
 
-#F.x=function(x,b,hr,ystart,pi.x,logphi,w) return((1-px(x,b,hr,ystart))*pi.x(x,logphi,w))
-
-#'@title Negative log-likelihood for forward distance and perpendicular distance
-#'
-#'@description Calculates the negative log-likelihood for forward distance, \code{y}, and
-#'perpendicular distance, \code{x}, for a given hazard and perpendicular density distribution.
-#'
-#'@param y scalar or vector; forward distance observations
-#'@param x scale or vector; perp. distance observations
-#'@param pars c(b,logphi); hazard rate and density log-parameters in a vector (see details).
-#'@param hr hazard rate function
-#'@param ystart max forward distance at which could possibly detect animal (see details).
-#'@param pi.x perpendicular distance density distribution
-#'@param w perpendicular truncation distance.
-#'@param length.b length of the hazard rate parameter vector
-#'@return negative log likelihood for forward distance, \code{y} and perpendicular distance \code{x}.
-#'@details
-#'Must to ensure the hazard function has decayed to (very close to) zero by \code{ystart}.
-#'The parameter vector, \code{pars}, must be passed in with two parameters for the hazard rate first,
-#'then two parameters for perpendicular density gradient \eqn{\pi(x)} i.e. \code{c(b,logphi)}.
-#'@examples
-#'ystart=4;w=1
-#'hr=h2; b=log(c(0.75,1))
-#'pi.x=pi.norm; logphi=c(0.5,log(0.2))
-#'N=50 #true number of animals
-#'#generate some observations
-#'simDat=simXY(N=N,pi.x=pi.x,logphi=logphi,
-#'hr=hr,b=b,w=w,ystart=ystart)
-#'x=simDat$locs$x; y=simDat$locs$y
-#'pars=c(b,logphi)
-#'negloglik.yx(y,x,pars,hr,ystart,pi.x,w)
-#'@seealso \code{\link{simXY}}
-#'@export
-negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rmin,length.b=2,debug=FALSE,DENOM)
-{
-  if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
-  if(debug) print(pars)
-  if (!class(hr)=='character'){stop('message from negloglik: hr must
-                                    be passed as a character')}
-  if (!class(pi.x)=='character'){stop('message from negloglik: pi.x must
-                                    be passed as a character')}
-
-  # determine which values are rounded or not:
-  x.rounded = x[sqrt(y**2 + x**2)<rmin]
-  y.rounded = y[sqrt(y**2 + x**2)<rmin]
-  new.x = x[sqrt(y**2 + x**2)>=rmin]
-  new.y = y[sqrt(y**2 + x**2)>=rmin]
-  x = new.x ; y = new.y # avoids writing over vars as we reassign
-  rounded = length(x.rounded)
-
-  if (length(x)!=length(y)){stop('X + Y')} # Safety check to make sure
-  # rounding didn't make a mistake with data dimensions
-
-  n=length(y) ; hrname = hr ; piname = pi.x
-  # unpack parameters *** need to change if hr and pi.x don't have 2 pars each
-  b=pars[1:length.b]
-  if(piname=="pi.const") logphi=NULL else logphi=pars[(1+length.b):length(pars)]
-
-  hr=match.fun(hr) ; pi.x=match.fun(pi.x)
-  llik=rep(NA,n)
-  # calculate numerator:
-  num=sum(log(fyx(y,x,b,hrname,ystart)) + log(pi.x(x,logphi,w)))
-  # calculate denominator:
-  int=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname,
-                ystart=ystart,pi.x=piname,logphi=logphi,w=w)
-  denom=log(int$value)
-
-  # likelihood:
-  llik=-(num-n*denom) # 2016 paper likelihood, for the un-rounded data points
-
-  if(rounded>0){
-    negllik.rounded = round.lik(rounded,pi.x=piname,
-      logphi,rmin,ymax=ystart,hr=hrname,b,w,DENOM=DENOM)
-  } # we calculate the rounded data points part of the likelihood
-
-  else{negllik.rounded=0} # No addition to normal likelihood needed
-
-
-  return(llik + negllik.rounded) #round.lik returns a neg.log.lik, so we add.
-}
+#' #F.x=function(x,b,hr,ystart,pi.x,logphi,w) return((1-px(x,b,hr,ystart))*pi.x(x,logphi,w))
+#' 
+#' #'@title Negative log-likelihood for forward distance and perpendicular distance
+#' #'
+#' #'@description Calculates the negative log-likelihood for forward distance, \code{y}, and
+#' #'perpendicular distance, \code{x}, for a given hazard and perpendicular density distribution.
+#' #'
+#' #'@param y scalar or vector; forward distance observations
+#' #'@param x scale or vector; perp. distance observations
+#' #'@param pars c(b,logphi); hazard rate and density log-parameters in a vector (see details).
+#' #'@param hr hazard rate function
+#' #'@param ystart max forward distance at which could possibly detect animal (see details).
+#' #'@param pi.x perpendicular distance density distribution
+#' #'@param w perpendicular truncation distance.
+#' #'@param length.b length of the hazard rate parameter vector
+#' #'@return negative log likelihood for forward distance, \code{y} and perpendicular distance \code{x}.
+#' #'@details
+#' #'Must to ensure the hazard function has decayed to (very close to) zero by \code{ystart}.
+#' #'The parameter vector, \code{pars}, must be passed in with two parameters for the hazard rate first,
+#' #'then two parameters for perpendicular density gradient \eqn{\pi(x)} i.e. \code{c(b,logphi)}.
+#' #'@examples
+#' #'ystart=4;w=1
+#' #'hr=h2; b=log(c(0.75,1))
+#' #'pi.x=pi.norm; logphi=c(0.5,log(0.2))
+#' #'N=50 #true number of animals
+#' #'#generate some observations
+#' #'simDat=simXY(N=N,pi.x=pi.x,logphi=logphi,
+#' #'hr=hr,b=b,w=w,ystart=ystart)
+#' #'x=simDat$locs$x; y=simDat$locs$y
+#' #'pars=c(b,logphi)
+#' #'negloglik.yx(y,x,pars,hr,ystart,pi.x,w)
+#' #'@seealso \code{\link{simXY}}
+#' #'@export
+#' negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rmin,length.b=2,debug=FALSE,DENOM)
+#' {
+#'   if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
+#'   if(debug) print(pars)
+#'   if (!class(hr)=='character'){stop('message from negloglik: hr must
+#'                                     be passed as a character')}
+#'   if (!class(pi.x)=='character'){stop('message from negloglik: pi.x must
+#'                                     be passed as a character')}
+#' 
+#'   # determine which values are rounded or not:
+#'   x.rounded = x[sqrt(y**2 + x**2)<rmin]
+#'   y.rounded = y[sqrt(y**2 + x**2)<rmin]
+#'   new.x = x[sqrt(y**2 + x**2)>=rmin]
+#'   new.y = y[sqrt(y**2 + x**2)>=rmin]
+#'   x = new.x ; y = new.y # avoids writing over vars as we reassign
+#'   rounded = length(x.rounded)
+#' 
+#'   if (length(x)!=length(y)){stop('X + Y')} # Safety check to make sure
+#'   # rounding didn't make a mistake with data dimensions
+#' 
+#'   n=length(y) ; hrname = hr ; piname = pi.x
+#'   # unpack parameters *** need to change if hr and pi.x don't have 2 pars each
+#'   b=pars[1:length.b]
+#'   if(piname=="pi.const") logphi=NULL else logphi=pars[(1+length.b):length(pars)]
+#' 
+#'   hr=match.fun(hr) ; pi.x=match.fun(pi.x)
+#'   llik=rep(NA,n)
+#'   # calculate numerator:
+#'   num=sum(log(fyx(y,x,b,hrname,ystart)) + log(pi.x(x,logphi,w)))
+#'   # calculate denominator:
+#'   int=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname,
+#'                 ystart=ystart,pi.x=piname,logphi=logphi,w=w)
+#'   denom=log(int$value)
+#' 
+#'   # likelihood:
+#'   llik=-(num-n*denom) # 2016 paper likelihood, for the un-rounded data points
+#' 
+#'   if(rounded>0){
+#'     negllik.rounded = round.lik(rounded,pi.x=piname,
+#'       logphi,rmin,ymax=ystart,hr=hrname,b,w,DENOM=DENOM)
+#'   } # we calculate the rounded data points part of the likelihood
+#' 
+#'   else{negllik.rounded=0} # No addition to normal likelihood needed
+#' 
+#' 
+#'   return(llik + negllik.rounded) #round.lik returns a neg.log.lik, so we add.
+#' }
 
 #' Simulate sightings given a known perpendicular density distribution and hazard function
 #' @description Simulates sightings from a known population given a density distribution
@@ -1487,7 +1487,7 @@ LT2D.FitObjectMaker = function(par,value,counts,convergence,message,hessian,
 #'@export
 fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
                  covarPars=NULL,control = list(),hessian = FALSE,corrFlag = 0.7,
-                 debug = FALSE, DataFrameInput=NULL,...){
+                 debug = FALSE, DataFrameInput=NULL, returnDM=FALSE,...){
   
   hrname = hr                             # These lines keep the variable names 
   piname = pi.x                           # consistent with previous code
@@ -1618,10 +1618,12 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
         b.for.optim[[4]]=c(b[4], covarPars$y)# if y is there, it goes in slot 4
       }
     }
-    }
+  }
   
   else{b.for.optim = as.list(b)} # No covariates, so b is simply the one we have
   
+  if (returnDM) return(list(DesignMatrices = DesignMatrices,
+                            b.for.optim = b.for.optim))
   # We pack the parameters as a vector:
   
   if (piname == "pi.const"){pars = list(beta = b.for.optim)} # construct a list
@@ -2035,13 +2037,13 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
   class(likelihood.level.b) = 'likelihood.level.b'
   if (returnB) return(likelihood.level.b)
   
-  # calculate numerator:
-  num=sum(log(fyx(y,x,likelihood.level.b,hrname,ystart))
-          + log(pi.x(x,logphi,w)))
-  
   # We do a parameter check for B to avoid having to do it at every call
   # of the hazard function:
   HazardBCheck(y,x,likelihood.level.b[[1]],hrname)
+  
+  # calculate numerator:
+  num=sum(log(fyx(y,x,likelihood.level.b,hrname,ystart))
+          + log(pi.x(x,logphi,w)))
   
   # calculate denominator:
   if (is.null(DesignMatrices)){                 # Easy with no covariates:
@@ -3689,4 +3691,196 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   
   # 5. return bootstrap result
   return(list(ci=ci,Ns=Ns))
+}
+
+
+LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
+                         w, lambda, formulas=NULL, ipars=NULL, xpars=NULL,
+                         ypars=NULL, control=list(), hessian=FALSE,
+                         corrFlag=0.7, debug=FALSE){
+  # purpose : This function allows the user to fit an LT2D model as a two
+  #           component mixture model. Both components share the same detection
+  #           function, but form subpopulations with different perpendicular
+  #           densities. The functional form of these perpendicular densities
+  #           must be the same, it is their parameter difference which allow us
+  #           to model the two subpopulations separately. 
+  #
+  # inputs  : DataFrameInput - The input data frame containing all observations
+  #                            and covariate values, this is of the same form 
+  #                            as for the LT2D.fit function
+  #           hr             - The character naming the functional form of the 
+  #                            detection function
+  #           b              - The initial estimate parameter values for the 
+  #                            detection function
+  #           ystart         - The furthest forward distance at which an animal 
+  #                            can be observed
+  #           pi.x           - The functional form of the perpendicular density
+  #                            distribution
+  #           logphi1        - The initial parameter estimates for the first
+  #                            component's perpendicular density
+  #           logphi2        - The initial parameter estimates for the second
+  #                            component's perpendicular density
+  #           w              - The perpendicular truncation distance
+  #           lambda         - The initial estimate for the proportion of the 
+  #                            population which is in component 1
+  #           formulas       - Formulas to specifiy covariate inclusion in the 
+  #                            detection function
+  #           ipars          - Any initial parameter estimates for covariate
+  #                            inclusion into the detection function's intercept
+  #           xpars          - Any initial parameter estimates for covariate
+  #                            inclusion into the detection function's x
+  #                            direction
+  #           ypars          - Any initial parameter estimates for covariate
+  #                            inclusion into the detection function's y
+  #                            direction
+  #           control        - Optional control arguments to be passed to optim
+  #           hessian        - Boolean, stating if a hessian matrix should be 
+  #                            produced for the MLEs
+  #           corrFlag       - If the correlation between two parameters is 
+  #                            above this specified threshold, a warning is 
+  #                            thrown to the user
+  #           debug          - Boolean, if TRUE, functions behave differently
+  #                            and tend to produce verbose print statements
+  
+  DataFrameInput <- subset(DataFrameInput$x <= w)
+  
+  if (!is.null(formulas)){
+    # We piggy-back some functionality off of the fityx function, to avoid
+    # having to produce separate code to create the design matrices and sanity
+    # check the user's chosen covariate formulas
+    DMB <- fityx(b=b,hr=hr,ystart=ystart,pi.x=pi.x,logphi=logphi1,w=w,rmin=-1,
+           formulas=formulas,covarPars=list(x=xpars, y=ypars, i=ipars),
+           debug = debug, DataFrameInput=NULL, returnDM=TRUE)
+    
+    # extract the hard work the fityx function did for us. Note that the
+    # returnDM=TRUE causes the fityx function to return the desired objects 
+    # before any call to optim, and so whilst lazy and inefficient, I consider
+    # calling fityx to produce the design matrices to be better practice than
+    # copying and pasting the equivalent code into this function.
+    DesignMatrices <- DMB[1]
+    b.for.optim <- DMB[2]
+  }
+  
+  else{
+    DesignMatrices <- NULL
+    b.for.optim <- as.list(b)
+  }
+  
+  y <- DataFrameInput$y
+  x <- DataFrameInput$x
+  
+  skeleton <- list(b.for.optim, logphi1, logphi2, lambda)
+  pars <- unlist(skeleton)
+  
+  # RUN OPTIM ON MIXTURE NEG LOG LIK
+  fit <- optim(pars, mixture.nll, y=y, x=x, hr=hr, ystart=ystart, pi.x=pi.x,
+               w=w, DesignMatrices=DesignMatrices, skeleton=skeleton)
+  
+  # OUTPUT SAME FUNCTIONALITY AS NON MIXTURE MODEL, GoF, Plotting, Bootstrap
+}
+
+mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
+                        skeleton, debug=FALSE, returnB = FALSE){
+  
+  if (pi.x=='pi.const') stop('pi.const is invalid density for mixture model')
+  if (debug) print(pars)
+  if (class(pi.x)!='character' | class(hr)!='character'){
+    stop('hazard and perpendicular density must be supplied as characters')
+  }
+  
+  n=length(y) ; hrname = hr ; piname = pi.x 
+  hr=match.fun(hr) ; pi.x=match.fun(pi.x)
+  
+  unpacked <- relist(pars, skeleton=skeleton)
+  b <- unpacked[[1]]       # These will get a link function applied by the
+  logphi1 <- unpacked[[2]] # detection and perpendicular density functions.
+  logphi2 <- unpacked[[3]]
+  lambda <- plogis(unpacked[[4]]) # We apply the link manually to lambda
+  
+  # if any b entry has non-scalar entries, replace these entries with the 
+  # appropriate linear predictor...
+  if (!is.null(DesignMatrices)){  # We have been given design matrices
+    # The DM for entry 'i' of b, is also at entry 'i' of DesignMatrices
+    for (index in (1:length(b))){
+      if (length(b[[index]])>1){  # We need to create the LP:
+        LP = LinPredictor(b[[index]], DesignMatrices[[index]]) # Create LP
+        b[[index]] = as.vector(LP)# Replace the start parameters with the LP
+      }
+    }
+  }
+  
+  # This loop turns entries in b of length 1 into entries of length n
+  j = 1 # At the end of this loop, j-1 will be the number of hr parameters
+  while (class(try(b[[j]],silent=T))!='try-error'){
+    # if there's only one element in a column, make a column of that 
+    # element repeated the correct number of times to match the number of 
+    # (x,y) coordinates we have:
+    if (length(b[[j]])==1){b[[j]]=as.numeric(rep(b[[j]],n))}
+    j = j + 1
+  }
+  j = j - 1 # Remove 1 from j so that it now represents the dimension of b
+  likelihood.level.b = list(b,j)
+  class(likelihood.level.b) = 'likelihood.level.b'
+  if (returnB) return(likelihood.level.b)
+  
+  # We do a parameter check for B to avoid having to do it at every call
+  # of the hazard function:
+  HazardBCheck(y,x,likelihood.level.b[[1]],hrname)
+  
+  # calculate numerators:
+  FYX <- fyx(y,x,likelihood.level.b,hrname,ystart)
+  num1 <- prod(FYX*pi.x(x,logphi1,w))
+  num2 <- prod(FYX*pi.x(x,logphi2,w))
+  
+  # calculate denominators:
+  
+  # No covariates:
+  if (is.null(DesignMatrices)){
+    
+    b.normal <- as.list(sapply(b, '[[', 1))
+    
+    int1 <- integrate(f=p.pi.x,lower=0,upper=w,b=b.normal,hr=hrname,
+                      ystart=ystart,pi.x=piname,logphi=logphi1,w=w)
+    
+    int2 <- integrate(f=p.pi.x,lower=0,upper=w,b=b.normal,hr=hrname,
+                      ystart=ystart,pi.x=piname,logphi=logphi2,w=w)
+    
+    denom1 <- (int1$value)**n
+    denom2 <- (int2$value)**n
+  }
+  
+  # Covariates:
+  else{
+    
+    integrals1 <- rep(NA, n)
+    integrals2 <- rep(NA, n)
+    
+    for (i in (1:n)){
+      # We know j exists, and we know b will have been turned into a list
+      # of all vectors, so we use b and j from the (not directly) above 
+      # while loop
+      integration.b = list()
+      for (column.num in (1:j)){
+        integration.b[[column.num]] = b[[column.num]][i]
+      }
+      
+      integrals1[i] <- integrate(f=p.pi.x,lower=0,upper=w,b=integration.b,
+                                 hr=hrname, ystart=ystart, pi.x=piname, 
+                                 logphi=logphi1, w=w)$value
+      
+      integrals2[i] <- integrate(f=p.pi.x,lower=0,upper=w,b=integration.b,
+                                 hr=hrname, ystart=ystart, pi.x=piname, 
+                                 logphi=logphi2, w=w)$value
+    }
+    denom1 <- prod(integrals1)
+    denom2 <- prod(integrals2)
+  }
+  
+  lik1 <- num1/denom1
+  lik2 <- num2/denom2
+  
+  lik <- lambda*lik1 + (1-lambda)*lik2
+  nll <- -log(lik)
+  
+  return(nll)
 }
