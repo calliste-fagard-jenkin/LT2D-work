@@ -3702,7 +3702,7 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   #           component mixture model. Both components share the same detection
   #           function, but form subpopulations with different perpendicular
   #           densities. The functional form of these perpendicular densities
-  #           must be the same, it is their parameter difference which allow us
+  #           must be the same, it is their different parameters which allow us
   #           to model the two subpopulations separately. 
   #
   # inputs  : DataFrameInput - The input data frame containing all observations
