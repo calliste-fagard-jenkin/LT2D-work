@@ -3879,6 +3879,9 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
   lik1 <- num1/denom1
   lik2 <- num2/denom2
   
+  print(-log(lik1))
+  print(-log(lik2))
+  
   lik <- lambda*lik1 + (1-lambda)*lik2
   nll <- -log(lik)
   

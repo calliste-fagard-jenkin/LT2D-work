@@ -111,3 +111,33 @@ T6.2 = LT2D.fit(DataFrameInput = sim.df2, hr='h1',b=c(-0.58092971,-1.78361579),
 T7 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
               pi.x='pi.norm', logphi=logphi, w=w)
 
+#################### TESTING FOR MIXTURE MODEL INCLUSION #######################
+
+urpwb <- T6.2$fit$unrounded.points.with.betas
+t.B <- urpwb$b
+t.L1 <- T6.2$fit$logphi
+t.L2 <- L1 + c(0.4,1.2)
+t.x <- urpwb[[1]]$x
+t.y <- urpwb[[1]]$y
+t.hr <- 'h1'
+t.pi.x <- 'pi.norm'
+t.DesignMatrices <- T6.2$fit$designMatrices
+t.skeleton <- c(T6.2$fit$skeleton,list(t.L2),list(0.6))
+pars.mixt <- c(T6.2$fit$par, t.L2, 0.6)
+
+t.a <- mixture.nll(pars = pars.mixt, y = t.y, x = t.x, hr = t.hr,
+                   ystart = ystart, pi.x = t.pi.x,w = w,
+                   DesignMatrices = t.DesignMatrices, skeleton = t.skeleton )
+
+L1 <- negloglik.yx(pars = T6.2$fit$par, y = t.y, x = t.x, hr = t.hr,
+                   ystart = ystart, pi.x = t.pi.x, w = w,
+                   DesignMatrices = t.DesignMatrices,
+                   skeleton = T6.2$fit$skeleton)
+
+L2 <- negloglik.yx(pars = c(T6.2$fit$par[1:3],t.L2), y = t.y, x = t.x,
+                   hr = t.hr, ystart = ystart, pi.x = t.pi.x, w = w,
+                   DesignMatrices = t.DesignMatrices,
+                   skeleton = T6.2$fit$skeleton)
+
+
+### Debug differences
