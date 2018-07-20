@@ -116,7 +116,7 @@ T7 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
 urpwb <- T6.2$fit$unrounded.points.with.betas
 t.B <- urpwb$b
 t.L1 <- T6.2$fit$logphi
-t.L2 <- L1 + c(0.4,1.2)
+t.L2 <- t.L1 + c(0,1.2)
 t.x <- urpwb[[1]]$x
 t.y <- urpwb[[1]]$y
 t.hr <- 'h1'
@@ -139,5 +139,5 @@ L2 <- negloglik.yx(pars = c(T6.2$fit$par[1:3],t.L2), y = t.y, x = t.x,
                    DesignMatrices = t.DesignMatrices,
                    skeleton = T6.2$fit$skeleton)
 
-
-### Debug differences
+test.1 <- LT2D.mixture(sim.df2, 'h1', c(-0.58092971,-1.78361579), ystart,
+                       'pi.norm', t.L1, t.L2, w, 0.6)

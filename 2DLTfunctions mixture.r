@@ -3742,7 +3742,7 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   #           debug          - Boolean, if TRUE, functions behave differently
   #                            and tend to produce verbose print statements
   
-  DataFrameInput <- subset(DataFrameInput$x <= w)
+  DataFrameInput <- subset(DataFrameInput, DataFrameInput$x <= w)
   
   if (!is.null(formulas)){
     # We piggy-back some functionality off of the fityx function, to avoid
@@ -3878,10 +3878,6 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
   
   lik1 <- num1/denom1
   lik2 <- num2/denom2
-  
-  print(-log(lik1))
-  print(-log(lik2))
-  
   lik <- lambda*lik1 + (1-lambda)*lik2
   nll <- -log(lik)
   
