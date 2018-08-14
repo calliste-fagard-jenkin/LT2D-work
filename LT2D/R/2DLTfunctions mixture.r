@@ -3940,3 +3940,23 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
 
   return(nll)
 }
+
+pi.x.mixt <- function(pi.x,lambda,x,logphi1,logphi2,w){
+  # purpose : In mixture model LT2D, the perpendicular density is a mixture
+  #           of two different sets of parameters for the same function. This
+  #           function evaluates this mixed perpendicular density function.
+  # inputs  : pi.x    - The character name of the perpendicular density function
+  #           lambda  - The mixture proportion, as estimated by the linear
+  #                     optimisation (and hence, not yet backtransformed)
+  #           x       - The scalar or vector perpendicular distances of the
+  #                     locations of interest
+  #           logphi1 - The parameter values for the perpendicular density of
+  #                     the first subpopulation
+  #           logphi2 - The parameter values for the perpendicular density of
+  #                     the second subpopulation
+  #           w       - The perpendicular truncation distance of the analysis
+
+  pi <- match.fun(pi.x)
+  lambda <- plogis(lambda)
+  return(lambda*pi(x,logphi1,w)+(1-lambda)*pi(x,logphi2,w))
+}
