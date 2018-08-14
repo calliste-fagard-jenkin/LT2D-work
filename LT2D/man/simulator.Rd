@@ -18,6 +18,9 @@ simulator(N = NULL, fit, n = NULL, ymin = NULL, optimx = FALSE,
 
 \item{...}{other arguments to be passed into \link{\code{simXY}}}
 }
+\description{
+Simulate observations and fit a model
+}
 \details{
 If n=NULL and ymin=NULL then use \link{\code{simXY}}.  When n!=NULL this function iteratively calls \link{\code{simXY}} until n simulated observations are reached.
 When ymin!=NULL this function discards simulated data with Y-coordinates <ymin.  It is intended that \code{ymin}

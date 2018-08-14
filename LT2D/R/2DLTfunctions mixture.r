@@ -49,7 +49,7 @@ ghy=function(y,x,b)
   #theta=c(exp(b[1:2]),b[3])
   theta1=theta[1]^(1/theta[2])
   return(((x/theta1)^2+((y+theta[3])/theta1)^2)^(-theta[2]/2))
-} 
+}
 
 #'@title Detection hazard function \code{ghy2} prob(detect | available at x,y)
 #'
@@ -450,11 +450,11 @@ pi.chnorm=function(x,logphi,w){
 }
 
 #'@title Helper function for pi.chnorm.i
-#'@description function which evaluates part of the 
-#'expression of its namesake function. Useful for 
+#'@description function which evaluates part of the
+#'expression of its namesake function. Useful for
 #'allowing numeric integration of this expression
 #'@param x numeric ; perpendicular distance x
-#'@param logphi ; numeric vector of length two of parameters  
+#'@param logphi ; numeric vector of length two of parameters
 pi.chnorm.i.exp.term = function(x,logphi){
   return(exp(-((x**2)/(2*logphi[1]**2))))
 }
@@ -462,7 +462,7 @@ pi.chnorm.i.exp.term = function(x,logphi){
 #'@title Half normal density allowing for non-zero intercept
 #'
 #'@description Half normal perpendicular density function with
-#' the ability to accomodate for positive density at x=0. 
+#' the ability to accomodate for positive density at x=0.
 #'
 #'@param x prependicular trackline distance
 #'@param logphi ; numeric vector of length two
@@ -473,7 +473,7 @@ pi.chnorm.i = function(x,logphi,w){
   if (length(logphi)!=2){stop('incorrect number of supplied parameters')}
   logphi[2] = plogis(logphi[2])
   logphi[1] = exp(logphi[1])
-  numerator = 1 - logphi[2]*pi.chnorm.i.exp.term(x,logphi) 
+  numerator = 1 - logphi[2]*pi.chnorm.i.exp.term(x,logphi)
   int=integrate(pi.chnorm.i.exp.term, lower=0,upper = w, logphi=logphi)
   denom = w - logphi[2]*int$value
   return(numerator/denom)
@@ -712,56 +712,56 @@ fyx=function(y,x,b,hr,ystart,nint=100)
   if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
   n=length(x)
   f=intval=rep(NA,n)
-  if (!class(hr)=='character'){stop('message from fyx: hr must be passed as 
+  if (!class(hr)=='character'){stop('message from fyx: hr must be passed as
                                     a character')}
   hr=match.fun(hr)
-  
-  # The below loop was added to generalise the function enough to deal with 
+
+  # The below loop was added to generalise the function enough to deal with
   # covariate inclusion.
-  
+
   if (class(b)=='likelihood.level.b'){
     j = b[[2]] # keep track of the number of parameters
     b = b[[1]] # the b list with all columns of equal dimension is found here
   }
-  
+
   else {
     # This loop is largely redundant. It is expected this function will
     # only get called by the likelihood function (negloglik.yx), which performs
     # all the necessary checks and produces the 'likelihood.level.b' object.
     # Leaving it in means that if this fyx function is called manually, or by
-    # a different function, it is able to handle a list b with a mixture 
-    # of dimension 1 and linear predictor parameters. 
-    
+    # a different function, it is able to handle a list b with a mixture
+    # of dimension 1 and linear predictor parameters.
+
     j = 1 # At the end of this loop, j-1 will be the number of hr parameters
     while (class(try(b[[j]],silent=T))!='try-error'){
-      
-      # if there's only one element in a column, make a column of that 
-      # element repeated the correct number of times to match the number of 
+
+      # if there's only one element in a column, make a column of that
+      # element repeated the correct number of times to match the number of
       # (x,y) coordinates we have:
-      
+
       if (length(b[[j]])==1){b[[j]]=rep(b[[j]],n)}
       j = j + 1
     }
     j = j - 1 # Remove 1 from j so that it now represents the dimension of b
   }
-  
+
   for(i in (1:n)) {
     # create an empty list to insert b values for this individual (x,y):
     integration.b = list()
-    
+
     for (column.number in (1:j)){
-      # Take the i th element of each beta column to obtain the correct 
+      # Take the i th element of each beta column to obtain the correct
       # parameter values for the point (x,y) in position i
       integration.b[[column.number]] = b[[column.number]][i]
     }
-    
+
     dy=(ystart-y[i])/nint/2                           # for crude integration
     yy=seq(y[i],ystart,length=(nint+1))[-(nint+1)]+dy # for crude integration
-    
+
     int=sum(hr(yy,rep(x[i],nint),integration.b)*dy*2) # crude integration
     intval[i]=exp(-int)
   }
-  
+
   hrval=hr(y,x,b) # value of hr at each (x,y)
   bads=which(hrval>=.Machine$double.xmax)  # identify infinite hazards
   if(length(bads)>0) { # infinite hazard so p(detect)=0
@@ -795,7 +795,7 @@ fyx=function(y,x,b,hr,ystart,nint=100)
 #' xlab="prep. distance, x",ylab="p(x)")
 #'@export
 px=function(x,b,hrname,ystart){
-  if (!class(hrname)=='character'){stop('message from px: hr must be supplied as 
+  if (!class(hrname)=='character'){stop('message from px: hr must be supplied as
                                     a character')}
   return(1-Sy(x,rep(0.0001,length(x)),ystart,b,hrname))
 }
@@ -822,12 +822,12 @@ px=function(x,b,hrname,ystart){
 #'@examples
 #'p.pi.x(x,b,hr,ystart,pi.x,logphi,w)
 p.pi.x=function(x,b,hr,ystart,pi.x,logphi,w){
-  
+
   if (!class(hr)=='character'){stop('hr must be supplied as character')}
   if (!class(pi.x)=='character'){stop('pi.x must be supplied as character')}
-  
+
   pi.x = match.fun(pi.x) # So that we can evaluate it as a function below
-  
+
   return(px(x,b,hr,ystart)*pi.x(x,logphi,w))
 }
 
@@ -1001,7 +1001,7 @@ round.lik = function(rounded,pi.x,logphi,rmin,ymax,hr,b,w){
 }
 
 #' #F.x=function(x,b,hr,ystart,pi.x,logphi,w) return((1-px(x,b,hr,ystart))*pi.x(x,logphi,w))
-#' 
+#'
 #' #'@title Negative log-likelihood for forward distance and perpendicular distance
 #' #'
 #' #'@description Calculates the negative log-likelihood for forward distance, \code{y}, and
@@ -1041,7 +1041,7 @@ round.lik = function(rounded,pi.x,logphi,rmin,ymax,hr,b,w){
 #'                                     be passed as a character')}
 #'   if (!class(pi.x)=='character'){stop('message from negloglik: pi.x must
 #'                                     be passed as a character')}
-#' 
+#'
 #'   # determine which values are rounded or not:
 #'   x.rounded = x[sqrt(y**2 + x**2)<rmin]
 #'   y.rounded = y[sqrt(y**2 + x**2)<rmin]
@@ -1049,15 +1049,15 @@ round.lik = function(rounded,pi.x,logphi,rmin,ymax,hr,b,w){
 #'   new.y = y[sqrt(y**2 + x**2)>=rmin]
 #'   x = new.x ; y = new.y # avoids writing over vars as we reassign
 #'   rounded = length(x.rounded)
-#' 
+#'
 #'   if (length(x)!=length(y)){stop('X + Y')} # Safety check to make sure
 #'   # rounding didn't make a mistake with data dimensions
-#' 
+#'
 #'   n=length(y) ; hrname = hr ; piname = pi.x
 #'   # unpack parameters *** need to change if hr and pi.x don't have 2 pars each
 #'   b=pars[1:length.b]
 #'   if(piname=="pi.const") logphi=NULL else logphi=pars[(1+length.b):length(pars)]
-#' 
+#'
 #'   hr=match.fun(hr) ; pi.x=match.fun(pi.x)
 #'   llik=rep(NA,n)
 #'   # calculate numerator:
@@ -1066,18 +1066,18 @@ round.lik = function(rounded,pi.x,logphi,rmin,ymax,hr,b,w){
 #'   int=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname,
 #'                 ystart=ystart,pi.x=piname,logphi=logphi,w=w)
 #'   denom=log(int$value)
-#' 
+#'
 #'   # likelihood:
 #'   llik=-(num-n*denom) # 2016 paper likelihood, for the un-rounded data points
-#' 
+#'
 #'   if(rounded>0){
 #'     negllik.rounded = round.lik(rounded,pi.x=piname,
 #'       logphi,rmin,ymax=ystart,hr=hrname,b,w,DENOM=DENOM)
 #'   } # we calculate the rounded data points part of the likelihood
-#' 
+#'
 #'   else{negllik.rounded=0} # No addition to normal likelihood needed
-#' 
-#' 
+#'
+#'
 #'   return(llik + negllik.rounded) #round.lik returns a neg.log.lik, so we add.
 #' }
 
@@ -1114,47 +1114,47 @@ simXY=function(N,pi.x,logphi,hr,b,w,ystart,xSampL=5*N,discardNotSeen=TRUE,...)
 {
   if (class(hr)!='character'|class(pi.x)!='character'){
     stop('SimXY: hr and pi.x must be supplied as characters')}
-  
+
   xV=seq(0,w,length=xSampL)
-  
+
   if(class(b)!='list') b = as.list(b)
-  
+
   # It seems that for even for reasonable values, the call to simnhPP produces
   # an error roughly 2% of the time. To avoid this becoming an inconvenience
   # to the user more often than it should, I put in place a loop to retry the
   # call some reasonable number of times, before deciding that the user chosen
   # start values consistently lead to errors. - Cal
-  
-  lt2d.tryCounter = 0                         
-  lt2d.Error = TRUE                           
-  
+
+  lt2d.tryCounter = 0
+  lt2d.Error = TRUE
+
   while (lt2d.tryCounter<10 & lt2d.Error==TRUE){
-    
+
     x=sample(x=xV,size=N,replace=TRUE,        # resample from the Xs, since its
              prob=match.fun(pi.x)               # these values which lead to
              (x=xV,logphi=logphi,w=w))          # the errors during integration
-    
+
     y = try({simnhPP(x,b,ystart,hr,...)},     # we try to call the function,
             silent = T )                      # supressing the error to the user
-    
+
     if (class(y)=="try-error"){
       lt2d.tryCounter = lt2d.tryCounter + 1 #+1 to count of unsuccessful tries
       lt2d.simXY.error.message = y[[1]]     # remember the error message
     }
     else{lt2d.Error = FALSE}                # succesful call;  stop loop
   }
-  
+
   if (lt2d.Error){                            # If after 10 tries we still have
     stop(lt2d.simXY.error.message)          # an error, pass it to the user
   }
-  
-  
+
+
   if(discardNotSeen){
     keep=which(y>=0)
     n=length(keep)
     x=x[keep]
     y=y[keep]}
-  
+
   output = list(locs=cbind.data.frame(x,y),settings=
                   list(N=N,pi.x=pi.x,logphi=logphi,
                        hr=hr,b=b,w=w,ystart=ystart,
@@ -1488,89 +1488,90 @@ LT2D.FitObjectMaker = function(par,value,counts,convergence,message,hessian,
 fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
                  covarPars=NULL,control = list(),hessian = FALSE,corrFlag = 0.7,
                  debug = FALSE, DataFrameInput=NULL, returnDM=FALSE,...){
-  
-  hrname = hr                             # These lines keep the variable names 
+
+  hrname = hr                             # These lines keep the variable names
   piname = pi.x                           # consistent with previous code
-  
+
   output = list() # We add to this object as the function progresses
-  
+
   HazardWarning = 'Incorrect option supplied for Hazard Rate. Please supply
-  the name of desired function as a character.' 
-  
+  the name of desired function as a character.'
+
   DensityWarning = 'Incorrect option supplied for Density. Please supply
   the name of desired function as a character.'
-  
-  if ( (is.null(x) | is.null(y)) & is.null(DataFrameInput)){ 
+
+  if ( (is.null(x) | is.null(y)) & is.null(DataFrameInput)){
     # If either x or y is missing, and there is no data frame to get both from:
     stop('missing data values')
   }
-  
+
   if (!length(y)==length(x)){stop('x must have the same length as y')}
   # Truncate the data to perp <= w. It's important to calculate y first,
   # or else nothing will get truncated:
   if (w){
-    
+
     if (is.null(y)==FALSE & is.null(x)==FALSE){
       y = y[x<=w] ; x = x[x<=w]                       # Truncate the data
     }
-    
+
     else if (!is.null(DataFrameInput)){
       DataFrameInput = subset(DataFrameInput,         # Truncate covar values
                               DataFrameInput$x < w)
-      
+
       x = DataFrameInput$x  # get x and y from supplied data.frame
       y = DataFrameInput$y
     }
-    else{stop('No data supplied')} # Shouldn't ever reach this line 
-    
+    else{stop('No data supplied')} # Shouldn't ever reach this line
+
     warning('data truncated according to user\'s chosen perpendicular truncation
             distance. Data in model object may be a different dimension to the
             supplied data')
   }
   else{stop('w must be supplied to fityx')}
-  
+
   if (!class(hr)=='character'){           # We check that the passed functions
     stop(HazardWarning)                   # are strings, and hence a name
   }
-  
-  if (!class(pi.x)=='character'){          
-    stop(DensityWarning)                    
+
+  if (!class(pi.x)=='character'){
+    stop(DensityWarning)
   }
-  
+
   rounded.points.count = length(x[sqrt(x**2 + y**2)<=rmin])# save for likelihood
-  new.x = x[sqrt(x**2 + y**2)>rmin]  # We will Only pass unrounded data and 
+  new.x = x[sqrt(x**2 + y**2)>rmin]  # We will Only pass unrounded data and
   new.y = y[sqrt(x**2 + y**2)>rmin]  # the number of rounded points to the nll
-  
+
   if (length(new.x)!=length(new.y)){stop('x and y dimension mismatch')}
-  
+
   DesignMatrices = NULL # If there are no formulas, this variable will not get
   # overwritten, and so DesignMatrices = NULL will get passed to the negative
   # log-likelihood, indicating that no covariates have been included
-  
-  if (!is.null(formulas)){ # This massive 'if' block deals with producing design 
+
+  if (!is.null(formulas)){ # This massive 'if' block deals with producing design
     # matrices and recreating the vector b for the hazard function with the
     # right structure, so that the neg.log.lik can create the linear predictors
-    
+
     if (is.null(DataFrameInput) | is.null(covarPars)){
       stop('When formulas have been specified,
            DataFrameInput and covarPars are required')}
-    
-    # only the unrounded data points will be passed to the likelihood, so we 
-    # must ensure that the dimension of the data frame we use to create our 
+
+    # only the unrounded data points will be passed to the likelihood, so we
+    # must ensure that the dimension of the data frame we use to create our
     # design matrices is the same as the x and y vectors
-    unrounded.points.data.frame = subset(DataFrameInput,      
-                                         sqrt(DataFrameInput$x**2 + DataFrameInput$y**2)>rmin)
+    unrounded.points.data.frame = subset(DataFrameInput,
+                                         sqrt(DataFrameInput$x**2 +
+                                                DataFrameInput$y**2)>rmin)
     #
     #
     #
     #
-    # When adding covars to RMIN stuff. Remember to remove the right 
-    # rows from the design matrices 
+    # When adding covars to RMIN stuff. Remember to remove the right
+    # rows from the design matrices
     #
     #
     #
     #
-    
+
     slotsAllowed = HazardCovarSlots(hr)
     # Calling the below function ensures the user hasn't defined any formulas
     # where they aren't supposed to, and checks that other types of consistency
@@ -1579,11 +1580,11 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     i.formula = checkedFormulas[[1]]
     x.formula = checkedFormulas[[2]]
     y.formula = checkedFormulas[[3]]
-    # Knowing if x and y formulas are the same tells us if the y formula 
+    # Knowing if x and y formulas are the same tells us if the y formula
     # LP goes in slot 2 or 4
     ifelse('xy' %in% checkedFormulas[[4]], xy <-  TRUE, xy <-  FALSE)
-    
-    DesignMatrices = list() # Make a list of all design matrices to pass to the 
+
+    DesignMatrices = list() # Make a list of all design matrices to pass to the
     # negative log likelihood through optim. We insert the DM at the same index
     # as the parameters for the theta whose formula it describes, for simplicity
     b.for.optim = as.list(b) # To preserve the intercepts when no DM for entry
@@ -1593,25 +1594,25 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
       DesignMatrices[[1]] = DesignMatrix(unrounded.points.data.frame, i.formula)
       b.for.optim[[1]] = c(b[1],covarPars$i)
     }
-    
+
     if (xy & (!is.null(x.formula) | (!is.null(y.formula))) ){
       # If there's an xy in the formula options then x.formula
       # describes both of them, and it goes in slot 2:
-      
+
       if (is.null(covarPars$x) | is.null(covarPars$y)) stop('missing start parameters')
       if(any(covarPars$x != covarPars$y)) stop('x and y initial parameter mismatch')
-      
+
       DesignMatrices[[2]] = DesignMatrix(unrounded.points.data.frame, x.formula)
       b.for.optim[[2]] = c(b[2], covarPars$x)
     }
-    
+
     else if (!xy){ # x and y formulas can be different
       if (!is.null(x.formula)){
         if (is.null(covarPars$x)) stop('missing start parameters')
         DesignMatrices[[2]]=DesignMatrix(unrounded.points.data.frame, x.formula)
         b.for.optim[[2]]=c(b[2], covarPars$x)# if x is there, it goes in slot 2
       }
-      
+
       if (!is.null(y.formula)){
         if (is.null(covarPars$y)) stop('missing start parameters')
         DesignMatrices[[4]]=DesignMatrix(unrounded.points.data.frame, x.formula)
@@ -1619,69 +1620,68 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
       }
     }
   }
-  
+
   else{b.for.optim = as.list(b)} # No covariates, so b is simply the one we have
-  
+
   if (returnDM) return(list(DesignMatrices = DesignMatrices,
                             b.for.optim = b.for.optim))
   # We pack the parameters as a vector:
-  
+
   if (piname == "pi.const"){pars = list(beta = b.for.optim)} # construct a list
-  else{pars = list(beta=b.for.optim,logphi=logphi)} # of the right form, then 
+  else{pars = list(beta=b.for.optim,logphi=logphi)} # of the right form, then
   u.pars = unlist(pars)                             # vectorise it for optim
-  
   fit = optim(
     par = u.pars,fn = negloglik.yx,y = new.y,x = new.x,hr = hrname,
     ystart = ystart, pi.x = piname,w = w, hessian = hessian,
     debug = debug, rounded.points = rounded.points.count,
     control = control,DesignMatrices=DesignMatrices, skeleton=pars,...
   )
-  
-  
+
+
   # Extremely stupid because it calls the same function twice for no reason,
   # needed a very quick fix - will make this better if there's time:
-  
+
   # Gets the betas for the fitted parameter values, for each row of the data
   B.per.line <-  negloglik.yx(fit$par,
                               y=new.y, x=new.x, hr=hrname, ystart=ystart,
                               pi.x=piname, w=w,
                               DesignMatrices=DesignMatrices,
-                              skeleton=pars, 
+                              skeleton=pars,
                               returnB = T)[[1]]
-  
-  
+
+
   unrounded.points.with.betas <- list(data.frame(x=new.x,y=new.y),b=B.per.line)
-  
+
   error = FALSE
   if (fit$convergence != 0) {
     warning('Convergence issue (code = ',
             fit$convergence,') . Check optim() help.')
     error = TRUE
   }
-  
+
   par.as.list = relist(fit$par, skeleton = pars)
   b = par.as.list[[1]]
   b.as.vector = unlist(b)
   logphi = try(par.as.list[[2]], silent=T)
   if (class(logphi)=='try-error'){logphi = NA}
-  
+
   if (hessian==TRUE){
     mNames = names(fit$par)
-    
+
     vcov=solve(fit$hessian)
     corr = cov2cor(vcov)
     row.names(corr) = mNames
     colnames(corr) = mNames
     corr[upper.tri(corr,diag = TRUE)] = NA
-    
+
     if (any(diag(fit$vcov) <= 0)) {
       warning('Failed to invert hessian.  Model convergance problem in fityx?')
       error = TRUE
       CVpar = rep(NA,length(fit$par))
     }
-    
+
     else {CVpar = sqrt(diag(solve(fit$hessian))) / abs(fit$par)}
-    
+
     corrIND = which(abs(corr) > corrFlag,arr.ind = T)
     if (nrow(corrIND)) {
       warning(
@@ -1696,12 +1696,12 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
     output$corr = corr
     output$vcov = vcov
   }
-  
+
   AICval = 2 * fit$value + 2 * length(fit$par)
-  
+
   dat = data.frame(x = x,y = y)
-  #p0 = 1 - Sy(0,0,ystart,b,hrname)   # reinclude once we decide how to deal 
-  
+  #p0 = 1 - Sy(0,0,ystart,b,hrname)   # reinclude once we decide how to deal
+
   output$par = fit$par ; output$value = fit$value
   output$counts = fit$counts ; output$convergence = fit$convergence
   output$message = fit$message
@@ -1713,7 +1713,7 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
   output$rmin = rmin
   output$skeleton = pars
   output$designMatrices = DesignMatrices
-  
+
   class(output) = 'LT2D.fit.object'
   return(output)
 }
@@ -1732,24 +1732,24 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
 #'
 #' @export
 NDest <- function(dat, hmltm.fit){
-  
+
   W = hmltm.fit$w # hmltm.fit should be an LT2D.model.fit object,
-  # which has attribute w 
-  
-  # remove the smaller than w observations from the data frame which won't 
+  # which has attribute w
+
+  # remove the smaller than w observations from the data frame which won't
   # have been used to fit the likelihood, but we musn't remove the NAs:
   dat = subset(dat, dat$x<W | is.na(dat$x))
-  
+
   # Add 1/p column
   dat$invp <- rep(NA,dim(dat)[1])
   invp <- invp1_replacement(dat, hmltm.fit)
-  
+
   for(i in 1:length(invp$object)){
-    
+
     row <- which(dat$stratum==invp$stratum[i]     # ensures data is consistent
                  & dat$transect==invp$transect[i] # with invp version, and that
                  & dat$object==invp$object[i])    # only detection rows count
-    
+
     if(length(row)>1) {
       cat("Target stratum:",invp$stratum[i],"\n")
       cat("Target transect:",invp$transect[i],"\n")
@@ -1757,27 +1757,27 @@ NDest <- function(dat, hmltm.fit){
       cat("Found >1: at rows",row,"\n")
       stop("")
     }
-    
+
     dat$invp[row] <- invp$invp[i]
   }
-  
+
   # Calculate density and abundance by stratum
-  
+
   strat <- unique(dat$stratum)
   nstrat <- length(strat)
   n <- L <- a <- A <- Dg <- D <- Ng <- N <- sbar <- rep(0,nstrat+1)
   stratname <- rep("",nstrat+1)
-  
+
   for(i in 1:nstrat){
     stratname[i] <- as.character(strat[i])
     vdat <- dat[dat$stratum==strat[i],]
     trans <- unique(vdat$transect)
     L.tr <- 0
-    
+
     for(tr in 1:length(trans)){
       L.tr <- L.tr+vdat$L[min(which(vdat$transect==trans[tr]))]
     }
-    
+
     L[i] <- L.tr
     a[i] <- L[i]*2*W
     A[i] <- vdat$area[1]
@@ -1789,7 +1789,7 @@ NDest <- function(dat, hmltm.fit){
     Ng[i] <- Dg[i]*A[i]
     N[i] <- D[i]*A[i]
   }
-  
+
   stratname[nstrat+1] <- "Total"
   Ng[nstrat+1] <- sum(Ng[1:nstrat])
   N[nstrat+1] <- sum(N[1:nstrat])
@@ -1800,11 +1800,11 @@ NDest <- function(dat, hmltm.fit){
   L[nstrat+1] <- sum(L[1:nstrat])
   a[nstrat+1] <- sum(a[1:nstrat])
   sbar[nstrat+1] <- D[nstrat+1]/Dg[nstrat+1]
-  
+
   # add transect frequency:
   tfreq <- apply(table(dat$stratum,dat$transect)>0,1,sum)
   k <- c(tfreq,sum(tfreq))
-  
+
   return(list(invp=invp,
               ests=data.frame(stratum=stratname,
                               n=n,
@@ -1830,65 +1830,65 @@ NDest <- function(dat, hmltm.fit){
 #' @param LT2D.fit output from \code{\link{fit.yx}}.
 #' @export
 invp1_replacement = function(LT2D.df, LT2D.fit.obj){
-  # purpose : Adds a column of inverse detection probability to a data frame 
+  # purpose : Adds a column of inverse detection probability to a data frame
   #           used as the data.frame argument to a call of LT2D.fit
   # inputs  : LT2D.df      - The data.frame containing all the transect
   #                          detections (and non-detections), as it was passed
   #                          to LT2D.fit
   #           LT2D.fit.obj - The fitted model object produced by fityx
   # output  : A data.drame, LT2D.df, with an extra column, invp, for the inverse
-  #           of estimated detection probability 
+  #           of estimated detection probability
   w = LT2D.fit.obj$w            # we extract all the values needed
-  ystart = LT2D.fit.obj$ystart  # to calculate inverse p from 
+  ystart = LT2D.fit.obj$ystart  # to calculate inverse p from
   hr = LT2D.fit.obj$hr          # the fit object
   pi.x = LT2D.fit.obj$pi.x
   logphi = LT2D.fit.obj$logphi
-  
+
   unrounded.points.with.betas <- LT2D.fit.obj$unrounded.points.with.betas
   converted.betas <- data.with.b.conversion(fityx.output.object = LT2D.fit.obj)
   betas <- converted.betas[[3]]
   x <- converted.betas[[1]]
   y <- converted.betas[[2]]
-  
+
   LT2D.df$invp <- rep(NA, dim(LT2D.df)[1])
-  
+
   # check if covariates were used, return invp everywhere if there were not
   # and proceed to the for loop if they were...
   if (LT2D.fit.obj$covariates!= TRUE){
-    
+
     # since no covariates were included, the value of the betas should be the
     # the same everywhere:
     B.no.covar = as.list(betas[[1]])
-    LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = B.no.covar, ystart = ystart, 
+    LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = B.no.covar, ystart = ystart,
                               pi.x = pi.x, logphi = logphi))
     return(LT2D.df)
   }
-  
+
   # We want to ensure that the data for which we have detection function values
-  # is of the same dimension as the number of rows of data which represent a 
+  # is of the same dimension as the number of rows of data which represent a
   # detection:
   if (dim(subset(LT2D.df, !is.na(LT2D.df$object)))[1] != length(x)){
     stop('Input data frame and fitted data dimensions do not match')
   }
-  
+
   NAcounter <- 0  # Keep track of how many non-detection rows we have considered
   for (i in (1:dim(LT2D.df)[1])){
     data.row <- LT2D.df[i,]
-    
+
     if (!is.na(data.row$object)){
       # if a transect has a detection, we must calculate its value of invp
-      # and add it to the appropriate row of the invp column. 
+      # and add it to the appropriate row of the invp column.
       j <- i - NAcounter
-      
+
       # Check that the x and y values in the data.frame match up the ones which
       # give us the detection function values
       if(data.row$x != x[j] | data.row$y!= y[j]) stop('mismatched data entry')
-      
+
       B <- as.list(betas[[j]])
-      LT2D.df$invp[i] <- 1/phat(w = w, hr = hr, b = B, ystart = ystart, 
+      LT2D.df$invp[i] <- 1/phat(w = w, hr = hr, b = B, ystart = ystart,
                                 pi.x = pi.x, logphi = logphi)
     }
-    
+
     else{NAcounter <- NAcounter + 1}
   }
   return(LT2D.df)
@@ -1925,13 +1925,13 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
                     ipars=NULL,xpars=NULL,ypars=NULL,rmin=0,
                     control = list(),hessian=FALSE,corrFlag = 0.7,
                     debug = FALSE){
-  
-  # Basic type-checking of inputs: 
+
+  # Basic type-checking of inputs:
   if (class(DataFrameInput)!='data.frame'){
     stop('DataFrameInput must be a data.frame')
   }
-  
-  OnlyCallFityx = TRUE # Set flag saying we can't work out N or D 
+
+  OnlyCallFityx = TRUE # Set flag saying we can't work out N or D
   if ( is.null(DataFrameInput$stratum)
        | is.null(DataFrameInput$transect)
        | is.null(DataFrameInput$object)
@@ -1941,23 +1941,23 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
     warning('Insufficient information for abundance calculation')
   }
   else{OnlyCallFityx=FALSE}
-  
+
   if (is.null(DataFrameInput$x) | is.null(DataFrameInput$y)){
     stop('LT2D: Perpendicular and forward distances must be included in data.frame')
   }
-  
-  # We remove the NAs (non-detections) to fit the likelihood, but we 
-  # retain the rows so that we can add them back in when it comes to 
-  # calling the abundance function. 
+
+  # We remove the NAs (non-detections) to fit the likelihood, but we
+  # retain the rows so that we can add them back in when it comes to
+  # calling the abundance function.
   NoNAs = subset(DataFrameInput, !is.na(DataFrameInput$object))
-  
-  covarPars = list()    # if any formulas were specified by the user, 
+
+  covarPars = list()    # if any formulas were specified by the user,
   covarPars$x = xpars   # we add them to the covar pars object in the
-  covarPars$y = ypars   # correct slot. Otherwise, if none were specified, 
+  covarPars$y = ypars   # correct slot. Otherwise, if none were specified,
   covarPars$i = ipars   # we set covarPars to NULL before the call to fityx
-  
+
   if (length(covarPars)==0) covarPars = NULL
-  
+
   # run the fityx call:
   # We don't exception handle the call, to allow its own errors to be flagged
   fitted.model = fityx(x = NULL, y=NULL,
@@ -1967,13 +1967,13 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
                        ystart=ystart,w=w,rmin=rmin,             # Settings
                        formulas=formulas,covarPars = covarPars, # Covar stuff
                        control=control, hessian=hessian,        # Optim stuff
-                       corrFlag=corrFlag)       
-  
+                       corrFlag=corrFlag)
+
   if (OnlyCallFityx==TRUE){return(fitted.model)}
-  
+
   # Now we pass the data frame and fitted model objects to the abundance
   # estimation function and return the output
-  
+
   fitted.model$covariates = !is.null(covarPars)
   fitted.model$formulas = formulas
   output = NDest(DataFrameInput, fitted.model)
@@ -1986,27 +1986,27 @@ LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
 negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
                       DesignMatrices=NULL, skeleton=NULL, debug=FALSE,
                       returnB = FALSE){
-  # The only work we want to have to redo is make the linear predictors. 
-  # so we allow design matrices to be passed as arguments, and we make the 
+  # The only work we want to have to redo is make the linear predictors.
+  # so we allow design matrices to be passed as arguments, and we make the
   # linear predictors and remake b appropriately
   unpacked = relist(pars, skeleton=skeleton)    # Unpack the parameters.
   b = unpacked[[1]]                             # See fityx to see how they
   logphi = try (unpacked[[2]],silent=T)         # they were packed.
-  
+
   if (class(logphi)=='try-error'){logphi = NA}
   if(length(y)!=length(x)) stop("Lengths of x and y must be the same.")
-  
+
   if(debug) print(pars)
-  
-  if (!class(hr)=='character'){stop('message from negloglik: hr must 
+
+  if (!class(hr)=='character'){stop('message from negloglik: hr must
                                     be passed as a character')}
-  if (!class(pi.x)=='character'){stop('message from negloglik: pi.x must 
+  if (!class(pi.x)=='character'){stop('message from negloglik: pi.x must
                                       be passed as a character')}
-  
-  n=length(y) ; hrname = hr ; piname = pi.x 
+
+  n=length(y) ; hrname = hr ; piname = pi.x
   hr=match.fun(hr) ; pi.x=match.fun(pi.x)
-  
-  # if any b entry has non-scalar entries, replace these entries with the 
+
+  # if any b entry has non-scalar entries, replace these entries with the
   # appropriate linear predictor...
   if (!is.null(DesignMatrices)){  # We have been given design matrices
     # The DM for entry 'i' of b, is also at entry 'i' of DesignMatrices
@@ -2016,7 +2016,7 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
         b[[index]] = as.vector(LP)# Replace the start parameters with the LP
       }
     }
-    
+
     if (rounded.points!=0){
       S1 = 'Covariate inclusion has not yet been implemented for Rmin > 0.'
       S2 = 'The truncated part of the likelihood has assumed common detection'
@@ -2026,8 +2026,8 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
   # This loop turns entries in b of length 1 into entries of length n
   j = 1 # At the end of this loop, j-1 will be the number of hr parameters
   while (class(try(b[[j]],silent=T))!='try-error'){
-    # if there's only one element in a column, make a column of that 
-    # element repeated the correct number of times to match the number of 
+    # if there's only one element in a column, make a column of that
+    # element repeated the correct number of times to match the number of
     # (x,y) coordinates we have:
     if (length(b[[j]])==1){b[[j]]=as.numeric(rep(b[[j]],n))}
     j = j + 1
@@ -2036,53 +2036,53 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
   likelihood.level.b = list(b,j)
   class(likelihood.level.b) = 'likelihood.level.b'
   if (returnB) return(likelihood.level.b)
-  
+
   # We do a parameter check for B to avoid having to do it at every call
   # of the hazard function:
   HazardBCheck(y,x,likelihood.level.b[[1]],hrname)
-  
+
   # calculate numerator:
   num=sum(log(fyx(y,x,likelihood.level.b,hrname,ystart))
           + log(pi.x(x,logphi,w)))
-  
+
   # calculate denominator:
   if (is.null(DesignMatrices)){                 # Easy with no covariates:
     b.normal <- as.list(sapply(b, '[[', 1))     # Extract the 'normal' b
-    
+
     int=integrate(f=p.pi.x,lower=0,upper=w,b=b.normal,hr=hrname,
                   ystart=ystart,pi.x=piname,logphi=logphi,w=w)
-    
+
     denom=n*log(int$value)
   }
-  
+
   else{ # We must work out the integral individually for each (x,y) point:
     integrals = rep(NA, n)
     for (i in (1:n)){
       # We know j exists, and we know b will have been turned into a list
-      # of all vectors, so we use b and j from the (not directly) above 
+      # of all vectors, so we use b and j from the (not directly) above
       # while loop
       integration.b = list()
       for (column.num in (1:j)){
         integration.b[[column.num]] = b[[column.num]][i]
       }
       integrals[i] = integrate(f=p.pi.x,lower=0,upper=w,b=integration.b,
-                               hr=hrname, ystart=ystart, pi.x=piname, 
+                               hr=hrname, ystart=ystart, pi.x=piname,
                                logphi=logphi, w=w)$value
     }
     denom=sum(log(integrals))
   }
-  
+
   # likelihood:
   llik=-(num-denom) # 2016 paper likelihood, for the un-rounded data points
-  
+
   if(rounded.points>0){
     negllik.rounded = round.lik(rounded.points,pi.x=piname,
                                 logphi,rmin,ymax=ystart,hr=hrname,b,w)
   } # we calculate the rounded data points part of the likelihood
-  
+
   else{negllik.rounded=0} # No addition to normal likelihood needed
-  
-  return(llik + negllik.rounded) # round.lik returns a neg.log.lik, so we add. 
+
+  return(llik + negllik.rounded) # round.lik returns a neg.log.lik, so we add.
 }
 
 
@@ -2304,7 +2304,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
 {
   # Some type-checking to ensure we can extract the data in the usual way
   if (class(est)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
-  
+
   x = est$dat$x     # We extract the perpendicular distances from the fit
   Nhat.yx=bias=NULL
   b=est$b; hrname=est$hr; ystart=est$ystart; piname=est$pi.x
@@ -2321,7 +2321,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
   ptot=integrate(f=px,lower=0,upper=w,b=b,hr=hrname,ystart=ystart)$value
   p.xfit.std=p.xfit/ptot
   adbn=match.fun(piname)(gridx,logphi,w) # changed to use piname instead of pi.x
-  
+
   if(addTruth) {   # Haven't really checked this yet - Cal
     if(!is.null(true.pi.x)) pi.x=true.pi.x
     if(!is.null(true.logphi)) logphi=true.logphi
@@ -2346,7 +2346,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
     lines(gridx,p.xfit.std,lty=2,col="black",lwd=2)
     # overlay animal pdf:
     lines(gridx,adbn,lty=3,col="black",lwd=2)
-    
+
     if(addTruth) legend("topright",title="Estimated",legend=c("f(x)","p(x)",expression(pi(x)),
                                                               col=c("black","black","black"),lwd=c(2,2,2),lty=c(1,2,3)))
     else legend("topright",legend=c("f(x)","p(x)",expression(pi(x))),
@@ -2359,7 +2359,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
       #      lines(gridx,p.x*p.x.std,col="grey",lty=2,lwd=2)
       p.x.std=p.x/ptot
       lines(gridx,p.x.std,col="grey",lty=2,lwd=2)
-      
+
       lines(gridx,adbnTRUE,col="grey",lty=3,lwd=2)
     }
   }
@@ -2431,9 +2431,9 @@ plotfit.y=function(est,nclass=10,breaks=NULL,plot=TRUE,dotitle=FALSE,
   if (class(est)!='LT2D.fit.object')            # We want the fit object,
     #& y==NULL & x==NULL)                       # or data passed by plot.smoothfy
   {stop('Can only plot LT2D objects')}
-  
+
   # barely made changes to this function (just type checking), worked fine - Cal
-  
+
   b=est$b; hr=est$hr; ystart=est$ystart; pi.x=est$pi.x
   logphi=est$logphi; w=est$w
   if(is.null(y)) y=est$dat$y
@@ -2446,7 +2446,7 @@ plotfit.y=function(est,nclass=10,breaks=NULL,plot=TRUE,dotitle=FALSE,
   for(i in 1:n) {
     fy.x[i,]=fyx(gridy,rep(x[i],res),b,hr,ystart,nint=nint)
   }
-  
+
   fy.=apply(fy.x,2,mean)
   fy.area=sum((fy.[-1]+fy.[-length(fy.)])/2*diff(gridy))
   scaled.fy.=fy./fy.area
@@ -2472,7 +2472,7 @@ plotfit.y=function(est,nclass=10,breaks=NULL,plot=TRUE,dotitle=FALSE,
       lines(gridy,scaled.fy.,...)
       # cat("fy area=",sum((fy.[-1]+fy.[-length(fy.)])/2*diff(gridy)),"\n")
     }}
-  
+
   invisible(list(gridy=gridy,fy.x=fy.x,fy.=fy.,scaled.fy.=scaled.fy.))
 }
 
@@ -2546,46 +2546,46 @@ plot.LT2D.fit.object = function(fit,
                                 smooth.fy=FALSE,
                                 addrug=FALSE,
                                 covar.row=FALSE){
-  
+
   # type-check input:
   if (class(fit)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
-  
+
   n = length(fit$dat$x)
   dataFrameBetas = data.frame(fit$unrounded.points.with.betas$b)
   # The names created by the default method are horribly long and so it
   # it is far more simple to remove them entirely:
   names(dataFrameBetas) = NULL
-  
+
   # Wrapper function which calls the appropriate functions to plot LT2D fits.
   if(fit$covariates==TRUE){
-    
+
     if(covar.row==FALSE){
       stop('covar row must be specified for covariate models')
     }
-    
-    if(class(covar.row)=='numeric' & 
+
+    if(class(covar.row)=='numeric' &
        covar.row%%1!=0 & covar.row>=1 &
        covar.row<=length(fit$unrounded.points.with.betas[[1]]$x)){
-      
+
       # In this situation covar.row represents the row of the fitted data.frame
-      # that contains the element whose covariate values we wish to plot at, so 
+      # that contains the element whose covariate values we wish to plot at, so
       # we extract them in the following way:
-      
-      
-      # we hijack the fit$b of this copy of the object to contain the value of 
+
+
+      # we hijack the fit$b of this copy of the object to contain the value of
       # b that we truly want to plot:
       fit$b = as.list(dataFrameBetas[covar.row,])
     }
-    
+
     else{
       fit$b = as.list(dataFrameBetas[1,]) # by default, take the first row.
     }
   }
-  
-  
+
+
   X = plotfit.x(fit,nclass=xbins)
   if (addrug){rug(x[x<=w])}                        # perpendicular distance plot
-  
+
   if (smooth.fy){
     # plotfit.smoothfy truncates troublesome data
     # before calling the appropriate function,
@@ -2711,8 +2711,8 @@ coveragep=function(fit,true.hr,true.b,true.pi.x,true.logphi,type='LOGNORM',
 #'@examples phat(w=1,hr=h2,b=log(c(0.75,1)),ystart=4,pi.x=pi.norm,logphi=c(0.5,log(0.2)))
 #'@export
 # remove fit option from the docs
-phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL, 
-                 pi.x = NULL, logphi = NULL) 
+phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
+                 pi.x = NULL, logphi = NULL)
 {
   if (!is.null(hr)) {
     if (class(hr) != "character") {
@@ -2726,8 +2726,8 @@ phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
     }
     piname = pi.x
   }
-  int = integrate(f = p.pi.x, lower = 0, upper = w, b = b, 
-                  hr = hrname, ystart = ystart, pi.x = piname, logphi = logphi, 
+  int = integrate(f = p.pi.x, lower = 0, upper = w, b = b,
+                  hr = hrname, ystart = ystart, pi.x = piname, logphi = logphi,
                   w = w)$value
   return(int)
 }
@@ -2972,21 +2972,21 @@ poisint=function(y,x,ymin,ymax,hfun,b,pi.x,logphi,W,lscale=1){
 #' }
 #' @export
 Sy=function(x,y,ymax,b,hr) {
-  if (!class(hr)=='character'){stop('hr must be passed as a 
+  if (!class(hr)=='character'){stop('hr must be passed as a
                                     character')}
   if (class(b)!='list') stop('b must be a list')
   n=length(x)
   if(length(y)!=n) stop("Lengths of x and y must be the same.")
   pS=rep(NA,n)
   if(n>1 & length(b[[1]])>1) stop('Sy needs more work')
-  # The '&F' was added to mute this workaround, as I believe it contains a 
+  # The '&F' was added to mute this workaround, as I believe it contains a
   # bug, and the numerical alternative seems to be fine - Cal
   if(hr=="h1"&F) { # Hayes & Buckland hazard rate model, so can do analytically
-    hmax=h1(y,x,b) 
+    hmax=h1(y,x,b)
     for(i in 1:n){
-      if(y[i]==0 | hmax[i]>1e10){ # computer will think the integral is 
+      if(y[i]==0 | hmax[i]>1e10){ # computer will think the integral is
         # divergent for large hmax
-        pS[i]=1-HBhr(x[i],h1.to.HB(b)) 
+        pS[i]=1-HBhr(x[i],h1.to.HB(b))
       } else {
         pS[i]=exp(-integrate(match.fun(hr),y[i],ymax,x=x[i],b=b,
                              subdivisions = 1000L)$value)
@@ -2994,9 +2994,9 @@ Sy=function(x,y,ymax,b,hr) {
       }
     }
   } else { # Not Hayes & Buckland hazard rate model, so can't do analytically
-    # Because of the bug I found in the above work around, all cases are now 
+    # Because of the bug I found in the above work around, all cases are now
     # done numerically, including the H1 case - Cal
-    # if the data only has one row we need to ensure the list structure is 
+    # if the data only has one row we need to ensure the list structure is
     # still preserved for the b=as.list(b[[i]]) below
     if (class(b)!='list') b = list(b,NULL)
     for(i in 1:n){
@@ -3254,79 +3254,79 @@ plotFit=function(fit,...){
 # Some functions I wrote for the user to easily summarise models:
 
 #' @title Finds all LT2D fits produced by user
-#' 
-#' @description Creates a list where the entry at each index is 
+#'
+#' @description Creates a list where the entry at each index is
 #' an LT2D.fit.function.object as produced by the \link{LT2D.fit}
-#' function. 
-#' 
+#' function.
+#'
 #' @export
 collect.LT2D.fits = function(){
-  # Go through all the names in the namespace and 
-  # make a collection of all the ones with the 
+  # Go through all the names in the namespace and
+  # make a collection of all the ones with the
   # correct class (resulting from an LT2D fit):
   models = list() ; counter = 1 # Some vars we need
-  
+
   for (object in ls(.GlobalEnv)){
     classval = class(eval(parse(text = object), envir = .GlobalEnv))
     objectName = object
     object = eval(parse(text = object))
     if ((classval)=='LT2D.fit.function.object'){
       object$collectionName = objectName # Keep track of its name as a variable
-      models[[counter]] = object         # add it to the vector           
+      models[[counter]] = object         # add it to the vector
       counter = counter + 1              # and update counter
     }
   }
-  
+
   class(models)='collected.LT2D.models'
   return(models)
 }
 
 #' @title Creates a summary for a collected.LT2D.models object
-#' 
-#' @description Creates a data.frame with useful summary statistics 
+#'
+#' @description Creates a data.frame with useful summary statistics
 #' for all user fitted models as columns
 #'
-#' @return data.frame containing: 
-#'Name ; names of the fitted model 
-#'AIC ; AIC of the fitted model 
+#' @return data.frame containing:
+#'Name ; names of the fitted model
+#'AIC ; AIC of the fitted model
 #'N ; Estimated Abundance from fitted model
-#'D ; Estimated Density from fitted model 
+#'D ; Estimated Density from fitted model
 #'GoF ; A count, detailing how many of the four GoF tests
-#' had a p value smaller than 0.05   
+#' had a p value smaller than 0.05
 #' @export
 summary.collected.LT2D.models = function(objects){
   if (class(objects)!='collected.LT2D.models'){
     stop('Wrong method chosen to summarise object')}
-  
+
   modelnumber = length(objects)
   Len = length(objects)
-  
+
   AICs = Ds = Ns = Names = GOF = rep(NA, Len) # create placeholders
   for (i in (1:Len)){
     object = objects[[i]]                       # Now, using a for loop,
     Names[i] = object$collectionName            # fill in the placeholder
-    AICs[i] = object$fit$AIC                    # vectors with relevant 
+    AICs[i] = object$fit$AIC                    # vectors with relevant
     Ds[i] = object$ests$D[length(object$ests$D)]# summary information pertaining
     Ns[i] = object$ests$N[length(object$ests$N)]# to the model
-    
+
     GOFresults = unlist(gof.LT2D(object))
     gofCount = length(GOFresults[GOFresults<0.05])
     GOF[i] = gofCount
   }
-  
-  output = data.frame(Name = Names, AIC = AICs, N = Ns, D = Ds, 
+
+  output = data.frame(Name = Names, AIC = AICs, N = Ns, D = Ds,
                       GoF = GOF)
   output = output[with(output, order(AIC)), ]
   return(output)
 }
 
-#' @title Summarises all LT2D fits 
-#' 
-#' @description Creates a data.frame with useful summary statistics 
+#' @title Summarises all LT2D fits
+#'
+#' @description Creates a data.frame with useful summary statistics
 #' for all user fitted models produced by calling \link{LT2D.fit}
 #' by using \link{collect.LT2D.fits} and then
 #' \link{summary.collected.LT2D.models}.
-#' 
+#'
 #' @export
 summarise.LT2D.models = function(){
   AllFits = collect.LT2D.fits()
@@ -3335,9 +3335,9 @@ summarise.LT2D.models = function(){
 
 #' @export
 ParamNumRequired = function(DataFrameInput, Formula){
-  # This function acts as a way for the user to verify how many parameters 
+  # This function acts as a way for the user to verify how many parameters
   # the formula they specified will require. It returns the number of rows
-  # of the generated design matrix minus one, since the intercept is already 
+  # of the generated design matrix minus one, since the intercept is already
   # specified in the vector b of start parameters.
   DM = DesignMatrix(DataFrameInput, Formula) # Handles formula LHS terms
   return(dim(DM)[2]-1)
@@ -3346,28 +3346,28 @@ ParamNumRequired = function(DataFrameInput, Formula){
 
 HazardBCheck = function(y,x,b, HazardName){
   if (class(b)!='list'){stop('b must be a list')}
-  
+
   if (length(b)!=HazardNumberLookup(HazardName)){stop('incorrect b length')}
   lx = length(x) ; ly = length(y)
-  
+
   if (lx==1 & ly==1){anchor=1} # If they're both scalars, set anchor to 1
-  
-  # x and y can either be vectors or scalars, however, if they are both 
+
+  # x and y can either be vectors or scalars, however, if they are both
   # vectors, they should be the same length:
   else if (lx>1 & ly>1 & lx!=ly){
     stop('x and y vectors must be the same length')}
-  
+
   # If only one of x and y is a vector, we need to use its length as the anchor
   # for the required length of beta entries, if they are also vectors:
   else if (lx>1){anchor=lx}
   else if (ly>1){anchor=ly}
-  else {anchor = 1} # x and y have length one - single data point, so LPs 
+  else {anchor = 1} # x and y have length one - single data point, so LPs
   # must be of length 1
-  
-  # Now we need to check that only slots which are allowed to have linear 
+
+  # Now we need to check that only slots which are allowed to have linear
   # predictors are vectors...
   SlotsAllowed = HazardCovarSlots(HazardName)
-  
+
   for (index in (1:length(b))){           # For each slot
     beta = b[[index]]
     lb = length(beta)
@@ -3375,14 +3375,14 @@ HazardBCheck = function(y,x,b, HazardName){
     # cat('lb:',lb)
     # cat(' Slots Allowed:',SlotsAllowed)
     # cat(' index',index,'\n\n')
-    if (lb>1 &                            # if its entry is a vector and the 
+    if (lb>1 &                            # if its entry is a vector and the
         !(index %in% SlotsAllowed)){      # slot isn't meant to be an LP...
       # If it's meant to be a slot with no covars, ensure that any vectorisation
-      # has preserved the uniqueness of the values in that column 
-      if (!length(unique(beta))==1){ 
+      # has preserved the uniqueness of the values in that column
+      if (!length(unique(beta))==1){
         stop('Linear predictor present in illegal slot for specified hazard')}
     }
-    
+
     if (lb>1 & lb!=anchor){ # if it's a vector, it must match the data set dim
       stop('incorrect linear predictor length for supplied data')}
   }
@@ -3391,7 +3391,7 @@ HazardBCheck = function(y,x,b, HazardName){
 
 HazardNumberLookup = function(HazardName){
   # Not super elegant, but it seems R doesn't have dictionaries?
-  
+
   if (class(HazardName)!='character'){
     stop('HazardName must be a character')
   }
@@ -3406,22 +3406,22 @@ DensityNumberLookup = function(DensityName){
   if (class(DensityName)!='character'){
     stop('DensityName must be a character')
   }
-  
+
   if      (DensityName=='pi.norm' | DensityName=='pi.chnorm' |
-           DensityName=='pi.chnorm.i'){return(2)} 
+           DensityName=='pi.chnorm.i'){return(2)}
   else if (DensityName=='pi.const' | DensityName=='pi.hnorm'){return(1)}
   else{stop('Density function not found')}
 }
 
 HazardCovarsAllowed = function(HazardName){
-  # Only the hazards in the 2016 paper have been made 
-  # to allow covariate inclusion, for now. 
-  
+  # Only the hazards in the 2016 paper have been made
+  # to allow covariate inclusion, for now.
+
   # i - represents covars affecting intercept terms
   # x - represents covars affecting shape in x direction
   # y - represents covars affecting shape in y direction
-  # xy - indicates the formulas for x and y must be the same 
-  
+  # xy - indicates the formulas for x and y must be the same
+
   if (HazardName=='h1'){return(c('i'))}
   else if (HazardName=='ip1' | HazardName=='ep1'){return(c('i','x','y','xy'))}
   else if (HazardName=='ip2' | HazardName=='ep2'){return(c('i','x','y'))}
@@ -3435,24 +3435,24 @@ HazardCovarSlots = function(HazardName){
 }
 
 FormulaChecking = function(HazardName, Formulas){
-  # We expect that the DataFrameInput has already been 
-  # checked and sanitised by top level functions which call 
+  # We expect that the DataFrameInput has already been
+  # checked and sanitised by top level functions which call
   # HazardWrapper.
-  
+
   formulas.to.output = list(NULL) # Blank entries for now
-  # We tag the object using a class name so that later, when it is passed to 
+  # We tag the object using a class name so that later, when it is passed to
   # a different function, we can be sure that the object came from here
-  class(formulas.to.output)='LT2D.verified.formulas' 
-  
+  class(formulas.to.output)='LT2D.verified.formulas'
+
   hazard.function = match.fun(HazardName) # Check the hazard exists
-  
+
   AllowedCovars = HazardCovarsAllowed(HazardName)
   # So the next function knows where to place the linear predictors:
-  formulas.to.output[[4]]=AllowedCovars 
-  
+  formulas.to.output[[4]]=AllowedCovars
+
   if (class(AllowedCovars)!='character'){
     stop('Hazard function does not allow covariates')}
-  
+
   # We want to make sure that the formulas the user has
   # specified lead to inclusion of covariates in a way which
   # is allowed by their chosen detection function:
@@ -3465,17 +3465,17 @@ FormulaChecking = function(HazardName, Formulas){
       s2 = 'the chosen hazard function'
       stop(paste(s1,s2))
     }
-    
+
     if (formula[[2]]=='i'){ # Save objects for later use
       i.formula = formula
       formulas.to.output[[1]]=i.formula # No checks needed, we can add it in now
-    } 
-    if (formula[[2]]=='x'){x.formula = formula} # We need to check x and y 
+    }
+    if (formula[[2]]=='x'){x.formula = formula} # We need to check x and y
     if (formula[[2]]=='y'){y.formula = formula} # for consistency first
-  } 
-  
+  }
+
   if ('xy' %in% AllowedCovars){   # if x and y have to be the same:
-    
+
     # if both have been specified, check they're valid:
     if (exists('x.formula') & exists('y.formula') & x[[3]]!=y[[3]]){
       y[[3]]=x[[3]]          # If the RHSs are different, we have a problem...
@@ -3485,11 +3485,11 @@ FormulaChecking = function(HazardName, Formulas){
       s4 = 'x and y'
       warning(paste(s1,s2,s3,s4))
     }
-    
+
     else if (exists('x.formula')|exists('y.formula')){ # only one of them exists
-      
+
       warningStart = 'x and y formulas must be the same,'# To avoid typing again
-      
+
       # if x is the defined one, set y equal to it:
       if (exists('x.formula')){
         y.formula=x.formula
@@ -3502,17 +3502,17 @@ FormulaChecking = function(HazardName, Formulas){
         warning(paste(warningStart, 'y formula has been used for x'))
       }
     }
-    
+
     # This means no x or y formulas have been specified, so we return now
-    else{return(formulas.to.output)} 
-    
+    else{return(formulas.to.output)}
+
     # skipping the above else statement means we have passed through
     # all of the xy checks, and so we can add x and y formulas to the output
-    # object and return it 
+    # object and return it
     formulas.to.output[[2]]=x.formula
     formulas.to.output[[3]]=y.formula
     return(formulas.to.output)
-    
+
   }
   return(formulas.to.output)
 }
@@ -3530,12 +3530,12 @@ DesignMatrix = function(DataFrameInput, formula){
 }
 
 LinPredictor = function(parameters, DM){
-  # Multiply DM by the column matrix of covariate parameters to obtain 
+  # Multiply DM by the column matrix of covariate parameters to obtain
   # the linear predictor for the theta parameter of interest:
   parameters = matrix(parameters, ncol=1)
-  
-  # Exception handle the matrix multiplication to ensure the correct number 
-  # of parameters has been supplied for the relationship specified by the 
+
+  # Exception handle the matrix multiplication to ensure the correct number
+  # of parameters has been supplied for the relationship specified by the
   # passed formula object:
   LP = try({DM%*%parameters},silent=T)
   if (class(LP)=='try-error'){
@@ -3561,41 +3561,41 @@ data.with.b.conversion <- function(fityx.output.object=NULL,
   #           in the appropriate form to be passed as the b argument of the
   #           function which evaluates this detection function. x and y are
   #           both numeric
-  
+
   if (is.null(fityx.output.object)==FALSE){
     if (class(fityx.output.object)!='LT2D.fit.object') stop('invalid argument')
-    
+
     urpwb <- fityx.output.object$unrounded.points.with.betas
     XY <- urpwb[[1]]
     betas <- urpwb[[2]]
     dim.data.rows <- length(XY$x)
-    
+
     output <- list(x=XY$x,y=XY$y)
   }
-  
+
   else{
     if (class(beta)!='list') stop('b must be a list')
     n = length(b)
-    
+
     dim.data.rows = length(b[[1]])
     for (i in 2:n){
       if (length(b[[i]])!=dim.data.rows) stop('mismatch in b dimensions')
     }
-    
+
     betas = b
   }
-  
+
   output.betas <- as.list(rep(NA, dim.data.rows))
-  
+
   for (i in 1:dim.data.rows){
     for (j in 1:length(betas)) output.betas[[i]][[j]] = betas[[j]][i]
   }
-  
+
   if(is.null(beta)==TRUE){
     output$beta <- output.betas
     return(output)
   }
-  
+
   else{return(betas)}
 }
 
@@ -3609,7 +3609,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   #           alpha        - a (1-alpha)% CI will be produced from the call
   # NOTE    : This function deals both with covariate included and covariate
   #           excluded fitted models
-  
+
   if(r%%1!=0 | r<1) stop('invalid choice of bootstrap iterations')
   if(r<100) warning('Small bootstrap iteration number selected')
   if(alpha<=0 | alpha>=1) stop('invalid alpha selected')
@@ -3617,7 +3617,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   if(FittedObject$fit$hessian==FALSE){
     stop('call to LT2D.fit must include hessian=TRUE')
   }
-  
+
   # 0. Extract some information which is required further down:
   optim.fit <- FittedObject$fit
   hr <- optim.fit$hr
@@ -3628,74 +3628,74 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   skeleton <- optim.fit$skeleton
   x <- optim.fit$unrounded.points.with.betas[[1]]$x
   y <- optim.fit$unrounded.points.with.betas[[1]]$y
-  
-  
+
+
   # 1. Get samples
-  
+
   # extract vcov matrix for MLEs and do some sanity checking:
   vcov <- FittedObject$fit$vcov
   if(any(is.na(vcov))) stop('variance-covariance matrix contains NA element')
   if(any(diag(vcov)<0)){
     stop('variance-covariance matrix contains negative variance estimation')
   }
-  
+
   # extract the parameter values and check they match the vcovmat dimension:
   mean <- FittedObject$fit$par
   optim.names <- names(mean)
   if(length(mean)!=dim(vcov)[1]) stop('par and vcov matrix dimension mismatch')
-  
+
   # generate a bunch of samples and include the original:
   samples <- mvtnorm::rmvnorm(r, mean = mean, sigma = vcov)
   samples <- rbind(samples, mean)
-  
+
   bootstrap.Ns <- rep(NA, r+1)
-  
+
   for(i in 1:r+1){
     # 2. Produce information for NDest
-    
+
     # We take a sample of randomly generated fitted parameter values and name
     # them in the same way optim would have during the fitting process:
     optim.pars <- samples[i,]
     names(optim.pars) <- optim.names
-    
+
     # We then use these to work out the appropriate unrounded.points.with.betas
     # object that is central to NDest doing its job:
     bootstrap.upwb <- negloglik.yx(optim.pars,
                                    y=y, x=x, hr=hr, ystart=ystart,
                                    pi.x=pi.x, w=w,
                                    DesignMatrices=DesignMatrices,
-                                   skeleton=skeleton, 
+                                   skeleton=skeleton,
                                    returnB = T)[[1]]
-    
+
     bootstrap.upwb <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
-    
+
     # We use this bootstrap.upwb to creat a dummy data frame and a dummy fitted
     # optim object to 'trick' NDest to calculate estimates in the normal way:
     bootstrap.df <- FittedObject$invp
     bootstrap.df$invp <- NULL
     bootstrap.fitted.model <- optim.fit
     bootstrap.fitted.model$unrounded.points.with.betas <- bootstrap.upwb
-    
-    
+
+
     # 3. Produce and extract estimates of N
-    
+
     N <- NDest(bootstrap.df, bootstrap.fitted.model)$ests$N
     N <- N[length(N)] # take the final element, all the others refer to strata
-    
+
     bootstrap.Ns[i] <- N
   }
-  
+
   # 4. Get interval using percentile method
   Ns <- sort(bootstrap.Ns)
   ci <- quantile(Ns, c(alpha,1-alpha))
-  
+
   # 5. return bootstrap result
   return(list(ci=ci,Ns=Ns))
 }
 
 #' @title Fitting function for mixture model LT2D
 #' @description The equivalent function to \code{\link{LT2D.fit}}, when a 2
-#' component mixture model is desired for the perpendicular density. 
+#' component mixture model is desired for the perpendicular density.
 #' @param DataFrameInput, data.frame ; data frame with required columns
 #'  stratum (stratum number of observation), transect (transect number of
 #' observation, object(object number of detection, NA if transect with no
@@ -3721,16 +3721,16 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   #           function, but form subpopulations with different perpendicular
   #           densities. The functional form of these perpendicular densities
   #           must be the same, it is their different parameters which allow us
-  #           to model the two subpopulations separately. 
+  #           to model the two subpopulations separately.
   #
   # inputs  : DataFrameInput - The input data frame containing all observations
-  #                            and covariate values, this is of the same form 
+  #                            and covariate values, this is of the same form
   #                            as for the LT2D.fit function
-  #           hr             - The character naming the functional form of the 
+  #           hr             - The character naming the functional form of the
   #                            detection function
-  #           b              - The initial estimate parameter values for the 
+  #           b              - The initial estimate parameter values for the
   #                            detection function
-  #           ystart         - The furthest forward distance at which an animal 
+  #           ystart         - The furthest forward distance at which an animal
   #                            can be observed
   #           pi.x           - The functional form of the perpendicular density
   #                            distribution
@@ -3739,9 +3739,9 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   #           logphi2        - The initial parameter estimates for the second
   #                            component's perpendicular density
   #           w              - The perpendicular truncation distance
-  #           lambda         - The initial estimate for the proportion of the 
+  #           lambda         - The initial estimate for the proportion of the
   #                            population which is in component 1
-  #           formulas       - Formulas to specifiy covariate inclusion in the 
+  #           formulas       - Formulas to specifiy covariate inclusion in the
   #                            detection function
   #           ipars          - Any initial parameter estimates for covariate
   #                            inclusion into the detection function's intercept
@@ -3752,50 +3752,53 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   #                            inclusion into the detection function's y
   #                            direction
   #           control        - Optional control arguments to be passed to optim
-  #           hessian        - Boolean, stating if a hessian matrix should be 
+  #           hessian        - Boolean, stating if a hessian matrix should be
   #                            produced for the MLEs
-  #           corrFlag       - If the correlation between two parameters is 
-  #                            above this specified threshold, a warning is 
+  #           corrFlag       - If the correlation between two parameters is
+  #                            above this specified threshold, a warning is
   #                            thrown to the user
   #           debug          - Boolean, if TRUE, functions behave differently
   #                            and tend to produce verbose print statements
-  
+
   DataFrameInput <- subset(DataFrameInput, DataFrameInput$x <= w)
-  
+  if (length(logphi1)!=length(logphi2)) stop('Logphis must have same length')
+
   if (!is.null(formulas)){
     # We piggy-back some functionality off of the fityx function, to avoid
     # having to produce separate code to create the design matrices and sanity
     # check the user's chosen covariate formulas
     DMB <- fityx(b=b,hr=hr,ystart=ystart,pi.x=pi.x,logphi=logphi1,w=w,rmin=-1,
            formulas=formulas,covarPars=list(x=xpars, y=ypars, i=ipars),
-           debug = debug, DataFrameInput=NULL, returnDM=TRUE)
-    
+           debug = debug, DataFrameInput=DataFrameInput, returnDM=TRUE)
+
     # extract the hard work the fityx function did for us. Note that the
-    # returnDM=TRUE causes the fityx function to return the desired objects 
+    # returnDM=TRUE causes the fityx function to return the desired objects
     # before any call to optim, and so whilst lazy and inefficient, I consider
     # calling fityx to produce the design matrices to be better practice than
     # copying and pasting the equivalent code into this function.
-    DesignMatrices <- DMB[1]
-    b.for.optim <- DMB[2]
+    DesignMatrices <- DMB[[1]]
+    b.for.optim <- DMB[[2]]
   }
-  
+
   else{
     DesignMatrices <- NULL
     b.for.optim <- as.list(b)
   }
-  
+
   y <- DataFrameInput$y
   x <- DataFrameInput$x
-  
-  skeleton <- list(b.for.optim, logphi1, logphi2, lambda)
+
+  skeleton <- list(beta=b.for.optim,
+                   logphiOne=logphi1,
+                   logphiTwo=logphi2,
+                   lambda=lambda)
+
   pars <- unlist(skeleton)
-  
-  ############ DO A HAZARD B CHECK ##############
-  
+
   # RUN OPTIM ON MIXTURE NEG LOG LIK
   fit <- optim(pars, mixture.nll, y=y, x=x, hr=hr, ystart=ystart, pi.x=pi.x,
                w=w, DesignMatrices=DesignMatrices, skeleton=skeleton)
-  
+
   # Now that we have the fitted MLEs, we return them if there isn't enough
   # information to produce estimates of abundance:
   if ( is.null(DataFrameInput$stratum)
@@ -3807,45 +3810,46 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
     warning('Insufficient information for abundance calculation')
     return(fit)
   }
-  
+
   # Gets the betas for the fitted parameter values, for each row of the data
-  B.per.line <-  negloglik.yx(pars=fit$par,y=y, x=x, hr=hr, ystart=ystart,
+  B.per.line <-  mixture.nll(pars=fit$par,y=y, x=x, hr=hr, ystart=ystart,
                               pi.x=pi.x, w=w, DesignMatrices=DesignMatrices,
-                              skeleton=pars, returnB = T)[[1]]
-  
-  unrounded.points.with.betas <- list(data.frame(x=new.x,y=new.y),b=B.per.line)
-    
+                              skeleton=skeleton, returnB = T)[[1]]
+
+  unrounded.points.with.betas <- list(data.frame(x=x,y=y),b=B.per.line)
+
   # Now we pass the data frame and fitted model objects to the abundance
   # estimation function and return the output
-  
-  fitted.model$covariates = !is.null(covarPars)
-  fitted.model$formulas = formulas
-  output = NDest(DataFrameInput, fitted.model)
-  output$fit = fitted.model # We attach the fityx model to the output
-  class(output) = 'LT2D.fit.function.object'
+
+  fit$covariates <- !(is.null(ipars) | is.null(xpars) | is.null(ypars))
+  fit$formulas <- formulas
+  #output <- NDest(DataFrameInput, fit)
+  output <- list()
+  output$fit <- fit # We attach the fityx model to the output
+  class(output) <- 'LT2D.fit.function.object'
   return(output)
   # OUTPUT SAME FUNCTIONALITY AS NON MIXTURE MODEL, GoF, Plotting, Bootstrap
 }
 
 mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
                         skeleton, debug=FALSE, returnB = FALSE){
-  
+
   if (pi.x=='pi.const') stop('pi.const is invalid density for mixture model')
   if (debug) print(pars)
   if (class(pi.x)!='character' | class(hr)!='character'){
     stop('hazard and perpendicular density must be supplied as characters')
   }
-  
-  n=length(y) ; hrname = hr ; piname = pi.x 
+
+  n=length(y) ; hrname = hr ; piname = pi.x
   hr=match.fun(hr) ; pi.x=match.fun(pi.x)
-  
+
   unpacked <- relist(pars, skeleton=skeleton)
   b <- unpacked[[1]]       # These will get a link function applied by the
   logphi1 <- unpacked[[2]] # detection and perpendicular density functions.
   logphi2 <- unpacked[[3]]
   lambda <- plogis(unpacked[[4]]) # We apply the link manually to lambda
-  
-  # if any b entry has non-scalar entries, replace these entries with the 
+
+  # if any b entry has non-scalar entries, replace these entries with the
   # appropriate linear predictor...
   if (!is.null(DesignMatrices)){  # We have been given design matrices
     # The DM for entry 'i' of b, is also at entry 'i' of DesignMatrices
@@ -3856,78 +3860,83 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
       }
     }
   }
-  
+
   # This loop turns entries in b of length 1 into entries of length n
   j = 1 # At the end of this loop, j-1 will be the number of hr parameters
   while (class(try(b[[j]],silent=T))!='try-error'){
-    # if there's only one element in a column, make a column of that 
-    # element repeated the correct number of times to match the number of 
+    # if there's only one element in a column, make a column of that
+    # element repeated the correct number of times to match the number of
     # (x,y) coordinates we have:
-    if (length(b[[j]])==1){b[[j]]=as.numeric(rep(b[[j]],n))}
+    if (length(b[[j]])==1){
+      if (debug){
+        print(b[[j]])
+        print(as.numeric(rep(b[[j]],n)))
+      }
+      b[[j]]=as.numeric(rep(b[[j]],n))}
     j = j + 1
   }
   j = j - 1 # Remove 1 from j so that it now represents the dimension of b
   likelihood.level.b = list(b,j)
   class(likelihood.level.b) = 'likelihood.level.b'
   if (returnB) return(likelihood.level.b)
-  
+
   # We do a parameter check for B to avoid having to do it at every call
   # of the hazard function:
   HazardBCheck(y,x,likelihood.level.b[[1]],hrname)
-  
+
   # calculate numerators:
   FYX <- fyx(y,x,likelihood.level.b,hrname,ystart)
   num1 <- prod(FYX*pi.x(x,logphi1,w))
   num2 <- prod(FYX*pi.x(x,logphi2,w))
-  
+
   # calculate denominators:
-  
+
   # No covariates:
   if (is.null(DesignMatrices)){
-    
+
     b.normal <- as.list(sapply(b, '[[', 1))
-    
+
     int1 <- integrate(f=p.pi.x,lower=0,upper=w,b=b.normal,hr=hrname,
                       ystart=ystart,pi.x=piname,logphi=logphi1,w=w)
-    
+
     int2 <- integrate(f=p.pi.x,lower=0,upper=w,b=b.normal,hr=hrname,
                       ystart=ystart,pi.x=piname,logphi=logphi2,w=w)
-    
+
     denom1 <- (int1$value)**n
     denom2 <- (int2$value)**n
   }
-  
+
   # Covariates:
   else{
-    
+
     integrals1 <- rep(NA, n)
     integrals2 <- rep(NA, n)
-    
+
     for (i in (1:n)){
       # We know j exists, and we know b will have been turned into a list
-      # of all vectors, so we use b and j from the (not directly) above 
+      # of all vectors, so we use b and j from the (not directly) above
       # while loop
       integration.b = list()
       for (column.num in (1:j)){
         integration.b[[column.num]] = b[[column.num]][i]
       }
-      
+
       integrals1[i] <- integrate(f=p.pi.x,lower=0,upper=w,b=integration.b,
-                                 hr=hrname, ystart=ystart, pi.x=piname, 
+                                 hr=hrname, ystart=ystart, pi.x=piname,
                                  logphi=logphi1, w=w)$value
-      
+
       integrals2[i] <- integrate(f=p.pi.x,lower=0,upper=w,b=integration.b,
-                                 hr=hrname, ystart=ystart, pi.x=piname, 
+                                 hr=hrname, ystart=ystart, pi.x=piname,
                                  logphi=logphi2, w=w)$value
     }
     denom1 <- prod(integrals1)
     denom2 <- prod(integrals2)
   }
-  
+
   lik1 <- num1/denom1
   lik2 <- num2/denom2
   lik <- lambda*lik1 + (1-lambda)*lik2
   nll <- -log(lik)
-  
+
   return(nll)
 }
