@@ -821,14 +821,17 @@ px=function(x,b,hrname,ystart){
 #'then two parameters for perpendicular density gradient \eqn{\pi(x)} i.e. \code{c(b,logphi)}.
 #'@examples
 #'p.pi.x(x,b,hr,ystart,pi.x,logphi,w)
-p.pi.x=function(x,b,hr,ystart,pi.x,logphi,w){
+p.pi.x=function(x,b,hr,ystart,pi.x,logphi,w,...){
 
   if (!class(hr)=='character'){stop('hr must be supplied as character')}
   if (!class(pi.x)=='character'){stop('pi.x must be supplied as character')}
 
   pi.x = match.fun(pi.x) # So that we can evaluate it as a function below
 
-  return(px(x,b,hr,ystart)*pi.x(x,logphi,w))
+  return(px(x,b,hr,ystart)*pi.x(x=x,logphi=logphi,w=w,...))
+
+  # NOTE : The ... in the call to pi.x allows us to pass the extra information
+  #        required when pi.x is a mixture perpendicular likelihood == 'pi.mixt'
 }
 
 # A few functions added to deal with rounding of radial distances to 0
@@ -1842,7 +1845,20 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   ystart = LT2D.fit.obj$ystart  # to calculate inverse p from
   hr = LT2D.fit.obj$hr          # the fit object
   pi.x = LT2D.fit.obj$pi.x
-  logphi = LT2D.fit.obj$logphi
+
+  if (!LT2D.fit.obj$mixture){
+    logphi <- LT2D.fit.obj$logphi
+    # mix.args is set of extra parameters required for mixture models, we set it
+    # to NULL if we do not require it
+    args <- NULL
+  }
+  else {
+    logphi <- list(logphi1 = LT2D.fit.obj$logphi1,
+                       logphi2 = LT2D.fit.obj$logphi2)
+    mix.args <- list(lambda = LT2D.fit.obj$lambda,
+                     pi.x = LT2D.fit.obj$pi.x)
+    pi.x <- 'pi.x.mixt'
+  }
 
   unrounded.points.with.betas <- LT2D.fit.obj$unrounded.points.with.betas
   converted.betas <- data.with.b.conversion(fityx.output.object = LT2D.fit.obj)
@@ -1852,7 +1868,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
 
   LT2D.df$invp <- rep(NA, dim(LT2D.df)[1])
 
-  # check if covariates were used, return invp everywhere if there were not
+  # check if covariates were used, return invp everywhere if they were not
   # and proceed to the for loop if they were...
   if (LT2D.fit.obj$covariates!= TRUE){
 
@@ -1860,7 +1876,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
     # the same everywhere:
     B.no.covar = as.list(betas[[1]])
     LT2D.df$invp = rep(1/phat(w = w, hr = hr, b = B.no.covar, ystart = ystart,
-                              pi.x = pi.x, logphi = logphi))
+                              pi.x = pi.x, logphi = logphi, args = mix.args))
     return(LT2D.df)
   }
 
@@ -1886,19 +1902,13 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
 
       B <- as.list(betas[[j]])
       LT2D.df$invp[i] <- 1/phat(w = w, hr = hr, b = B, ystart = ystart,
-                                pi.x = pi.x, logphi = logphi)
+                                pi.x = pi.x, logphi = logphi, args = mix.args)
     }
 
     else{NAcounter <- NAcounter + 1}
   }
   return(LT2D.df)
 }
-
-# A few functions to deal with adding in the influence of
-# covariates into the shape paramaters of detection hazards,
-# followed by the top level fitting function available to
-# the package user:
-
 
 #' @title Top level fitting and abundance estimation function for LT2D user
 #' @description This function is a wrapper for the fityx function. It takes
@@ -2712,7 +2722,7 @@ coveragep=function(fit,true.hr,true.b,true.pi.x,true.logphi,type='LOGNORM',
 #'@export
 # remove fit option from the docs
 phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
-                 pi.x = NULL, logphi = NULL)
+                 pi.x = NULL, logphi = NULL, args=NULL)
 {
   if (!is.null(hr)) {
     if (class(hr) != "character") {
@@ -2728,7 +2738,7 @@ phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
   }
   int = integrate(f = p.pi.x, lower = 0, upper = w, b = b,
                   hr = hrname, ystart = ystart, pi.x = piname, logphi = logphi,
-                  w = w)$value
+                  w = w, args = args)$value
   return(int)
 }
 
@@ -3821,11 +3831,17 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   # Now we pass the data frame and fitted model objects to the abundance
   # estimation function and return the output
 
-  fit$covariates <- !(is.null(ipars) | is.null(xpars) | is.null(ypars))
+  fit$covariates <- !is.null(DesignMatrices)
   fit$formulas <- formulas
-  #output <- NDest(DataFrameInput, fit)
-  output <- list()
-  output$fit <- fit # We attach the fityx model to the output
+  fit$mixture <- TRUE
+  fit$w <- w
+  fit$unrounded.points.with.betas <- unrounded.points.with.betas
+  MLEs <- relist(fit$par, skeleton = skeleton)
+  fit$logphi1 <- MLEs$logphiOne
+  fit$logphi2 <- MLEs$logphiTwo
+  class(fit) <- 'LT2D.fit.object'
+  output <- NDest(DataFrameInput, fit)
+  output$fit <- fit # We attach the optim model to the output
   class(output) <- 'LT2D.fit.function.object'
   return(output)
   # OUTPUT SAME FUNCTIONALITY AS NON MIXTURE MODEL, GoF, Plotting, Bootstrap
@@ -3941,20 +3957,18 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
   return(nll)
 }
 
-pi.x.mixt <- function(pi.x,lambda,x,logphi1,logphi2,w){
+pi.x.mixt <- function(logphi, x, w, args){
   # purpose : In mixture model LT2D, the perpendicular density is a mixture
   #           of two different sets of parameters for the same function. This
   #           function evaluates this mixed perpendicular density function.
-  # inputs  : pi.x    - The character name of the perpendicular density function
-  #           lambda  - The mixture proportion, as estimated by the linear
-  #                     optimisation (and hence, not yet backtransformed)
-  #           x       - The scalar or vector perpendicular distances of the
-  #                     locations of interest
-  #           logphi1 - The parameter values for the perpendicular density of
-  #                     the first subpopulation
-  #           logphi2 - The parameter values for the perpendicular density of
-  #                     the second subpopulation
-  #           w       - The perpendicular truncation distance of the analysis
+  # inputs  : logphi - A list containing, logphi1, logphi2, (the parameters for
+  #                    the perpendicular densities of each component)
+  #           args   - A list containing lambda (the mixing proportion) and
+  #                    pi.x (the character name of the perpendicular density)
+  logphi1 <- logphi$logphi1
+  logphi2 <- logphi$Logphi2
+  lambda <- args$lambda
+  pi.x <- args$pi.x
 
   pi <- match.fun(pi.x)
   lambda <- plogis(lambda)
