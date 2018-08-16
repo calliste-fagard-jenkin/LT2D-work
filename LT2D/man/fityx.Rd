@@ -5,9 +5,9 @@
 \title{Maximum likelihood estimation for unknown hazard and perpendicular distance distribution}
 \usage{
 fityx(y = NULL, x = NULL, b, hr, ystart, pi.x, logphi, w, rmin = 0,
-  formulas = NULL, covarPars = NULL, control = list(),
-  hessian = FALSE, corrFlag = 0.7, debug = FALSE,
-  DataFrameInput = NULL, returnDM = FALSE, ...)
+  formulas = NULL, covarPars = NULL, control = list(), hessian = FALSE,
+  corrFlag = 0.7, debug = FALSE, DataFrameInput = NULL,
+  returnDM = FALSE, ...)
 }
 \arguments{
 \item{y}{scalar or vector; forward distance observations}

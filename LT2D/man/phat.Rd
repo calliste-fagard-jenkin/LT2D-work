@@ -5,7 +5,7 @@
 \title{Calculate effective strip width}
 \usage{
 phat(w = NULL, hr = NULL, b = NULL, ystart = NULL, pi.x = NULL,
-  logphi = NULL)
+  logphi = NULL, args = NULL)
 }
 \arguments{
 \item{w}{truncation distance}

@@ -4,9 +4,8 @@
 \alias{LT2D.FitObjectMaker}
 \title{LT2D fit object maker}
 \usage{
-LT2D.FitObjectMaker(par, value, counts, convergence, message, hessian,
-  error, hr, pi.x, ystart, w, b, logphi, AICval, dat, MLEvcov, CVpar, corr,
-  p0, rmin)
+LT2D.FitObjectMaker(par, value, counts, convergence, message, hessian, error,
+  hr, pi.x, ystart, w, b, logphi, AICval, dat, MLEvcov, CVpar, corr, p0, rmin)
 }
 \arguments{
 \item{par}{numeric scalar or vector; values of fitted MLE parameters.}

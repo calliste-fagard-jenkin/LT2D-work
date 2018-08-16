@@ -4,8 +4,7 @@
 \alias{plotSim}
 \title{Plot the simulated positions}
 \usage{
-plotSim(simDat, nclass = 10, xlab = "", ylab = "", image = FALSE,
-  ...)
+plotSim(simDat, nclass = 10, xlab = "", ylab = "", image = FALSE, ...)
 }
 \arguments{
 \item{simDat}{object from a call of \code{\link{simXY}}}

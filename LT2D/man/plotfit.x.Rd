@@ -4,9 +4,9 @@
 \alias{plotfit.x}
 \title{Plot fitted hazard and perpendicular denisty distribution}
 \usage{
-plotfit.x(est, nclass = 10, nint = 100, plot = TRUE,
-  dotitle = "FALSE", addTruth = FALSE, true.pi.x = NULL,
-  true.logphi = NULL, true.hr = NULL, true.b = NULL, N = NULL, ...)
+plotfit.x(est, nclass = 10, nint = 100, plot = TRUE, dotitle = "FALSE",
+  addTruth = FALSE, true.pi.x = NULL, true.logphi = NULL,
+  true.hr = NULL, true.b = NULL, N = NULL, ...)
 }
 \arguments{
 \item{nclass}{number of histogram classes}

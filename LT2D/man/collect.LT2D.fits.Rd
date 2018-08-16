@@ -7,7 +7,7 @@
 collect.LT2D.fits()
 }
 \description{
-Creates a list where the entry at each index is 
+Creates a list where the entry at each index is
 an LT2D.fit.function.object as produced by the \link{LT2D.fit}
 function.
 }

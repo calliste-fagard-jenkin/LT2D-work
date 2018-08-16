@@ -4,10 +4,9 @@
 \alias{LT2D.mixture}
 \title{Fitting function for mixture model LT2D}
 \usage{
-LT2D.mixture(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2, w,
-  lambda, formulas = NULL, ipars = NULL, xpars = NULL,
-  ypars = NULL, control = list(), hessian = FALSE, corrFlag = 0.7,
-  debug = FALSE)
+LT2D.mixture(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2, w, lambda,
+  formulas = NULL, ipars = NULL, xpars = NULL, ypars = NULL,
+  control = list(), hessian = FALSE, corrFlag = 0.7, debug = FALSE)
 }
 \arguments{
 \item{DataFrameInput, }{data.frame ; data frame with required columns

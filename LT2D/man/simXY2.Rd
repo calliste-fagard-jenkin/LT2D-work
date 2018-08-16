@@ -4,8 +4,8 @@
 \alias{simXY2}
 \title{Data simulator}
 \usage{
-simXY2(pi.x, logphi, hr, b, w, ystart, xSampL = 1000,
-  discardNotSeen = TRUE, n = NULL, ymin = NULL, ...)
+simXY2(pi.x, logphi, hr, b, w, ystart, xSampL = 1000, discardNotSeen = TRUE,
+  n = NULL, ymin = NULL, ...)
 }
 \arguments{
 \item{...}{other arguments to be passed into \link{\code{simXY}}}

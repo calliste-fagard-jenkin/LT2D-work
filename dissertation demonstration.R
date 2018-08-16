@@ -149,4 +149,4 @@ test.2 <- LT2D.mixture(sim.df2, 'h1', c(-0.58092971,-1.78361579), ystart,
                        ipars = (0))
 
 
-test.2$fit$par
+plot(test.2, covar.row=1)

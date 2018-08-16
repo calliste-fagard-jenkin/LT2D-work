@@ -7,15 +7,15 @@
 \method{summary}{collected.LT2D.models}(objects)
 }
 \value{
-data.frame containing: 
-Name ; names of the fitted model 
-AIC ; AIC of the fitted model 
+data.frame containing:
+Name ; names of the fitted model
+AIC ; AIC of the fitted model
 N ; Estimated Abundance from fitted model
-D ; Estimated Density from fitted model 
+D ; Estimated Density from fitted model
 GoF ; A count, detailing how many of the four GoF tests
 had a p value smaller than 0.05
 }
 \description{
-Creates a data.frame with useful summary statistics 
+Creates a data.frame with useful summary statistics
 for all user fitted models as columns
 }

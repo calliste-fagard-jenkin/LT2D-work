@@ -4,9 +4,9 @@
 \alias{plotfit.y}
 \title{Plot fitted f(y) and forward distance distribution}
 \usage{
-plotfit.y(est, nclass = 10, breaks = NULL, plot = TRUE,
-  dotitle = FALSE, lineonly = FALSE, nint = 100, max.obs = TRUE,
-  add = FALSE, y = NULL, x = NULL, ...)
+plotfit.y(est, nclass = 10, breaks = NULL, plot = TRUE, dotitle = FALSE,
+  lineonly = FALSE, nint = 100, max.obs = TRUE, add = FALSE, y = NULL,
+  x = NULL, ...)
 }
 \arguments{
 \item{est}{return from a call of \code{\link{fityx}}}

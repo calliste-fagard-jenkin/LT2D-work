@@ -12,7 +12,7 @@ pi.chnorm.i.exp.term(x, logphi)
 \item{logphi}{; numeric vector of length two of parameters}
 }
 \description{
-function which evaluates part of the 
-expression of its namesake function. Useful for 
+function which evaluates part of the
+expression of its namesake function. Useful for
 allowing numeric integration of this expression
 }

@@ -826,9 +826,17 @@ p.pi.x=function(x,b,hr,ystart,pi.x,logphi,w,...){
   if (!class(hr)=='character'){stop('hr must be supplied as character')}
   if (!class(pi.x)=='character'){stop('pi.x must be supplied as character')}
 
-  pi.x = match.fun(pi.x) # So that we can evaluate it as a function below
-
-  return(px(x,b,hr,ystart)*pi.x(x=x,logphi=logphi,w=w,...))
+  pi.func = match.fun(pi.x) # So that we can evaluate it as a function below
+  
+  # If we have a mixture perpendicular density, we pass the extra information
+  if (pi.x=='pi.x.mixt'){
+    return(px(x,b,hr,ystart)*pi.func(x=x,logphi=logphi,w=w,...))
+  }
+  
+  # If we don't have a mixture, we avoid passing the extra information since
+  # the perpendicular densities are not equipped to deal with ... arguemnts, 
+  # and hence will throw us an 'unused arguments' error:
+  else{return(px(x,b,hr,ystart)*pi.func(x=x,logphi=logphi,w=w))}
 
   # NOTE : The ... in the call to pi.x allows us to pass the extra information
   #        required when pi.x is a mixture perpendicular likelihood == 'pi.mixt'
@@ -1846,11 +1854,11 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
   hr = LT2D.fit.obj$hr          # the fit object
   pi.x = LT2D.fit.obj$pi.x
 
-  if (!LT2D.fit.obj$mixture){
+  if (is.null(LT2D.fit.obj$mixture)){
     logphi <- LT2D.fit.obj$logphi
     # mix.args is set of extra parameters required for mixture models, we set it
     # to NULL if we do not require it
-    args <- NULL
+    mix.args <- NULL
   }
   else {
     logphi <- list(logphi1 = LT2D.fit.obj$logphi1,
@@ -2342,6 +2350,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
     f.x=p.xpi/mu
     adbnTRUE=pi.x(gridx,logphi,w)
   }
+  
   if(plot){
     breaks=seq(0,w,length=(nclass+1))
     hx=hist(x,breaks=breaks,plot=FALSE) # get hist bar heights
@@ -2373,6 +2382,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
       lines(gridx,adbnTRUE,col="grey",lty=3,lwd=2)
     }
   }
+  
   if(!is.null(N)){
     n=length(x)
     Nhat.yx=n/mufit
@@ -2581,7 +2591,6 @@ plot.LT2D.fit.object = function(fit,
       # that contains the element whose covariate values we wish to plot at, so
       # we extract them in the following way:
 
-
       # we hijack the fit$b of this copy of the object to contain the value of
       # b that we truly want to plot:
       fit$b = as.list(dataFrameBetas[covar.row,])
@@ -2728,7 +2737,6 @@ phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
     if (class(hr) != "character") {
       stop("phat: hr must be a character")
     }
-    hrname = hr
   }
   if (!is.null(pi.x)) {
     if (class(pi.x) != "character") {
@@ -2737,7 +2745,7 @@ phat = function (w = NULL, hr = NULL, b = NULL, ystart = NULL,
     piname = pi.x
   }
   int = integrate(f = p.pi.x, lower = 0, upper = w, b = b,
-                  hr = hrname, ystart = ystart, pi.x = piname, logphi = logphi,
+                  hr = hr, ystart = ystart, pi.x = piname, logphi = logphi,
                   w = w, args = args)$value
   return(int)
 }
@@ -3835,10 +3843,14 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   fit$formulas <- formulas
   fit$mixture <- TRUE
   fit$w <- w
+  fit$pi.x <- pi.x
+  fit$hr <- hr
+  fit$ystart <- ystart
   fit$unrounded.points.with.betas <- unrounded.points.with.betas
   MLEs <- relist(fit$par, skeleton = skeleton)
   fit$logphi1 <- MLEs$logphiOne
   fit$logphi2 <- MLEs$logphiTwo
+  fit$lambda <- MLEs$lambda
   class(fit) <- 'LT2D.fit.object'
   output <- NDest(DataFrameInput, fit)
   output$fit <- fit # We attach the optim model to the output
@@ -3847,6 +3859,7 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   # OUTPUT SAME FUNCTIONALITY AS NON MIXTURE MODEL, GoF, Plotting, Bootstrap
 }
 
+#' @export
 mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
                         skeleton, debug=FALSE, returnB = FALSE){
 
@@ -3957,6 +3970,7 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
   return(nll)
 }
 
+#' @export
 pi.x.mixt <- function(logphi, x, w, args){
   # purpose : In mixture model LT2D, the perpendicular density is a mixture
   #           of two different sets of parameters for the same function. This
@@ -3966,7 +3980,7 @@ pi.x.mixt <- function(logphi, x, w, args){
   #           args   - A list containing lambda (the mixing proportion) and
   #                    pi.x (the character name of the perpendicular density)
   logphi1 <- logphi$logphi1
-  logphi2 <- logphi$Logphi2
+  logphi2 <- logphi$logphi2
   lambda <- args$lambda
   pi.x <- args$pi.x
 

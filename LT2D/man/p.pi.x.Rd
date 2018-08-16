@@ -4,7 +4,7 @@
 \alias{p.pi.x}
 \title{Product of p(x) and pi(x)}
 \usage{
-p.pi.x(x, b, hr, ystart, pi.x, logphi, w)
+p.pi.x(x, b, hr, ystart, pi.x, logphi, w, ...)
 }
 \arguments{
 \item{x}{scale or vector; perp. distance observations}

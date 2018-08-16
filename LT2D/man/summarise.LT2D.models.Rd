@@ -7,7 +7,7 @@
 summarise.LT2D.models()
 }
 \description{
-Creates a data.frame with useful summary statistics 
+Creates a data.frame with useful summary statistics
 for all user fitted models produced by calling \link{LT2D.fit}
 by using \link{collect.LT2D.fits} and then
 \link{summary.collected.LT2D.models}.
