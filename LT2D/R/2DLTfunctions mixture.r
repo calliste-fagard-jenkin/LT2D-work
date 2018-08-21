@@ -827,14 +827,14 @@ p.pi.x=function(x,b,hr,ystart,pi.x,logphi,w,...){
   if (!class(pi.x)=='character'){stop('pi.x must be supplied as character')}
 
   pi.func = match.fun(pi.x) # So that we can evaluate it as a function below
-  
+
   # If we have a mixture perpendicular density, we pass the extra information
   if (pi.x=='pi.x.mixt'){
     return(px(x,b,hr,ystart)*pi.func(x=x,logphi=logphi,w=w,...))
   }
-  
+
   # If we don't have a mixture, we avoid passing the extra information since
-  # the perpendicular densities are not equipped to deal with ... arguemnts, 
+  # the perpendicular densities are not equipped to deal with ... arguemnts,
   # and hence will throw us an 'unused arguments' error:
   else{return(px(x,b,hr,ystart)*pi.func(x=x,logphi=logphi,w=w))}
 
@@ -1677,35 +1677,39 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
   if (class(logphi)=='try-error'){logphi = NA}
 
   if (hessian==TRUE){
-    mNames = names(fit$par)
-
-    vcov=solve(fit$hessian)
-    corr = cov2cor(vcov)
-    row.names(corr) = mNames
-    colnames(corr) = mNames
-    corr[upper.tri(corr,diag = TRUE)] = NA
-
-    if (any(diag(fit$vcov) <= 0)) {
-      warning('Failed to invert hessian.  Model convergance problem in fityx?')
-      error = TRUE
-      CVpar = rep(NA,length(fit$par))
-    }
-
-    else {CVpar = sqrt(diag(solve(fit$hessian))) / abs(fit$par)}
-
-    corrIND = which(abs(corr) > corrFlag,arr.ind = T)
-    if (nrow(corrIND)) {
-      warning(
-        'absolute correlation exceeds ',corrFlag,' in parameter estimates: ',
-        paste(paste(mNames[corrIND[,1]],mNames[corrIND[,2]],sep =
-                      ' to '),collapse = '; ')
-      )
-      error = TRUE
-    }
-    output$hessian = hessian
-    output$CVpar = CVpar
-    output$corr = corr
-    output$vcov = vcov
+    output <- hessianCalcs(par = fit$par,
+                           hessian = fit$hessian,
+                           corrFlag = corrFlag,
+                           output = output)
+  #   mNames = names(fit$par)
+  #
+  #   vcov=solve(fit$hessian)
+  #   corr = cov2cor(vcov)
+  #   row.names(corr) = mNames
+  #   colnames(corr) = mNames
+  #   corr[upper.tri(corr,diag = TRUE)] = NA
+  #
+  #   if (any(diag(fit$vcov) <= 0)){
+  #     warning('Failed to invert hessian.  Model convergance problem in fityx?')
+  #     error = TRUE
+  #     CVpar = rep(NA,length(fit$par))
+  #   }
+  #
+  #   else {CVpar = sqrt(diag(solve(fit$hessian))) / abs(fit$par)}
+  #
+  #   corrIND = which(abs(corr) > corrFlag,arr.ind = T)
+  #   if (nrow(corrIND)) {
+  #     warning(
+  #       'absolute correlation exceeds ',corrFlag,' in parameter estimates: ',
+  #       paste(paste(mNames[corrIND[,1]],mNames[corrIND[,2]],sep =
+  #                     ' to '),collapse = '; ')
+  #     )
+  #     error = TRUE
+  #   }
+  #   output$hessian = hessian
+  #   output$CVpar = CVpar
+  #   output$corr = corr
+  #   output$vcov = vcov
   }
 
   AICval = 2 * fit$value + 2 * length(fit$par)
@@ -2350,7 +2354,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
     f.x=p.xpi/mu
     adbnTRUE=pi.x(gridx,logphi,w)
   }
-  
+
   if(plot){
     breaks=seq(0,w,length=(nclass+1))
     hx=hist(x,breaks=breaks,plot=FALSE) # get hist bar heights
@@ -2382,7 +2386,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
       lines(gridx,adbnTRUE,col="grey",lty=3,lwd=2)
     }
   }
-  
+
   if(!is.null(N)){
     n=length(x)
     Nhat.yx=n/mufit
@@ -3987,4 +3991,50 @@ pi.x.mixt <- function(logphi, x, w, args){
   pi <- match.fun(pi.x)
   lambda <- plogis(lambda)
   return(lambda*pi(x,logphi1,w)+(1-lambda)*pi(x,logphi2,w))
+}
+
+hessianCalcs <- function(par, hessian, corrFlag, output){
+  # purpose : Produces a variance covariance matrix of the fitted parameters
+  #           using the hessian matrix given by optim
+  # inputs  : par      - The fitted parameters
+  #           hessian  - The hessian atrix produced by optim
+  #           corrFLag - The float between 0 and 1 that determines above which
+  #                      threshold the correlation between two parameters is
+  #                      excessive
+  #           output   - The object to which the variance covariance matrix
+  #                      should be added
+  # output  : The object 'output' given as an argument, with the covariance
+  #           matrix added.
+  error = F
+  mNames = names(par)
+
+  vcov=solve(hessian)
+  corr = cov2cor(vcov)
+  row.names(corr) = mNames
+  colnames(corr) = mNames
+  corr[upper.tri(corr,diag = TRUE)] = NA
+
+  if (any(diag(vcov) <= 0)) {
+    warning('Failed to invert hessian.  Model convergance problem in fityx?')
+    error = TRUE
+    CVpar = rep(NA,length(par))
+  }
+
+  else {CVpar = sqrt(diag(solve(hessian))) / abs(par)}
+
+  corrIND = which(abs(corr) > corrFlag,arr.ind = T)
+  if (nrow(corrIND)) {
+    warning(
+      'absolute correlation exceeds ',corrFlag,' in parameter estimates: ',
+      paste(paste(mNames[corrIND[,1]],mNames[corrIND[,2]],sep =
+                    ' to '),collapse = '; ')
+    )
+    error = TRUE
+  }
+  output$hessian = hessian
+  output$CVpar = CVpar
+  output$corr = corr
+  output$vcov = vcov
+  output$error = error
+  return(output)
 }
