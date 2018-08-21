@@ -142,11 +142,13 @@ L2 <- negloglik.yx(pars = c(T6.2$fit$par[1:3],t.L2), y = t.y, x = t.x,
 test.1 <- LT2D.mixture(sim.df2, 'h1', c(-0.58092971,-1.78361579), ystart,
                        'pi.norm', t.L1, t.L2, w, 0.6)
 
+test.h <- LT2D.mixture(sim.df2, 'h1', c(0.12156000, -1.02431922), ystart,
+                       'pi.norm', c(0.01369257, -4.72545814),
+                       c(-0.17563928, -3.83681510), w, 2.19485517, hessian = T)
 
 test.2 <- LT2D.mixture(sim.df2, 'h1', c(-0.58092971,-1.78361579), ystart,
                        'pi.norm', t.L1, t.L2, w, 0.6,
                        formulas = list(formula(i~sim.df2$fakeFactor)),
                        ipars = (0))
-
 
 plot(test.2, covar.row=1)

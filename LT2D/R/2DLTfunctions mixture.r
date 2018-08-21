@@ -1681,36 +1681,9 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
                            hessian = fit$hessian,
                            corrFlag = corrFlag,
                            output = output)
-  #   mNames = names(fit$par)
-  #
-  #   vcov=solve(fit$hessian)
-  #   corr = cov2cor(vcov)
-  #   row.names(corr) = mNames
-  #   colnames(corr) = mNames
-  #   corr[upper.tri(corr,diag = TRUE)] = NA
-  #
-  #   if (any(diag(fit$vcov) <= 0)){
-  #     warning('Failed to invert hessian.  Model convergance problem in fityx?')
-  #     error = TRUE
-  #     CVpar = rep(NA,length(fit$par))
-  #   }
-  #
-  #   else {CVpar = sqrt(diag(solve(fit$hessian))) / abs(fit$par)}
-  #
-  #   corrIND = which(abs(corr) > corrFlag,arr.ind = T)
-  #   if (nrow(corrIND)) {
-  #     warning(
-  #       'absolute correlation exceeds ',corrFlag,' in parameter estimates: ',
-  #       paste(paste(mNames[corrIND[,1]],mNames[corrIND[,2]],sep =
-  #                     ' to '),collapse = '; ')
-  #     )
-  #     error = TRUE
-  #   }
-  #   output$hessian = hessian
-  #   output$CVpar = CVpar
-  #   output$corr = corr
-  #   output$vcov = vcov
   }
+  
+  else{output$hessian <- F}
 
   AICval = 2 * fit$value + 2 * length(fit$par)
 
@@ -3819,7 +3792,8 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
 
   # RUN OPTIM ON MIXTURE NEG LOG LIK
   fit <- optim(pars, mixture.nll, y=y, x=x, hr=hr, ystart=ystart, pi.x=pi.x,
-               w=w, DesignMatrices=DesignMatrices, skeleton=skeleton)
+               w=w, DesignMatrices=DesignMatrices, skeleton=skeleton,
+               hessian = hessian)
 
   # Now that we have the fitted MLEs, we return them if there isn't enough
   # information to produce estimates of abundance:
@@ -3842,9 +3816,12 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
 
   # Now we pass the data frame and fitted model objects to the abundance
   # estimation function and return the output
+  ifelse(hessian==T,
+         fit <- hessianCalcs(fit$par, fit$hessian, corrFlag, fit),
+         fit$hessian <- F)
 
   fit$covariates <- !is.null(DesignMatrices)
-  fit$formulas <- formulas
+  fit$skeleton <- skeleton
   fit$mixture <- TRUE
   fit$w <- w
   fit$pi.x <- pi.x
@@ -3855,6 +3832,7 @@ LT2D.mixture <- function(DataFrameInput, hr, b, ystart, pi.x, logphi1, logphi2,
   fit$logphi1 <- MLEs$logphiOne
   fit$logphi2 <- MLEs$logphiTwo
   fit$lambda <- MLEs$lambda
+  fit$AICval = 2*fit$value + 2*length(fit$par)
   class(fit) <- 'LT2D.fit.object'
   output <- NDest(DataFrameInput, fit)
   output$fit <- fit # We attach the optim model to the output
@@ -4005,10 +3983,14 @@ hessianCalcs <- function(par, hessian, corrFlag, output){
   #                      should be added
   # output  : The object 'output' given as an argument, with the covariance
   #           matrix added.
-  error = F
+  
   mNames = names(par)
-
-  vcov=solve(hessian)
+  vcov <- try(solve(hessian), silent=T)
+  if(class(vcov)=='try-error'){
+    warning('Hessian matrix could not be solved')
+    return(output)
+  }
+  
   corr = cov2cor(vcov)
   row.names(corr) = mNames
   colnames(corr) = mNames
@@ -4016,7 +3998,6 @@ hessianCalcs <- function(par, hessian, corrFlag, output){
 
   if (any(diag(vcov) <= 0)) {
     warning('Failed to invert hessian.  Model convergance problem in fityx?')
-    error = TRUE
     CVpar = rep(NA,length(par))
   }
 
@@ -4029,12 +4010,10 @@ hessianCalcs <- function(par, hessian, corrFlag, output){
       paste(paste(mNames[corrIND[,1]],mNames[corrIND[,2]],sep =
                     ' to '),collapse = '; ')
     )
-    error = TRUE
   }
-  output$hessian = hessian
+  output$hessian = T
   output$CVpar = CVpar
   output$corr = corr
   output$vcov = vcov
-  output$error = error
   return(output)
 }
