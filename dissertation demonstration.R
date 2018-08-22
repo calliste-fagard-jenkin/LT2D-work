@@ -91,16 +91,6 @@ T5 = LT2D.fit(DataFrameInput = sim.df2.2, hr = 'h1', b=c(1,-0.55),
               ystart=ystart,pi.x='pi.norm', logphi=logphi, w=w)
 
 # with covariates:
-T6 = LT2D.fit(DataFrameInput = sim.df2, hr = 'h1', b=c(1,-0.55), ystart=ystart,
-               pi.x='pi.norm', logphi=logphi, w=w,
-               formulas = list(formula(i~fakeFactor)), 
-               ipars = c(0))
-# Note : 0 is always a reasonable guess for the covariate parameters, given
-#        we have no real a priori knowledge on how they might be affecting the 
-#        data
-
-# same model again with previous optim parameters as start values, to try
-# and obtain better convergence...
 T6.2 = LT2D.fit(DataFrameInput = sim.df2, hr='h1',b=c(-0.58092971,-1.78361579),
                 ystart=ystart,pi.x='pi.norm',
                 logphi=c(0.01454569,-4.80212310 ), w=w,

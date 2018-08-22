@@ -2295,28 +2295,54 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
                    true.logphi=NULL,
                    true.hr=NULL,
                    true.b=NULL,
-                   N=NULL,...)
+                   N=NULL,
+                   pi.x.additional=NULL
+                   ,...)
 {
   # Some type-checking to ensure we can extract the data in the usual way
   if (class(est)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
-
-  x = est$dat$x     # We extract the perpendicular distances from the fit
+  
+  # extract the perpendicular distances from the fit:
+  x = est$unrounded.points.with.betas[[1]]$x
+  
+  # If the fitted model is not a mixture, we do not need the mixture information
+  # and can set the perpendicular density parameters in the usual way:
+  if (is.null(est$mixture)){
+    piname <- est$pi.x
+    logphi <- est$logphi
+    mix.args <- NULL
+  }
+  
+  else{
+    logphi <- list(logphi1 = est$logphi1,logphi2 = est$logphi2)
+    mix.args <- list(lambda = est$lambda, pi.x = est$pi.x)
+    piname <- 'pi.x.mixt'
+  }
+  
   Nhat.yx=bias=NULL
-  b=est$b; hrname=est$hr; ystart=est$ystart; piname=est$pi.x
-  logphi=est$logphi; w=est$w
+  b=est$b; hrname=est$hr; ystart=est$ystart; w=est$w
   f.x=p.x.std=adbnTRUE=0
+  
   # calculate stuff to plot:
   gridx=seq(1e-10,w,length=100)
+  
   # first do f(x)
-  p.xpifit=p.pi.x(gridx,b,hr=hrname,ystart,pi.x=piname,logphi,w)
-  mufit=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname
-                  ,ystart=ystart,pi.x=piname,logphi=logphi,w=w)$value
+  p.xpifit=p.pi.x(gridx,b,hr=hrname,ystart,pi.x=piname,logphi,w,
+                  args=mix.args)
+  
+  mufit=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname,
+                  ystart=ystart,pi.x=piname,logphi=logphi,w=w,
+                  args=mix.args)$value
+  
   f.xfit=p.xpifit/mufit
   p.xfit=px(gridx,b,hr=hrname,ystart)
   ptot=integrate(f=px,lower=0,upper=w,b=b,hr=hrname,ystart=ystart)$value
   p.xfit.std=p.xfit/ptot
-  adbn=match.fun(piname)(gridx,logphi,w) # changed to use piname instead of pi.x
-
+  
+  ifelse(is.null(est$mixture),
+         adbn <- match.fun(piname)(gridx,logphi,w),
+         adbn <- match.fun(piname)(x=gridx,logphi=logphi,w=w,args=mix.args))
+  
   if(addTruth) {   # Haven't really checked this yet - Cal
     if(!is.null(true.pi.x)) pi.x=true.pi.x
     if(!is.null(true.logphi)) logphi=true.logphi
@@ -2431,10 +2457,10 @@ plotfit.y=function(est,nclass=10,breaks=NULL,plot=TRUE,dotitle=FALSE,
 
   # barely made changes to this function (just type checking), worked fine - Cal
 
-  b=est$b; hr=est$hr; ystart=est$ystart; pi.x=est$pi.x
+  b=est$b; hr=est$hr; ystart=est$ystart
   logphi=est$logphi; w=est$w
-  if(is.null(y)) y=est$dat$y
-  if(is.null(x)) x=est$dat$x
+  if(is.null(y)) y=est$unrounded.points.with.betas[[1]]$y
+  if(is.null(x)) x=est$unrounded.points.with.betas[[1]]$x
   # calculate stuff to plot:
   n=length(y)
   res=100
@@ -2498,16 +2524,21 @@ plotfit.y=function(est,nclass=10,breaks=NULL,plot=TRUE,dotitle=FALSE,
 #'
 #'@seealso \code{\link{fityx}}
 #'@export
-plotfit.smoothfy=function(fit,nclass=12,nfys=200,xmax=max(fit$dat$x),main="",
+plotfit.smoothfy=function(fit,nclass=12,nfys=200,
+                          xmax=max(fit$unrounded.points.with.betas[[1]]$x),
+                          main="",
   plot=TRUE) {
 
   if (class(fit)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
 
-  near0=which(fit$dat$x<=xmax)
-  ys=fit$dat$y[near0]
+  near0=which(fit$unrounded.points.with.betas[[1]]$x<=xmax)
+  ys=fit$unrounded.points.with.betas[[1]]$y[near0]
   ymax=max(ys)
   breaks=seq(0,ymax,length=(nclass+1))
-  fy=plotfit.y(fit,nclass=nclass,nint=100,plot=FALSE,y=ys,x=fit$dat$x[near0])
+  
+  fy=plotfit.y(fit,nclass=nclass,nint=100,plot=FALSE,y=ys,
+               x=fit$unrounded.points.with.betas[[1]]$x[near0])
+  
   sm=splinefun(fy$gridy,fy$scaled.fy.,method="monoH.FC")
   hst=hist(ys,breaks=breaks,plot=FALSE)
   xs=seq(0,ymax,length=nfys)
@@ -2577,7 +2608,6 @@ plot.LT2D.fit.object = function(fit,
       fit$b = as.list(dataFrameBetas[1,]) # by default, take the first row.
     }
   }
-
 
   X = plotfit.x(fit,nclass=xbins)
   if (addrug){rug(x[x<=w])}                        # perpendicular distance plot
