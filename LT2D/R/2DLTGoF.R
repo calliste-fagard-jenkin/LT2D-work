@@ -73,7 +73,7 @@ gof.LT2D = function(fit, plot=FALSE){
   
   # Now we extract the information in this model which we require for the GoF:
   ystart = fit$ystart
-  w = fit$w  
+  w = fit$w
   hrname = fit$hr
   piname = fit$pi.x
   logphi=fit$logphi
@@ -124,7 +124,22 @@ gof.LT2D = function(fit, plot=FALSE){
   p.ks.y=1-p.kolmogarov(Dn)  # Working out p-value from K-S test stat
   
   
-  # GoF tests for X direction: 
+  # GoF tests for X direction:
+  
+  # If the fitted model is not a mixture, we do not need the mixture information
+  # and can set the perpendicular density parameters in the usual way:
+  if (is.null(fit$mixture)){
+    piname <- fit$pi.x
+    logphi <- fit$logphi
+    mix.args <- NULL
+  }
+  
+  else{
+    logphi <- list(logphi1 = fit$logphi1,logphi2 = fit$logphi2)
+    mix.args <- list(lambda = fit$lambda, pi.x = fit$pi.x)
+    piname <- 'pi.x.mixt'
+  }
+  
   edf=(1:n)/n
   
   # We need a for loop to calculate F0v with or without covariate inclusion,
@@ -132,20 +147,20 @@ gof.LT2D = function(fit, plot=FALSE){
   f0V=vector(mode = 'numeric',length=length(x))
   for(i in 1:n){
     f0V[i]=integrate(p.pi.x,0,x[i],as.list(B[[i]]),hrname,
-                     ystart,piname,logphi,w)$value
+                     ystart,piname,logphi,w,args=mix.args)$value
   }
   
   if (fit$covariates==T){
     Af0=rep(NA, n)
     for (i in 1:n){
       Af0[i]=integrate(p.pi.x,0,w,as.list(B[[i]]),hrname,
-                       ystart,piname,logphi,w)$value
+                       ystart,piname,logphi,w,args=mix.args)$value
     }
   }
   
   else{
     Af0=integrate(p.pi.x,0,w,as.list(B[[1]]),hrname,
-                  ystart,piname,logphi,w)$value
+                  ystart,piname,logphi,w,args=mix.args)$value
   }
   
   
