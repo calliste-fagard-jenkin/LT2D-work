@@ -141,4 +141,53 @@ test.2 <- LT2D.mixture(sim.df2, 'h1', c(-0.58092971,-1.78361579), ystart,
                        formulas = list(formula(i~sim.df2$fakeFactor)),
                        ipars = (0))
 
-plot(test.2, covar.row=1)
+# Testing the mixture model fitting
+set.seed(15)
+N <- 1000
+lambda <- 0.6
+logphi1 <- c(0,-3)
+logphi2 <- c(0,-4)
+mixt.b <- c(1,-0.5)
+
+mixtdat1 <- simXY(N*lambda, 'pi.norm', logphi1, 'h1', mixt.b, w,
+                  ystart)$locs
+
+mixtdat2 <- simXY(N*(1-lambda), 'pi.norm', logphi2, 'h1', mixt.b, w,
+                  ystart)$locs
+
+n <- (length(c(mixtdat1$x,mixtdat2$x)))
+
+mixt.df <- data.frame(x = c(mixtdat1$x, mixtdat2$x),
+                      y = c(mixtdat1$y, mixtdat2$y),
+                      stratum = 1,
+                      transect = 1,
+                      area = Asim,
+                      L = Lsim,
+                      object = 1:n,
+                      size = 1)
+
+mixt.df.1 <- data.frame(x = mixtdat1$x,
+                        y = mixtdat1$y,
+                        stratum = 1,
+                        transect = 1,
+                        area = Asim,
+                        L = Lsim,
+                        object = 1:length(mixtdat1$x),
+                        size = 1)
+
+mixt.df.2 <- data.frame(x = mixtdat2$x,
+                        y = mixtdat2$y,
+                        stratum = 1,
+                        transect = 1,
+                        area = Asim,
+                        L = Lsim,
+                        object = 1:length(mixtdat2$x),
+                        size = 1)
+
+# using the mixture:
+test.3 <- LT2D.mixture(mixt.df, 'h1', c(0.9577, -0.5460), ystart,
+                       'pi.norm', c(-0.004115, -3.6987), c(0.03577, -3.928), w,
+                       1.0407,
+                       hessian = T)
+
+

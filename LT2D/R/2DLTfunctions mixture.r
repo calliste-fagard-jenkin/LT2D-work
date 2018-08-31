@@ -1682,7 +1682,7 @@ fityx = function(y=NULL,x=NULL,b,hr,ystart,pi.x,logphi,w,rmin=0,formulas=NULL,
                            corrFlag = corrFlag,
                            output = output)
   }
-  
+
   else{output$hessian <- F}
 
   AICval = 2 * fit$value + 2 * length(fit$par)
@@ -2069,7 +2069,6 @@ negloglik.yx=function(pars,y,x,hr,ystart,pi.x,w,rounded.points=0,
 
   # likelihood:
   llik=-(num-denom) # 2016 paper likelihood, for the un-rounded data points
-
   if(rounded.points>0){
     negllik.rounded = round.lik(rounded.points,pi.x=piname,
                                 logphi,rmin,ymax=ystart,hr=hrname,b,w)
@@ -2301,10 +2300,10 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
 {
   # Some type-checking to ensure we can extract the data in the usual way
   if (class(est)!='LT2D.fit.object'){stop('Can only plot LT2D objects')}
-  
+
   # extract the perpendicular distances from the fit:
   x = est$unrounded.points.with.betas[[1]]$x
-  
+
   # If the fitted model is not a mixture, we do not need the mixture information
   # and can set the perpendicular density parameters in the usual way:
   if (is.null(est$mixture)){
@@ -2312,37 +2311,37 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
     logphi <- est$logphi
     mix.args <- NULL
   }
-  
+
   else{
     logphi <- list(logphi1 = est$logphi1,logphi2 = est$logphi2)
     mix.args <- list(lambda = est$lambda, pi.x = est$pi.x)
     piname <- 'pi.x.mixt'
   }
-  
+
   Nhat.yx=bias=NULL
   b=est$b; hrname=est$hr; ystart=est$ystart; w=est$w
   f.x=p.x.std=adbnTRUE=0
-  
+
   # calculate stuff to plot:
   gridx=seq(1e-10,w,length=100)
-  
+
   # first do f(x)
   p.xpifit=p.pi.x(gridx,b,hr=hrname,ystart,pi.x=piname,logphi,w,
                   args=mix.args)
-  
+
   mufit=integrate(f=p.pi.x,lower=0,upper=w,b=b,hr=hrname,
                   ystart=ystart,pi.x=piname,logphi=logphi,w=w,
                   args=mix.args)$value
-  
+
   f.xfit=p.xpifit/mufit
   p.xfit=px(gridx,b,hr=hrname,ystart)
   ptot=integrate(f=px,lower=0,upper=w,b=b,hr=hrname,ystart=ystart)$value
   p.xfit.std=p.xfit/ptot
-  
+
   ifelse(is.null(est$mixture),
          adbn <- match.fun(piname)(gridx,logphi,w),
          adbn <- match.fun(piname)(x=gridx,logphi=logphi,w=w,args=mix.args))
-  
+
   if(addTruth) {   # Haven't really checked this yet - Cal
     if(!is.null(true.pi.x)) pi.x=true.pi.x
     if(!is.null(true.logphi)) logphi=true.logphi
@@ -2535,10 +2534,10 @@ plotfit.smoothfy=function(fit,nclass=12,nfys=200,
   ys=fit$unrounded.points.with.betas[[1]]$y[near0]
   ymax=max(ys)
   breaks=seq(0,ymax,length=(nclass+1))
-  
+
   fy=plotfit.y(fit,nclass=nclass,nint=100,plot=FALSE,y=ys,
                x=fit$unrounded.points.with.betas[[1]]$x[near0])
-  
+
   sm=splinefun(fy$gridy,fy$scaled.fy.,method="monoH.FC")
   hst=hist(ys,breaks=breaks,plot=FALSE)
   xs=seq(0,ymax,length=nfys)
@@ -3685,12 +3684,16 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
 
     # We then use these to work out the appropriate unrounded.points.with.betas
     # object that is central to NDest doing its job:
-    bootstrap.upwb <- negloglik.yx(optim.pars,
-                                   y=y, x=x, hr=hr, ystart=ystart,
-                                   pi.x=pi.x, w=w,
-                                   DesignMatrices=DesignMatrices,
-                                   skeleton=skeleton,
-                                   returnB = T)[[1]]
+    nll.func <- ifelse(is.null(FittedObject$fit$mixture), # If a mixture model
+                       negloglik.yx,                      # was used, use the
+                       mixture.nll)                       # correct likelihood.
+
+    bootstrap.upwb <- nll.func(optim.pars,
+                               y=y, x=x, hr=hr, ystart=ystart,
+                               pi.x=pi.x, w=w,
+                               DesignMatrices=DesignMatrices,
+                               skeleton=skeleton,
+                               returnB = T)[[1]]
 
     bootstrap.upwb <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
 
@@ -3700,7 +3703,6 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
     bootstrap.df$invp <- NULL
     bootstrap.fitted.model <- optim.fit
     bootstrap.fitted.model$unrounded.points.with.betas <- bootstrap.upwb
-
 
     # 3. Produce and extract estimates of N
 
@@ -3930,6 +3932,10 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
   num1 <- prod(FYX*pi.x(x,logphi1,w))
   num2 <- prod(FYX*pi.x(x,logphi2,w))
 
+  # trying to fix shit:
+  num1 <- FYX*pi.x(x,logphi1,w)
+  num2 <- FYX*pi.x(x,logphi2,w)
+
   # calculate denominators:
 
   # No covariates:
@@ -3945,6 +3951,10 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
 
     denom1 <- (int1$value)**n
     denom2 <- (int2$value)**n
+
+    # fixing shit:
+    denom1 <- int1$value
+    denom2 <- int2$value
   }
 
   # Covariates:
@@ -3972,6 +3982,10 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
     }
     denom1 <- prod(integrals1)
     denom2 <- prod(integrals2)
+
+    # fixing shit:
+    denom1 <- integrals1
+    denom2 <- integrals2
   }
 
   lik1 <- num1/denom1
@@ -3979,6 +3993,10 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
   lik <- lambda*lik1 + (1-lambda)*lik2
   nll <- -log(lik)
 
+  comp1 <- lambda*(num1/denom1)
+  comp2 <- (1-lambda)*(num2/denom2)
+
+  nll <- - sum(log(comp1+comp2))
   return(nll)
 }
 
@@ -4013,14 +4031,14 @@ hessianCalcs <- function(par, hessian, corrFlag, output){
   #                      should be added
   # output  : The object 'output' given as an argument, with the covariance
   #           matrix added.
-  
+
   mNames = names(par)
   vcov <- try(solve(hessian), silent=T)
   if(class(vcov)=='try-error'){
     warning('Hessian matrix could not be solved')
     return(output)
   }
-  
+
   corr = cov2cor(vcov)
   row.names(corr) = mNames
   colnames(corr) = mNames
