@@ -3624,7 +3624,7 @@ data.with.b.conversion <- function(fityx.output.object=NULL,
 }
 
 #' @export
-LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
+LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
   # purpose : Produce a 1-alpha % confidence interval of abundance using a
   #           parametric percentile bootstrap.
   # inputs  : FittedObject - The object resulting from a fit using LT2D.fit
@@ -3652,7 +3652,8 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   skeleton <- optim.fit$skeleton
   x <- optim.fit$unrounded.points.with.betas[[1]]$x
   y <- optim.fit$unrounded.points.with.betas[[1]]$y
-
+  df <- data.frame(x=x, y=y)
+ upwbs <- list()
 
   # 1. Get samples
 
@@ -3672,7 +3673,11 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
   samples <- mvtnorm::rmvnorm(r, mean = mean, sigma = vcov)
   samples <- rbind(samples, mean)
 
-  bootstrap.Ns <- rep(NA, r+1)
+  # We then use these to work out the appropriate unrounded.points.with.betas
+  # object that is central to NDest doing its job:
+  nll.func <- ifelse(is.null(FittedObject$fit$mixture), # If a mixture model
+                     negloglik.yx,                      # was used, use the
+                     mixture.nll)                       # correct likelihood.
 
   for(i in 1:r+1){
     # 2. Produce information for NDest
@@ -3682,12 +3687,6 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
     optim.pars <- samples[i,]
     names(optim.pars) <- optim.names
 
-    # We then use these to work out the appropriate unrounded.points.with.betas
-    # object that is central to NDest doing its job:
-    nll.func <- ifelse(is.null(FittedObject$fit$mixture), # If a mixture model
-                       negloglik.yx,                      # was used, use the
-                       mixture.nll)                       # correct likelihood.
-
     bootstrap.upwb <- nll.func(optim.pars,
                                y=y, x=x, hr=hr, ystart=ystart,
                                pi.x=pi.x, w=w,
@@ -3695,22 +3694,24 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
                                skeleton=skeleton,
                                returnB = T)[[1]]
 
-    bootstrap.upwb <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
-
-    # We use this bootstrap.upwb to creat a dummy data frame and a dummy fitted
-    # optim object to 'trick' NDest to calculate estimates in the normal way:
-    bootstrap.df <- FittedObject$invp
-    bootstrap.df$invp <- NULL
-    bootstrap.fitted.model <- optim.fit
-    bootstrap.fitted.model$unrounded.points.with.betas <- bootstrap.upwb
-
-    # 3. Produce and extract estimates of N
-
-    N <- NDest(bootstrap.df, bootstrap.fitted.model)$ests$N
-    N <- N[length(N)] # take the final element, all the others refer to strata
-
-    bootstrap.Ns[i] <- N
+    upwbs[[i]] <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
   }
+
+  #   # We use this bootstrap.upwb to creat a dummy data frame and a dummy fitted
+  #   # optim object to 'trick' NDest to calculate estimates in the normal way:
+  #   bootstrap.df <- FittedObject$invp
+  #   bootstrap.df$invp <- NULL
+  #   bootstrap.fitted.model <- optim.fit
+  #   bootstrap.fitted.model$unrounded.points.with.betas <- bootstrap.upwb
+  #
+  #   # 3. Produce and extract estimates of N
+  #
+  #   N <- NDest(bootstrap.df, bootstrap.fitted.model)$ests$N
+  #   N <- N[length(N)] # take the final element, all the others refer to strata
+  #
+  #   bootstrap.Ns[i] <- N
+  # }
+  bootstrap.Ns <- get.bootstrap.ns(FittedObject, upwbs, parallel)
 
   # 4. Get interval using percentile method
   Ns <- sort(bootstrap.Ns)
@@ -3718,6 +3719,59 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05){
 
   # 5. return bootstrap result
   return(list(ci=ci,Ns=Ns))
+}
+
+get.bootstrap.ns <- function(fittedObject, upwbs, parallel=T){
+  # purpose : obtain the estimate of abundance given the unrounded points with
+  #           betas for the generated sample and the fittedObject
+  # inputs  : fittedObject - The object produced by the top level fitting func
+  #           upwbs        - List containing all fo the unrounded points
+  #                          with betas object (one list element per bootstrap
+  #                          sample)
+  #           parallel     - If TRUE, will perform the abundance estimation
+  #                          in parallel
+  # output  : A vector of abundance estimations
+
+
+  # Some set up for the function:
+  boot.df <- fittedObject$invp ; boot.df$invp <- NULL
+  x <- fittedObject$unrounded.points.with.betas[[1]]$x
+  y <- fittedObject$unrounded.points.with.betas[[1]]$y
+  df <- data.frame(x=x, y=y)
+
+  if(parallel){
+    # Create the clusters and initiate paralellisation:
+    cl<-makeCluster(detectCores())
+    registerDoParallel(cl)
+
+    # Do the parallel loop:
+    ls <- foreach(i=1:length(upwbs)) %dopar% {
+      boot.fitted.model <- fittedObject$fit
+      boot.fitted.model$unrounded.points.with.betas <- list(df, b=upwbs[[i]])
+      N <- NDest(boot.df, boot.fitted.model)$ests$N
+      N <- N[length(N)]
+      to.ls <- N
+    }
+
+    # Do the tear down for the parallelisation:
+    stopCluster(cl)
+
+    # Convert the list output from the parallelisation back to numeric:
+    Ns <- as.numeric(ls)
+  }
+
+  else{
+    # same loop but without the paralellisation:
+    Ns <- rep(NA, length(upwbs))
+    for (i in length(upwbs)){
+      boot.fitted.model <- fittedObject$fit
+      boot.fitted.model$unrounded.points.with.betas <- list(df, b=upwbs[[i]])
+      N <- NDest(boot.df, boot.fitted.model)$ests$N
+      Ns[i] <- N[length(N)]
+    }
+  }
+
+  return(Ns)
 }
 
 #' @title Fitting function for mixture model LT2D
