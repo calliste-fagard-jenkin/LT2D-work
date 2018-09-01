@@ -3653,7 +3653,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
   x <- optim.fit$unrounded.points.with.betas[[1]]$x
   y <- optim.fit$unrounded.points.with.betas[[1]]$y
   df <- data.frame(x=x, y=y)
- upwbs <- list()
+  upwbs <- list()
 
   # 1. Get samples
 
@@ -3697,7 +3697,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
     upwbs[[i]] <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
   }
 
-  #   # We use this bootstrap.upwb to creat a dummy data frame and a dummy fitted
+  #   # We use this bootstrap.upwb to create a dummy data frame and a dummy fitted
   #   # optim object to 'trick' NDest to calculate estimates in the normal way:
   #   bootstrap.df <- FittedObject$invp
   #   bootstrap.df$invp <- NULL
@@ -3721,7 +3721,92 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
   return(list(ci=ci,Ns=Ns))
 }
 
-get.bootstrap.ns <- function(fittedObject, upwbs, parallel=T){
+
+#' @export
+LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
+  # purpose : Produce a 1-alpha % confidence interval of abundance using a
+  #           parametric percentile bootstrap.
+  # inputs  : FittedObject - The object resulting from a fit using LT2D.fit
+  #           r            - The number of bootstrap iterations to perform
+  #                          to produce the sample
+  #           alpha        - a (1-alpha)% CI will be produced from the call
+  # NOTE    : This function deals both with covariate included and covariate
+  #           excluded fitted models
+  
+  if(r%%1!=0 | r<1) stop('invalid choice of bootstrap iterations')
+  if(r<100) warning('Small bootstrap iteration number selected')
+  if(alpha<=0 | alpha>=1) stop('invalid alpha selected')
+  if(class(FittedObject)!='LT2D.fit.function.object') stop('invalid input')
+  if(FittedObject$fit$hessian==FALSE){
+    stop('call to LT2D.fit must include hessian=TRUE')
+  }
+  
+  # 0. Extract some information which is required further down:
+  optim.fit <- FittedObject$fit
+  hr <- optim.fit$hr
+  w <- optim.fit$w
+  ystart <- optim.fit$ystart
+  pi.x <- optim.fit$pi.x
+  DesignMatrices <- optim.fit$designMatrices
+  skeleton <- optim.fit$skeleton
+  x <- optim.fit$unrounded.points.with.betas[[1]]$x
+  y <- optim.fit$unrounded.points.with.betas[[1]]$y
+  
+  
+  # 1. Get samples
+  
+  # extract vcov matrix for MLEs and do some sanity checking:
+  vcov <- FittedObject$fit$vcov
+  if(any(is.na(vcov))) stop('variance-covariance matrix contains NA element')
+  if(any(diag(vcov)<0)){
+    stop('variance-covariance matrix contains negative variance estimation')
+  }
+  
+  # extract the parameter values and check they match the vcovmat dimension:
+  mean <- FittedObject$fit$par
+  optim.names <- names(mean)
+  if(length(mean)!=dim(vcov)[1]) stop('par and vcov matrix dimension mismatch')
+  
+  # generate a bunch of samples and include the original:
+  samples <- mvtnorm::rmvnorm(r, mean = mean, sigma = vcov)
+  samples <- rbind(samples, mean)
+  
+  bootstrap.Ns <- rep(NA, r+1)
+  UPWBs <- list()
+  
+  for(i in 1:r+1){
+    # 2. Produce information for NDest
+    
+    # We take a sample of randomly generated fitted parameter values and name
+    # them in the same way optim would have during the fitting process:
+    optim.pars <- samples[i,]
+    names(optim.pars) <- optim.names
+    
+    # We then use these to work out the appropriate unrounded.points.with.betas
+    # object that is central to NDest doing its job:
+    nll.func <- ifelse(is.null(FittedObject$fit$mixture), # If a mixture model
+                       negloglik.yx,                      # was used, use the
+                       mixture.nll)                       # correct likelihood.
+    
+    bootstrap.upwb <- nll.func(optim.pars,
+                               y=y, x=x, hr=hr, ystart=ystart,
+                               pi.x=pi.x, w=w,
+                               DesignMatrices=DesignMatrices,
+                               skeleton=skeleton,
+                               returnB = T)[[1]]
+    
+    UPWBs <- c(UPWBs, list(bootstrap.upwb))
+  }
+  
+  # 4. Get interval using percentile method
+  Ns <- sort(get.bootstrap.ns(FittedObject, UPWBs, parallel))
+  ci <- quantile(Ns, c(alpha,1-alpha))
+  
+  # 5. return bootstrap result
+  return(list(ci=ci,Ns=Ns))
+}
+
+get.bootstrap.ns <- function(FittedObject, upwbs, parallel=T){
   # purpose : obtain the estimate of abundance given the unrounded points with
   #           betas for the generated sample and the fittedObject
   # inputs  : fittedObject - The object produced by the top level fitting func
@@ -3734,11 +3819,13 @@ get.bootstrap.ns <- function(fittedObject, upwbs, parallel=T){
 
 
   # Some set up for the function:
-  boot.df <- fittedObject$invp ; boot.df$invp <- NULL
-  x <- fittedObject$unrounded.points.with.betas[[1]]$x
-  y <- fittedObject$unrounded.points.with.betas[[1]]$y
-  df <- data.frame(x=x, y=y)
-
+  bootstrap.df <- FittedObject$invp
+  bootstrap.df$invp <- NULL
+  optim.fit <- FittedObject$fit
+  x <- optim.fit$unrounded.points.with.betas[[1]]$x
+  y <- optim.fit$unrounded.points.with.betas[[1]]$y
+  df <- data.frame(x=x,y=y)
+  
   if(parallel){
     # Create the clusters and initiate paralellisation:
     cl<-makeCluster(detectCores())
@@ -3746,15 +3833,17 @@ get.bootstrap.ns <- function(fittedObject, upwbs, parallel=T){
 
     # Do the parallel loop:
     ls <- foreach(i=1:length(upwbs)) %dopar% {
-      boot.fitted.model <- fittedObject$fit
-      boot.fitted.model$unrounded.points.with.betas <- list(df, b=upwbs[[i]])
-      N <- NDest(boot.df, boot.fitted.model)$ests$N
+      boot.fitted.model <- optim.fit
+      boot.fitted.model$unrounded.points.with.betas <- list(df,b=upwbs[[i]])
+      N <- NDest(bootstrap.df, boot.fitted.model)$ests$N
       N <- N[length(N)]
       to.ls <- N
     }
 
-    # Do the tear down for the parallelisation:
-    stopCluster(cl)
+    # Do the tear down for the parallelisation, we exception handle it simply
+    # to silence a bunch of warnings that indicate which connections to unused
+    # ports are closed by stopping the cluster
+    try(stopCluster(cl), silent = T)
 
     # Convert the list output from the parallelisation back to numeric:
     Ns <- as.numeric(ls)
@@ -3763,10 +3852,10 @@ get.bootstrap.ns <- function(fittedObject, upwbs, parallel=T){
   else{
     # same loop but without the paralellisation:
     Ns <- rep(NA, length(upwbs))
-    for (i in length(upwbs)){
-      boot.fitted.model <- fittedObject$fit
-      boot.fitted.model$unrounded.points.with.betas <- list(df, b=upwbs[[i]])
-      N <- NDest(boot.df, boot.fitted.model)$ests$N
+    for (i in 1:length(upwbs)){
+      boot.fitted.model <- optim.fit
+      boot.fitted.model$unrounded.points.with.betas <- list(df,b=upwbs[[i]])
+      N <- NDest(bootstrap.df, boot.fitted.model)$ests$N
       Ns[i] <- N[length(N)]
     }
   }

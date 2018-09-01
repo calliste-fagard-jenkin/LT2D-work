@@ -1,9 +1,9 @@
 Package: LT2D
-Title: What the Package Does (one line, title case)
+Title: Analysis of Distance Sampling data with 2D detection functions
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Authors@R: person("Calliste", "Fagard-Jenkin", email = "calliste.fagard.jenkin@gmail.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
-Depends: R (>= 3.3.1)
+Depends: R (>= 3.3.1), foreach, doParallel, parallel, goftest, mvtnorm
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

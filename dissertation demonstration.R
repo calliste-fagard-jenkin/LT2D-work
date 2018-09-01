@@ -190,10 +190,6 @@ test.3 <- LT2D.mixture(mixt.df, 'h1', c(0.9577, -0.5460), ystart,
                        1.0407,
                        hessian = T)
 
-start <- Sys.time()
-LT2D.bootstrap(test.3)
-print(as.numeric(Sys.time()-start))
+LT2D.bootstrap(test.3, parallel=T, r=4999)$ci
 
-non.optimised.times <- c(43.25, 41.45, 44.54)
 
-foreach(i=1:3) %do% sqrt(i)
