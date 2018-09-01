@@ -3715,7 +3715,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
 
   # 4. Get interval using percentile method
   Ns <- sort(bootstrap.Ns)
-  ci <- quantile(Ns, c(alpha,1-alpha))
+  ci <- quantile(Ns, c(alpha/2,1-alpha/2))
 
   # 5. return bootstrap result
   return(list(ci=ci,Ns=Ns))
