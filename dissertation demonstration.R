@@ -190,6 +190,8 @@ test.3 <- LT2D.mixture(mixt.df, 'h1', c(0.9577, -0.5460), ystart,
                        1.0407,
                        hessian = T)
 
-LT2D.bootstrap(test.3, parallel=T, r=4999)$ci
+start <- Sys.time()
+CI <- LT2D.bootstrap(test.3, parallel=T, r=4999)$ci
+print(as.numeric(Sys.time()-start))
 
-
+plot(test.3)

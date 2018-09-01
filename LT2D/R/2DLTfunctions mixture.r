@@ -4072,10 +4072,6 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
 
   # calculate numerators:
   FYX <- fyx(y,x,likelihood.level.b,hrname,ystart)
-  num1 <- prod(FYX*pi.x(x,logphi1,w))
-  num2 <- prod(FYX*pi.x(x,logphi2,w))
-
-  # trying to fix shit:
   num1 <- FYX*pi.x(x,logphi1,w)
   num2 <- FYX*pi.x(x,logphi2,w)
 
@@ -4092,10 +4088,6 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
     int2 <- integrate(f=p.pi.x,lower=0,upper=w,b=b.normal,hr=hrname,
                       ystart=ystart,pi.x=piname,logphi=logphi2,w=w)
 
-    denom1 <- (int1$value)**n
-    denom2 <- (int2$value)**n
-
-    # fixing shit:
     denom1 <- int1$value
     denom2 <- int2$value
   }
@@ -4123,22 +4115,13 @@ mixture.nll <- function(pars, y, x, hr, ystart, pi.x, w, DesignMatrices=NULL,
                                  hr=hrname, ystart=ystart, pi.x=piname,
                                  logphi=logphi2, w=w)$value
     }
-    denom1 <- prod(integrals1)
-    denom2 <- prod(integrals2)
-
-    # fixing shit:
+    
     denom1 <- integrals1
     denom2 <- integrals2
   }
-
-  lik1 <- num1/denom1
-  lik2 <- num2/denom2
-  lik <- lambda*lik1 + (1-lambda)*lik2
-  nll <- -log(lik)
-
+  
   comp1 <- lambda*(num1/denom1)
   comp2 <- (1-lambda)*(num2/denom2)
-
   nll <- - sum(log(comp1+comp2))
   return(nll)
 }
