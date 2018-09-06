@@ -2319,7 +2319,7 @@ plotfit.x=function(est,nclass=10,nint=100,    # est is a fitted LT2D model
   }
 
   Nhat.yx=bias=NULL
-  b=est$b; hrname=est$hr; ystart=est$ystart; w=est$w
+  b=est$b ; hrname=est$hr; ystart=est$ystart; w=est$w
   f.x=p.x.std=adbnTRUE=0
 
   # calculate stuff to plot:
@@ -2603,9 +2603,11 @@ plot.LT2D.fit.object = function(fit,
       fit$b = as.list(dataFrameBetas[covar.row,])
     }
 
-    else{
-      fit$b = as.list(dataFrameBetas[1,]) # by default, take the first row.
-    }
+    else{stop('invalid covar.row')}
+  }
+  
+  else{
+    fit$b = as.list(dataFrameBetas[1,]) # by default, take the first row.
   }
 
   X = plotfit.x(fit,nclass=xbins)
