@@ -1155,7 +1155,7 @@ simXY=function(N,pi.x,logphi,hr,b,w,ystart,xSampL=5*N,discardNotSeen=TRUE,...)
     else{lt2d.Error = FALSE}                # succesful call;  stop loop
   }
 
-  if (lt2d.Error){                            # If after 10 tries we still have
+  if (lt2d.Error){                          # If after 10 tries we still have
     stop(lt2d.simXY.error.message)          # an error, pass it to the user
   }
 
@@ -3635,105 +3635,6 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
   #           alpha        - a (1-alpha)% CI will be produced from the call
   # NOTE    : This function deals both with covariate included and covariate
   #           excluded fitted models
-
-  if(r%%1!=0 | r<1) stop('invalid choice of bootstrap iterations')
-  if(r<100) warning('Small bootstrap iteration number selected')
-  if(alpha<=0 | alpha>=1) stop('invalid alpha selected')
-  if(class(FittedObject)!='LT2D.fit.function.object') stop('invalid input')
-  if(FittedObject$fit$hessian==FALSE){
-    stop('call to LT2D.fit must include hessian=TRUE')
-  }
-
-  # 0. Extract some information which is required further down:
-  optim.fit <- FittedObject$fit
-  hr <- optim.fit$hr
-  w <- optim.fit$w
-  ystart <- optim.fit$ystart
-  pi.x <- optim.fit$pi.x
-  DesignMatrices <- optim.fit$designMatrices
-  skeleton <- optim.fit$skeleton
-  x <- optim.fit$unrounded.points.with.betas[[1]]$x
-  y <- optim.fit$unrounded.points.with.betas[[1]]$y
-  df <- data.frame(x=x, y=y)
-  upwbs <- list()
-
-  # 1. Get samples
-
-  # extract vcov matrix for MLEs and do some sanity checking:
-  vcov <- FittedObject$fit$vcov
-  if(any(is.na(vcov))) stop('variance-covariance matrix contains NA element')
-  if(any(diag(vcov)<0)){
-    stop('variance-covariance matrix contains negative variance estimation')
-  }
-
-  # extract the parameter values and check they match the vcovmat dimension:
-  mean <- FittedObject$fit$par
-  optim.names <- names(mean)
-  if(length(mean)!=dim(vcov)[1]) stop('par and vcov matrix dimension mismatch')
-
-  # generate a bunch of samples and include the original:
-  samples <- mvtnorm::rmvnorm(r, mean = mean, sigma = vcov)
-  samples <- rbind(samples, mean)
-
-  # We then use these to work out the appropriate unrounded.points.with.betas
-  # object that is central to NDest doing its job:
-  nll.func <- ifelse(is.null(FittedObject$fit$mixture), # If a mixture model
-                     negloglik.yx,                      # was used, use the
-                     mixture.nll)                       # correct likelihood.
-
-  for(i in 1:r+1){
-    # 2. Produce information for NDest
-
-    # We take a sample of randomly generated fitted parameter values and name
-    # them in the same way optim would have during the fitting process:
-    optim.pars <- samples[i,]
-    names(optim.pars) <- optim.names
-
-    bootstrap.upwb <- nll.func(optim.pars,
-                               y=y, x=x, hr=hr, ystart=ystart,
-                               pi.x=pi.x, w=w,
-                               DesignMatrices=DesignMatrices,
-                               skeleton=skeleton,
-                               returnB = T)[[1]]
-
-    upwbs[[i]] <- list(data.frame(x=x,y=y),b=bootstrap.upwb)
-  }
-
-  #   # We use this bootstrap.upwb to create a dummy data frame and a dummy fitted
-  #   # optim object to 'trick' NDest to calculate estimates in the normal way:
-  #   bootstrap.df <- FittedObject$invp
-  #   bootstrap.df$invp <- NULL
-  #   bootstrap.fitted.model <- optim.fit
-  #   bootstrap.fitted.model$unrounded.points.with.betas <- bootstrap.upwb
-  #
-  #   # 3. Produce and extract estimates of N
-  #
-  #   N <- NDest(bootstrap.df, bootstrap.fitted.model)$ests$N
-  #   N <- N[length(N)] # take the final element, all the others refer to strata
-  #
-  #   bootstrap.Ns[i] <- N
-  # }
-  bootstrap.Ns <- get.bootstrap.ns(FittedObject, upwbs, parallel)
-
-  # 4. Get interval using percentile method
-  Ns <- sort(bootstrap.Ns)
-  ci <- quantile(Ns, c(alpha/2,1-alpha/2))
-
-  # 5. return bootstrap result
-  return(list(ci=ci,Ns=Ns))
-}
-
-
-#' @export
-LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
-  # purpose : Produce a 1-alpha % confidence interval of abundance using a
-  #           parametric percentile bootstrap.
-  # inputs  : FittedObject - The object resulting from a fit using LT2D.fit
-  #           r            - The number of bootstrap iterations to perform
-  #                          to produce the sample
-  #           alpha        - a (1-alpha)% CI will be produced from the call
-  # NOTE    : This function deals both with covariate included and covariate
-  #           excluded fitted models
   
   if(r%%1!=0 | r<1) stop('invalid choice of bootstrap iterations')
   if(r<100) warning('Small bootstrap iteration number selected')
@@ -3800,8 +3701,10 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
     UPWBs <- c(UPWBs, list(bootstrap.upwb))
   }
   
-  # 4. Get interval using percentile method
+  # 3. Get estimates of abundance
   Ns <- sort(get.bootstrap.ns(FittedObject, UPWBs, parallel))
+  
+  # 4. Get interval using percentile method
   ci <- quantile(Ns, c(alpha,1-alpha))
   
   # 5. return bootstrap result
