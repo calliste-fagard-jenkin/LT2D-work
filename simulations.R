@@ -33,7 +33,7 @@ produce.mixt.df <- function(N, pi.x, logphi1, logphi2, hr, b, w, ystart, lambda,
 }
 
 simulation <- function(R, N, pi.x, logphi1, logphi2, hr, b, w, ystart, lambda,
-                       Lsim, Asim, produce.mixt.df){
+                       Lsim, Asim, produce.mixt.df, perfect.convergence = T){
   # purpose : Produces R simulated data sets with the chosen parameters,
   #           then fits the data using a mixture and regular LT2D model, to 
   #           produce estimates of bias
@@ -61,6 +61,13 @@ simulation <- function(R, N, pi.x, logphi1, logphi2, hr, b, w, ystart, lambda,
     
     # 4. If either model failed, we can't use the information:
     if (class(F1)=='try-error' | class(F2)=='try-error'){
+      to.ls <- c(NA, NA)
+    }
+    
+    # if perfect.convergence == TRUE, only include the results if the models 
+    # both converged as well as possible
+    else if (perfect.convergence &
+             (F1$fit$convergence!=0 | F2$fit$convergence!=0)){
       to.ls <- c(NA, NA)
     }
     
