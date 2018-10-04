@@ -1,0 +1,78 @@
+---
+title: "Gibbon Abundance"
+author: "Cal"
+date: "23/06/2017"
+output: html_document
+---
+
+```{r}
+Data = read.csv('GibbonSiamang.csv',header=T) # load the data
+Data = subset(Data, Data$Species == 1)
+x = Data$PP.Distance ; y = Data$Forward.Distance
+Data$X = Data$X.1 = Data$X.2 = NULL # Remove blank rows in CSV 
+
+# We need to rename some of the columns to work with the LT2D package:
+Data$stratum = Data$Region.Label ; Data$Region.Label = NULL
+Data$Height = NULL # We don't use this in this analysis 
+Data$Effort = NULL 
+Data$transect = Data$Sample.Label ; Data$Sample.Label = NULL
+Data$location = Data$Location..0.5.4.5.km. ; Data$Location..0.5.4.5.km. = NULL
+```
+
+The Gibbon effort column seems useless...? It describes constant effort, but 
+clearly isn't an indication of transect line length. Is it a description of 
+time spent on the transect? In which case 52 minutes seems very arbitrary. 
+
+My suspicion is that there was one very long transect, which was split into 
+four. Here's why: 
+
+```{r}
+trans1 = subset(Data, transect == 1 ) ; T1 = range(trans1$location)
+trans2 = subset(Data, transect == 2 ) ; T2 = range(trans2$location)
+trans3 = subset(Data, transect == 3 ) ; T3 = range(trans3$location)
+trans4 = subset(Data, transect == 4 ) ; T4 = range(trans4$location)
+T1 ; T2 ; T3 ; T4 
+```
+
+I suspect the long transect wasn't actually cut into four equal lengths. I'll 
+use the average difference between the end of one transect and the start of the 
+next as my best guess for how much was right truncated of the last transect. For 
+some reason the transect with the highest distance has label 1, but this isn't a
+big deal. I'll place the end point of transects at the halfway point of the
+final detection of one transect, and the first of the transect ahead of it (
+in distance, not label).
+
+```{r}
+T1.2Gap = abs(T2[2]-T1[1])
+T2.3Gap = abs(T3[2]-T2[1])
+T3.4Gap = abs(T4[2]-T3[1])
+
+differences = c(0.5, T3.4Gap, T2.3Gap, T1.2Gap)
+TopTruncation = mean(differences)/2
+
+
+# Create a small numberline to illustrate the point:
+
+## define plot data
+xlim <- c(0,5)
+ylim <- c(0,1)
+px <- rev(c(T1,T2,T3,T4)) # because names are opposite of order
+py <- rep(0,length(px))
+lx.buf <- 5
+lx <- seq(xlim[1]+lx.buf,xlim[2]-lx.buf,len=length(px))
+ly <- 20
+
+## create basic plot outline
+par(xaxs='i',yaxs='i',mar=c(5,1,1,1));
+plot(NA,xlim=xlim,ylim=ylim,axes=F,ann=F);
+axis(1)
+
+## plot elements
+draw.points = function(px,py,pch){
+  number.of.transects = length(px)/2
+  points(px,py,col='red',pch=pch, xpd=F)
+}
+
+segments(px,py,lx,ly);
+draw.points(px,py,pch=3)
+```

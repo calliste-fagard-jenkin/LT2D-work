@@ -1,0 +1,124 @@
+---
+title: "GibSia"
+author: "Cal F-J, under supervision of Prof. David L Borchers"
+date: "June 2017"
+output: html_document
+---
+```{r, echo=F, warning=F}
+library(plotrix) # load the library needed to draw the arc on our graph
+```
+## Abstract
+We perform a 2D detection function distance sampling analysis of a Gibbon and 
+Siamang dataset (73 observations), using a development version of the LT2D
+package. We modify the likelihood proposed by Borchers and Cox (2016), to
+account for datasets for which detections with small radial distances have been
+rounded down to zero in the field. We estimate $\hat{p}$ to be XX, with 95% CI().
+
+## Examination of the dataset
+```{r}
+library('DEVDEV5') # load the development version of the LT2D package
+Data = read.csv('GibbSia.csv',header=T) # load the x and y data
+x = Data$PP.Distance ; y = Data$Forward.Distance # 73 observations
+```
+
+```{r, echo=FALSE}
+# We produce some preliminary plots to see what the data look like: 
+par(mfrow=c(1,3))
+
+# we want to add a small amount of noise to data points at (0,0) to make it 
+# clearer in the graph that there is a cluster here:
+x_to_plot = x                                      # create vectors to 
+y_to_plot = y                                      # fill with values
+
+for (i in (1:length(x))){                          # loop through and add noise
+  if (x[i]==0 & y[i]==0){                          # where it's required
+    x_to_plot[i] = x[i] + runif(1,0,0.002)
+    y_to_plot[i] = y[i] + runif(1,0,0.002)
+  }         
+}
+
+pdlab="Perpendicular distance"
+fdlab="Forward distance"
+plot(x_to_plot,y_to_plot,pch="+",ylab=fdlab,xlab=pdlab)
+rmin = sort(unique(Data$Radial.Distance))[2] # Calculate Rmin
+draw.arc(0,0,radius=rmin,deg1=0,deg2=360,col="red",lwd=1)
+legend(0.0113,0.065,"Radius Rmin",lty=1,col="red")
+hist(y,breaks=seq(0,max(na.omit(y)),length=9),xlab=fdlab,main="")
+hist(x,breaks=seq(0,max(na.omit(x)),length=13),xlab=pdlab,main="")
+```
+
+It would seem by inspection, that 0.05 seems a reasonable perpendicular 
+truncation distance ($w=0.05$), and 0.07 seems reasonable for $ystart$; the 
+furthest forward distance at which we are able to detect animals. We have a
+small cluster of values at distances close to (0,0), which is likely due to the 
+rounding of recorded values in the field. Points at these coordinates have had 
+a small amount of noise added to them in the scatter plot, to make the cluster
+more visible. We notice a clear gap in the distribution of radial distances of 
+detections between 0 and 0.0132, and so we take the latter of these values
+to be rmin. 
+
+Histogram of collected radial distances: 
+```{r,echo=F}
+R = Data$Radial.Distance
+hist(R, breaks = 25, main="Radial distances of detections")
+```
+
+## Dealing with rounded distances. 
+
+The rounding down of small radial distances down to zero leads to loss of 
+information; the true location of the detected animal could be at any radial
+distance within $0$ to $R_{min}$, where $R_{min}$ is the value below which all
+radial distances have been rounded to 0. We must reflect this uncertainty in
+true location in our likelihood: 
+
+$L_R(\boldsymbol{\beta};n)=
+L_U(\boldsymbol{\beta};m)\times\Bigg[ 
+\frac{\int_0^{R_{min}}
+{\big\{{\large S}\left(y_{min}(x),\:x\:;\:\boldsymbol{\beta}\right)
+-{\large S}\left(0,\:x\:;\:\boldsymbol{\beta}\right)\big\}
+\pi(x\;;\:\boldsymbol{\phi})}\: dx}
+{\int_0^{R_{min}}\pi(x\:;\:\boldsymbol{\phi})\:dx}
+\times\frac{1}{\int_0^w p(x\:;\:\boldsymbol{\beta})\:\pi(x\;;\:\boldsymbol{\phi}) \:dx}\Bigg]^{n-m}$
+
+Where $L_U(\boldsymbol{\beta};m)$ is the Borchers and Cox (2016) likelihood,
+evaluated at the m detections which have not been rounded down.
+$y_{min}(x)$ is the forward distance at which an animal travelling from
+$\infty$ to $0$ along the $y$ axis at perpendicular $x$ intersects the quarter
+circle of radius $R_{min}$ and centre located at the observer's position. $S$ is
+the Borchers and Cox (2016) survivor function, and all remaining parameters also
+have the same definition as their presentation in Borchers and Cox (2016).
+
+
+```{r, echo=F}
+
+# We check that when using x and y values to recalculate radial distance, 
+# error with repsect to the size of rmin is small - To avoid miselecting a 
+# point as being rounded, when it may not have been
+Error = (mean(abs(sqrt(y**2 + x**2)-Data$Radial.Distance))/rmin)*100
+NumRounded = length(x[sqrt(y**2 + x**2)<rmin])
+
+x.rounded = x[sqrt(y**2 + x**2)<rmin]
+y.rounded = y[sqrt(y**2 + x**2)<rmin]
+x.unrounded = x[sqrt(y**2 + x**2)>=rmin]
+y.unrounded = y[sqrt(y**2 + x**2)>=rmin]
+```
+
+## Fitting some models: 
+```{r}
+w=0.05;ystart=0.06 # set these to use in all our fits
+```
+
+```{r, warning=F, results='hide', message=F}
+# Normal bump with hazard h1: -- poor gof -- 
+b=c(-6.82664896,1.09392846) ; logphi=c(-0.03503625,0.51044374)  # start values
+ 
+fit.n=fityx(y,x,b=b,hr='h1',ystart=ystart,pi.x='pi.norm',logphi=logphi,0,rmin=rmin,
+             w=w,hessian=TRUE,control=list(trace=0))            # fit
+
+par(mfrow=c(1,1))
+gof.LT2D(fit.n,plot=T)
+plot(fit.n,xbins=20,ybins=32,smooth.fy=TRUE,addrug=TRUE) 
+phatInterval(fit.n) ; phatInterval(fit.n)*w #EHSW
+
+fit.n$p0 # p(0)
+```
