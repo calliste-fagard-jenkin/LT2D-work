@@ -99,6 +99,9 @@ simulation <- function(R, N, pi.x, logphi1, logphi2, hr, b, w, ystart, lambda,
   return(output)
 }
 
+mixt.better <- function(simulation){
+  return(sum(abs(simulation$mixt.ests-N)<abs(simulation$regu.ests-N)))
+}
 
 # Select simulation parameters:
 N <- 1000
@@ -122,6 +125,10 @@ set.seed(972018)
 s2 <- simulation(500, N, pi.x, logphi1, c(0.5,-4), hr, b, w, ystart, 0.8,
                  Lsim, Asim, produce.mixt.df)
 
-sum(abs(s2$mixt.ests-1000)<abs(s2$regu.ests-1000))
-sum(abs(s1$mixt.ests-1000)<abs(s1$regu.ests-1000))
+set.seed(9292018)
+s3 <- simulation(1500, N, pi.x, logphi1, logphi2, hr, b, w, ystart, lambda,
+                 Lsim, Asim, produce.mixt.df)
 
+mixt.better(s1)
+mixt.better(s2)
+mixt.better(s3)
