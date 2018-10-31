@@ -1,8 +1,8 @@
 library(plotrix) # load the library needed to draw the arc on our graph
 
-library('DEVDEV5') # load the development version of the LT2D package
+library('LT2D') # load the development version of the LT2D package
 Data = read.csv('GibbonSiamang.csv',header=T) # load the x and y data
-Data = subset(Data, Data$Species == 1)
+#Data = subset(Data, Data$Species == 1)
 x = Data$PP.Distance ; y = Data$Forward.Distance
 
 par(mfrow=c(1,3))
@@ -44,35 +44,35 @@ area = rep(4*52*2*w, length(x))
 df = data.frame(y,x,stratum, transect, object, size, L, area)
 df.zeros = df # so that we can use the data set with the zeros later, after 
 # we've changed what df is
+#df = subset(df, !(df$x==0 & df$y==0))
 
 # H1 in the LT2D package is the Haynes and Buckland Hazard rate. 
 # Normal bump with hazard h1:
-b=c(-6.82664896,1.09392846) ; logphi=c(-0.03503625,0.51044374)  # start values
+b=c(-9.24,1.3089) ; logphi=c(-5.88,9.44)  # start values
 
 fit.h1 = LT2D.fit(DataFrameInput=df,hr='h1',b=b,ystart=ystart,pi.x='pi.norm',
-                  logphi=logphi,w=w, rmin=rmin, hessian=TRUE)
+                  logphi=logphi,w=w, hessian=TRUE)
 
 fit.h1$ests
-# par(mfrow=c(1,1))
-# gof.LT2D(fit.n,plot=T)
-# plot(fit.n,xbins=20,ybins=32,smooth.fy=TRUE,addrug=TRUE) 
-# phatInterval(fit.n)*w #EHSW
-# fit.n$p0 # p(0)
+par(mfrow=c(1,1))
+gof.LT2D(fit.h1,plot=T)
+plot(fit.h1,xbins=20,ybins=32,smooth.fy=TRUE,addrug=TRUE) 
+
 
 # Normal dip: --  bad ks gof in x --  problem with hessian inversion 
 b=c(-6,1) ; logphi=c(1,-4)
 fit.h1.chn = LT2D.fit(DataFrameInput=df,hr='h1',b=b,ystart=ystart,pi.x='pi.chnorm',
-                      logphi=logphi,w=w, rmin=rmin, hessian=TRUE)
+                      logphi=logphi,w=w, hessian=TRUE)
 fit.h1.chn$ests
 
 # Uniform with h1 -- bad ks gof in x -- 
 b=c(-7.0744154,0.9876447)                 
 fit.h1.unif = LT2D.fit(DataFrameInput=df,hr='h1',b=b,ystart=ystart,pi.x='pi.const',
-                       logphi=NULL,w=w, rmin=rmin, hessian=TRUE)
+                       logphi=NULL,w=w, hessian=TRUE)
 fit.h1.unif$ests
 
 df = data.frame(x,y)                  # fast way to remove all the 
-df = subset(df, sqrt(x**2+y**2)>rmin) # (0,0) values
+df = subset(df, sqrt(x**2+y**2)>-1) # (0,0) values
 x = df$x ; y = df$y 
 
 stratum = rep(1, length(x))

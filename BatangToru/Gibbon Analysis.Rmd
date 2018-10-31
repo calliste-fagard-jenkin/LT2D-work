@@ -20,7 +20,7 @@ and (XX).
 
 # Looking at the data:
 ```{r}
-library('DEVDEV5') # load the development version of the LT2D package
+library('LT2D') # load the development version of the LT2D package
 Data = read.csv('GibbonSiamang.csv',header=T) # load the x and y data
 Data = subset(Data, Data$Species == 1)
 x = Data$PP.Distance ; y = Data$Forward.Distance

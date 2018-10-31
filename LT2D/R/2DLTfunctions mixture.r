@@ -1917,7 +1917,7 @@ invp1_replacement = function(LT2D.df, LT2D.fit.obj){
 #' @param corrFlag numeric; value above which correlation flag is raised
 #' @export
 LT2D.fit = function(DataFrameInput,hr,b,ystart,pi.x,logphi,w,formulas=NULL,
-                    ipars=NULL,xpars=NULL,ypars=NULL,rmin=0,
+                    ipars=NULL,xpars=NULL,ypars=NULL,rmin=-1,
                     control = list(),hessian=FALSE,corrFlag = 0.7,
                     debug = FALSE){
 
@@ -3004,7 +3004,7 @@ Sy=function(x,y,ymax,b,hr) {
   n=length(x)
   if(length(y)!=n) stop("Lengths of x and y must be the same.")
   pS=rep(NA,n)
-  if(n>1 & length(b[[1]])>1) stop('Sy needs more work')
+  if(n>1 & length(b[[1]])>1) {stop('Sy needs more work')}
   # The '&F' was added to mute this workaround, as I believe it contains a
   # bug, and the numerical alternative seems to be fine - Cal
   if(hr=="h1"&F) { # Hayes & Buckland hazard rate model, so can do analytically
@@ -3335,8 +3335,11 @@ summary.collected.LT2D.models = function(objects){
     Ds[i] = object$ests$D[length(object$ests$D)]# summary information pertaining
     Ns[i] = object$ests$N[length(object$ests$N)]# to the model
 
-    GOFresults = unlist(gof.LT2D(object))
-    gofCount = length(GOFresults[GOFresults<0.05])
+    GOFresults = try(unlist(gof.LT2D(object)), silent = T)
+    
+    gofCount = ifelse(class(GOFresults=='try-error'), NA,
+                      length(GOFresults[GOFresults<0.05]))
+           
     GOF[i] = gofCount
   }
 

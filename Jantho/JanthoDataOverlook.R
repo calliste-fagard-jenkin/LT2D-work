@@ -1,11 +1,7 @@
 ```{r, warning=F}
-if (.Platform$OS.type == "unix"){                         # Set the file path
-  setwd("/Volumes/CFJ2/Cal/2017 - SummerProj/Jantho Analysis") # to correct 
-} else {                                                  # location for the 
-  setwd("C:/Users/Cal/Desktop/2017 - SummerProj - DEV/Jantho Analysis")   # data
-}
 
-library('DEVDEV5')
+
+library('LT2D')
 Data = read.csv('JanthoData.csv',header=T)
 
 DataBySpecies = list()                             # break up data by species
