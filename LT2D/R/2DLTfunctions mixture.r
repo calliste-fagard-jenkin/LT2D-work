@@ -3629,13 +3629,17 @@ data.with.b.conversion <- function(fityx.output.object=NULL,
 }
 
 #' @export
-LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
+LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T,
+                           slaves=1){
   # purpose : Produce a 1-alpha % confidence interval of abundance using a
   #           parametric percentile bootstrap.
   # inputs  : FittedObject - The object resulting from a fit using LT2D.fit
   #           r            - The number of bootstrap iterations to perform
   #                          to produce the sample
   #           alpha        - a (1-alpha)% CI will be produced from the call
+  #           slaves       - denotes the number of slave processes to be 
+  #                          created on each available core of the device, 
+  #                          if parallel = TRUE
   # NOTE    : This function deals both with covariate included and covariate
   #           excluded fitted models
   
@@ -3705,7 +3709,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
   }
   
   # 3. Get estimates of abundance
-  Ns <- sort(get.bootstrap.ns(FittedObject, UPWBs, parallel))
+  Ns <- sort(get.bootstrap.ns(FittedObject, UPWBs, parallel, slaves))
   
   # 4. Get interval using percentile method
   ci <- quantile(Ns, c(alpha,1-alpha))
@@ -3714,7 +3718,7 @@ LT2D.bootstrap <- function(FittedObject, r=499, alpha=0.05, parallel=T){
   return(list(ci=ci,Ns=Ns))
 }
 
-get.bootstrap.ns <- function(FittedObject, upwbs, parallel=T){
+get.bootstrap.ns <- function(FittedObject, upwbs, parallel=T, slaves=1){
   # purpose : obtain the estimate of abundance given the unrounded points with
   #           betas for the generated sample and the fittedObject
   # inputs  : fittedObject - The object produced by the top level fitting func
@@ -3723,7 +3727,12 @@ get.bootstrap.ns <- function(FittedObject, upwbs, parallel=T){
   #                          sample)
   #           parallel     - If TRUE, will perform the abundance estimation
   #                          in parallel
+  #           slaves       - if parallel = TRUE, denotes the number of slaves 
+  #                          to create on each available core on the device
   # output  : A vector of abundance estimations
+  
+  # NOTE: The value of slaves=1 will be the most efficient for parallelisation
+  #       on the vast majority of devices
 
 
   # Some set up for the function:
@@ -3736,7 +3745,7 @@ get.bootstrap.ns <- function(FittedObject, upwbs, parallel=T){
   
   if(parallel){
     # Create the clusters and initiate paralellisation:
-    cl<-makeCluster(detectCores())
+    cl<-makeCluster(detectCores()*slaves)
     registerDoParallel(cl)
 
     # Do the parallel loop:
